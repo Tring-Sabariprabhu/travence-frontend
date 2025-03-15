@@ -1,0 +1,42 @@
+
+button {    
+    font-family: var(--poppins-font-medium);
+    cursor: pointer;
+    border-radius: 5%;
+    font-weight: 500;
+    border: none;
+    transition: 0.2s;
+    outline: none;
+}
+
+.blue_button {
+    background-color: var(--color-blue);
+    color: white;
+}
+
+.blue_button:hover {
+    background-color: #34c0eb9c;
+}
+
+.green_button {
+    background-color: #29d729;
+    color: white;
+}
+
+.green_button:hover {
+    background-color: #008000;
+}
+
+.red_button {
+    background-color: #ff0000;
+    color: white;
+}
+
+.red_button:hover {
+    background-color: #c42222;
+}
+
+.darkblue_button {
+    background-color: #161671db;
+    color: white;
+}

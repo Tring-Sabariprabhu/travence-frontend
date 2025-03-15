@@ -1,0 +1,29 @@
+.signup-container > form{
+width: 30%;
+padding: 25px 35px;
+gap: 18px;
+}
+.signup-container > form > .form-header > h2{
+    font-size: 30px;
+}
+
+.signup-container > form > .input-container > div {
+    gap: 2px;
+}
+.signup-container > form > .input-container > div > input{
+    padding: 8px;
+}
+.signup-container > form > .input-container  > .toggle-password1{
+    cursor: pointer;
+    position: absolute;
+    top: 63.5%;
+    left: 88%;
+    color: var(--light-black);
+}
+.signup-container > form > .input-container  > .toggle-password2{
+    cursor: pointer;
+    position: absolute;
+    top: 90%;
+    left: 88%;
+    color: var(--light-black);
+}

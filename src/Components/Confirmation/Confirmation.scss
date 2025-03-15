@@ -1,0 +1,23 @@
+.confirmation-container{
+    // padding: 40px 100px;
+    
+    // height: 20vh;
+    // background-color: black;
+    min-width: 20vw;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 20px;
+    .buttons{
+        display: flex;
+        gap: 20px;
+        padding: 10px;
+        p{
+            word-wrap: break-word;
+        }
+        button{
+            padding: 5px 15px;
+            font-size: 17px;
+        }
+    }
+}

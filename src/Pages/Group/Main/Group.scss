@@ -1,0 +1,105 @@
+.group-container {
+    width: 100%;
+    .group-header {
+        width: 100%;
+        padding: 20px 40px;  
+        background-color: var(--gray);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .group-data {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            // padding: 20px 40px;
+            div {
+                h3{
+                    font-weight: 500;
+                }
+                p {
+                    width: 400px;   
+                    // overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+
+        .group_name {
+            font-size: 15px;
+        }
+        h4 {
+            font-weight: 500;
+        }
+
+        p {
+            font-size: 13px;
+            font-weight: 300 !important;
+        }
+            button {
+                // Edit Group details Button
+                padding: 10px;
+                font-size: 15px;
+                border-radius: 8px;
+            }
+        
+    }
+
+    .tabs-container {
+        padding: 20px 30px;
+        // height: 80px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        // background-color: black;
+        .tabs{
+            display: flex;
+            gap: 20px;
+            button{
+                border-radius: 5px;
+                padding: 8px;
+                font-size: 14px;
+                border-width: 2px;
+                // border-bottom-width: 2px;
+            }
+            .active_tab{
+                // background-color: black;
+                border-bottom-width: 4px;
+            }
+        }
+        .invite-button{
+            font-size: 15px;
+            padding: 0 15px;
+            border-radius: 5px;
+        }
+    }
+
+    .group-body{
+        padding:  0  0  10px 0;
+        // height: ;
+        .group-members{
+            overflow: auto;
+            height: 250px;
+            table{
+                tr{
+                    .user-name, .user-role{
+                        text-transform: capitalize;
+                    }
+                    th,td{
+                        padding: 12px;
+                    }
+                    th{
+                        
+                        background-color: var(--gray);
+                    }
+                    td{
+                        button{
+                            padding: 8px ;
+                            border-radius: 5px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+    

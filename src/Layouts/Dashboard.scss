@@ -1,0 +1,28 @@
+
+
+.left-main-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.dashboard-layout{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    
+    .main-content{
+        box-shadow: inset 0px 2px 2px 2px rgba(0, 0, 0, 0.044);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        background-color: white;
+        .home {
+            h1{
+                color: var(--color-blue);
+                padding: 0 70px;   
+            }
+        }
+    }
+}

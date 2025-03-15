@@ -1,0 +1,26 @@
+
+.MuiDialog-paper{
+    // width: 30%; 
+    background: black;
+    padding: 20px 20px;  
+    .dialog-header{
+        // padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        h2{
+            font-weight: 600;
+        }
+        button{  // Close Button
+            background-color: transparent;
+            outline: none;
+            padding: 3px ;
+            // padding-bottom: 0;
+            height: 30px;
+            padding-bottom: 0;
+            border: none;
+            border-radius: 50%;
+            color: rgba(0, 0, 0, 0.573);
+            font-size: 5px;
+        }
+    }
+}
