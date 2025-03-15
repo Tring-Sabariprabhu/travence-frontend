@@ -1,11 +1,10 @@
-import { AccountCircle, Edit, Group, GroupAdd, GroupOutlined, GroupsRounded, GroupsSharp, InsertInvitationRounded, Logout, Notifications, NotificationsActiveRounded, NotificationsRounded, Person2Outlined, PersonSharp } from '@mui/icons-material';
+import { AccountCircle, Group, Logout, NotificationsRounded } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom'
 import './SideBar.scss'
 import { makeToast } from '../Toast/makeToast';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../Redux/store';
 import { setUser } from '../../Redux/userSlice';
-import CustomDialog from '../CustomDialog/CustomDialog';
 import { useState } from 'react';
 import { Confirmation } from '../Confirmation/Confirmation';
 import defaultImage from '../../Assets/images/default.jpg';
@@ -25,7 +24,7 @@ export const SideBar = () => {
     return (
         <nav>
             <div className='userProfile'>
-                <img src={defaultImage} />
+                <img src={user?.image ? user?.image : defaultImage} alt=''/>
                 <p>{user?.name?.charAt(0)?.toUpperCase() + user?.name?.slice(1) }</p>
             </div>
             <ol>

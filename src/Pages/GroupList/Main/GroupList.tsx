@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,6 @@ import AddGroup from "../../Group/AddGroup/AddGroup";
 import './GroupList.scss';
 import { GroupOutlined } from "@mui/icons-material";
 import { GroupsList } from "../../../ApolloClient/Queries/Groups";
-import { UserDetails } from "../../../ApolloClient/Queries/Users";
 
 interface GroupDataProps {
     group_id: number,

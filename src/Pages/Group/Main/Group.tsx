@@ -13,7 +13,6 @@ import { InviteOthers } from '../InviteOthers/InviteOthers';
 import './Group.scss';
 import { GroupData } from '../../../ApolloClient/Queries/Groups';
 import { Confirmation } from '../../../Components/Confirmation/Confirmation';
-import { error } from 'console';
 
 interface Group_Member_Props {
     user_id: String

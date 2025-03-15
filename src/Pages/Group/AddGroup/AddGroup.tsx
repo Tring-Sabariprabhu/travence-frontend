@@ -33,7 +33,7 @@ const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_nam
         },
     });
 
-    const { handleSubmit, formState: { errors }, setValue } = methods;
+    const { handleSubmit, setValue } = methods;
 
     useEffect(() => {
         setValue("group_name", group_name);

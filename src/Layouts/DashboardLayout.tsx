@@ -1,8 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { SideBar } from "../Components/SideBar/SideBar";
 import './Dashboard.scss'
-import { useLazyQuery, useQuery } from "@apollo/client";
-import { useEffect } from "react";
+import { useQuery } from "@apollo/client";
 import { useDispatch } from "react-redux";
 
 import { setUser } from "../Redux/userSlice";
@@ -20,7 +19,6 @@ const DashboardLayout = () => {
                 dispatch(setUser({user_id: data?.getUser?.user_id, name: data?.getUser?.name, email: data?.getUser?.email}));
         },
         onError: (err)=>{
-            localStorage.clear();
             makeToast({message: `Error ${err.message}`, toastType: "error"});
         }
     });

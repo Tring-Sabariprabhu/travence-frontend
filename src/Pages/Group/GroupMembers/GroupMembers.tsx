@@ -1,8 +1,6 @@
 
 import { useMutation, useQuery, } from "@apollo/client"
-import { useLocation, useNavigate } from "react-router-dom"
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../Redux/store';
+import { useLocation } from "react-router-dom"
 import { useState } from "react";
 import { Confirmation } from "../../../Components/Confirmation/Confirmation";
 import { ChangeRoleInGroup, DeleteUserFromGroup } from "../../../ApolloClient/Mutation/Groups";
