@@ -48,7 +48,7 @@ export const GroupList = () => {
                         <p>{group.name}</p>
                     </div>
                     <div>
-                        <h3>Created_by</h3>
+                        <h3>Owner</h3>
                         <p>{user?.email === group?.created_user_email ? "You" : group?.created_user_email }</p>
                     </div>
                 </div>  ))}

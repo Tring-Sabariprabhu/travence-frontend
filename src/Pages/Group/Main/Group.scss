@@ -79,19 +79,22 @@
         .group-members{
             overflow: auto;
             height: 250px;
+            table, tr, th, td{
+                border-collapse: collapse;
+            }
             table{
                 tr{
-                    .user-name, .user-role{
-                        text-transform: capitalize;
-                    }
-                    th,td{
+                    th,td{    
                         padding: 12px;
+                        border: 2px solid var(--gray);
                     }
                     th{
-                        
+                        font-family: 17px;
                         background-color: var(--gray);
                     }
                     td{
+                        font-weight: 400;
+                        font-size: 14px;
                         button{
                             padding: 8px ;
                             border-radius: 5px;

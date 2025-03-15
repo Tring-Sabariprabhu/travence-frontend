@@ -100,7 +100,7 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup }) => {
                         {/* <th>Email</th> */}
                         <th>Role</th>
                         <th>Joined at</th>
-                        {group_members?.length > 0 &&
+                        {userIsLeader && group_members?.length > 0 &&
                             <>
                                 <th></th>
                                 <th></th>
@@ -109,20 +109,18 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup }) => {
                     </tr>
                     {userInGroup &&
                         <tr>
-                            <td className="user-name">
+                            <td className="capitalized">
                                 {userInGroup?.profile?.name}<p> (You)</p>
                             </td>
-                            {/* <td>{userInGroup?.profile?.email}</td> */}
-                            <td className="user-role"> {userInGroup?.role}</td>
+                            <td className="capitalized"> {userInGroup?.role}</td>
                             <td>{dateformat({ date: userInGroup?.joined_at })} </td>
 
                         </tr>}
 
                     {group_members?.map((member: MemberTypeProps) => (
                         <tr key={member?.member_id} title={group_data?.group?.created_by === member?.user_id ? "Group Owner" : member?.role}>
-                            <td className="user-name">{member?.profile?.name}</td>
-                            {/* <td>{member?.profile?.email}</td> */}
-                            <td className="user-role">{member?.role}</td>
+                            <td className="capitalized">{member?.profile?.name}</td>
+                            <td className="capitalized">{member?.role}</td>
                             <td>{dateformat({ date: member.joined_at })} </td>
                             {userIsLeader  && 
                             <>

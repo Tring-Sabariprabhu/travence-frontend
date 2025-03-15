@@ -1,10 +1,14 @@
 
 :root{
     --color-blue:  #34c1eb;
-    --light-black: #424040;
+    --light-black: #706666;
     --light-blue: #34c0eb1f;
     --gray: #d1cece2a;
     --poppins-font-medium: 'MyCustomFont'; 
 }
   
 @font-face { font-family: 'MyCustomFont'; src: url('./Poppins-Medium.ttf') format('truetype');}
+
+.capitalized{
+    text-transform: capitalize;
+}
