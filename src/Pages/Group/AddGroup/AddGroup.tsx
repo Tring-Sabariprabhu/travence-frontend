@@ -28,12 +28,12 @@ const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_nam
 
     const methods = useForm({
         defaultValues: {
-            group_name: "",
-            group_description: "",
+            group_name: group_name,
+            group_description: group_description,
         },
     });
 
-    const { handleSubmit, setValue } = methods;
+    const { handleSubmit, setValue, formState: {errors}, clearErrors } = methods;
 
     useEffect(() => {
         setValue("group_name", group_name);
@@ -46,9 +46,7 @@ const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_nam
         formdata.group_name = formdata.group_name.trim();
         formdata.group_description = formdata.group_description.trim();
         if (group_id) {
-            if(formdata.group_name === group_name && formdata.group_description === group_description){
-                makeToast({message: "Make Changes and Save", toastType: "info"});
-            }else{
+            if(formdata.group_name !== group_name || formdata.group_description !== group_description){
                 await updateGroup({variables: {group_id: group_id, name: formdata?.group_name, description: formdata?.group_description},
                     onCompleted: (data)=>{
                         makeToast({message: data?.updateGroup, toastType: "success"});
@@ -60,7 +58,6 @@ const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_nam
                     onClose();
             }
         }else{
-            console.log(user?.user_id)
             await createGroup({variables: {created_by: user?.user_id, name: formdata?.group_name, description: formdata?.group_description}, 
                 onCompleted: (data)=>{
                     makeToast({message: data?.createGroup, toastType: "success"});
@@ -73,15 +70,20 @@ const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_nam
         }
 
     };
-
+    const handleClose=()=>{
+        onClose();
+        clearErrors();
+    }
     return (
-        <CustomDialog open={open} onClose={onClose} dialog_title={group_id ? "Edit Group details" : "Create Group"}>
+        <CustomDialog open={open} onClose={handleClose} dialog_title={group_id ? "Edit Group details" : "Create Group"}>
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)} className="addgroup-form">
                     <InputField type="text" label="Group Name" name="group_name" placeholder="Enter Group name" />
+                        {errors?.group_name?.message && <p className="error">{errors?.group_name?.message}</p>}
                     <TextAreaField label={"Group Description"} name={"group_description"} placeholder={"Enter Group description"} className={""} />
+                        {errors?.group_description?.message && <p className="error">{errors?.group_description?.message}</p>}
                     <div className="button-container">
-                        <ButtonField type="submit" text={group_id ? "Save Changes" : "Create"} className="darkblue_button" />
+                        <ButtonField type="submit" text={group_id ? "Save Changes" : "Create"} className="blue_button" />
                     </div>
                 </form>
             </FormProvider>

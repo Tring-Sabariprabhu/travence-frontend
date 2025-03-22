@@ -63,7 +63,7 @@ export const ValidationInput = ({ name , label}: RequiredCheckProps) => {
         case "password":
             return {
                 required: `Password is Required`,
-                // minLength: minLengthCheck(8),
+                // minLength: minLengthCheck(8),    
                 maxLength: maxLengthCheck(20),
                 pattern: {
                     value: /^(?=.*[A-Z])(?=.*[!@#$&*_])(?=.*[0-9])(?=.*[a-z])/,
@@ -76,6 +76,13 @@ export const ValidationInput = ({ name , label}: RequiredCheckProps) => {
                 required: `Confirm Password is Required`,
                 validate: () => getValues("password") === watch("confirmpassword") || "Password do not match",
             };
+        case "trip_name":
+            return{
+                required: `Trip name Required`,
+                validate: {
+                    emptyCheck: emptySpaceCheck
+                }
+            }
 
         default:
             return {};

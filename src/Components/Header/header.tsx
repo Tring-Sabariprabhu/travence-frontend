@@ -1,8 +1,7 @@
 import './header.scss';
 interface NavItem {
     label: string;
-    onClick: () => void;
-    className?: string
+    onClick?: () => void;
 }
 
 interface HeaderProps {
@@ -14,7 +13,7 @@ export const Header: React.FC<HeaderProps> = ({ items }) => {
         <div className='header'>
             <ol>
                 {items.map((item, index) => (
-                    <li key={index} onClick={item.onClick} className=''>
+                    <li key={index} onClick={item.onClick}>
                         <label>{item.label}</label>
                     </li>
                 ))}

@@ -9,6 +9,7 @@ export const UpdateGroup = gql`
     mutation update($group_id: String!, $name: String!, $description: String){
         updateGroup(group_id: $group_id, name: $name, description: $description)
     }`
+
 export const DeleteGroup = gql`
 mutation delete($group_id: String!){
     deleteGroup(group_id: $group_id)

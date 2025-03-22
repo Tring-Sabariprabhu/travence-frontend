@@ -25,10 +25,10 @@ function App() {
           </Route>
           <Route element={<PrivateRoute />}>
             <Route element={<DashboardLayout />}>
-              {privateRoutes.map((route) => (
-                <Route key={route.path} path={route.path} element={route.element} >
-                  {route?.childs && route?.childs.map((nest_route1)=>(
-                      <Route key={route.path} path={nest_route1.path} element={nest_route1.element} />
+              {privateRoutes.map((route, index) => (
+                <Route key={index} path={route.path} element={route.element} >
+                  {route?.childs && route?.childs.map((nest_route1, index)=>(
+                      <Route key={index} path={nest_route1.path} element={nest_route1.element} />
                   ))}
                 </Route>
               )

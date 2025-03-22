@@ -28,21 +28,23 @@ function SignupForm() {
         }
     })
     const {
-        handleSubmit,
+        handleSubmit, formState: { errors }
     } = methods;
 
     const onSubmit = async (formdata: { person_name: string; email: string; password: string; confirmpassword: string }) => {
         formdata.person_name = formdata.person_name.trim();
         formdata.email = formdata.email.toLowerCase();
-        await signUpUser({variables: {email: formdata.email, name: formdata.person_name, password: formdata.password},
-             onCompleted: (data)=>{
-                makeToast({message: "Registered Successfully", toastType: "success"});
+        await signUpUser({
+            variables: { email: formdata.email, name: formdata.person_name, password: formdata.password },
+            onCompleted: (data) => {
+                makeToast({ message: "Registered Successfully", toastType: "success" });
                 localStorage.setItem("token", data?.signup?.token);
                 navigate('/');
-                },
-            onError: (error)=>{
-                makeToast({message: `${error.message}`, toastType: "error"});
-                }});
+            },
+            onError: (error) => {
+                makeToast({ message: `${error.message}`, toastType: "error" });
+            }
+        });
 
     };
     return (
@@ -51,19 +53,23 @@ function SignupForm() {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className='form-header'>
                         <h2>Sign up</h2>
-                        <p className='logo'></p>
+                        <img className='logo' src='dnskd' alt='logo'></img>
                     </div>
                     <div className='input-container'>
                         <InputField label="Name" type="text" name={"person_name"} placeholder={''} />
+                            {errors?.person_name?.message && <p className='error'>{errors?.person_name?.message}</p>}
                         <InputField label="Email" type="text" name={"email"} placeholder={''} />
+                            {errors?.email?.message && <p className='error'>{errors?.email?.message}</p>}
                         <InputField label="Password" type={showPassword ? "text" : "password"} name={"password"} placeholder={''} />
-                        <div onClick={() => setShowPassword(!showPassword)} className="toggle-password1">
-                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                        </div>
+                            {errors?.password?.message && <p className='error'>{errors?.password?.message}</p>}
+                            <div onClick={() => setShowPassword(!showPassword)} className="toggle-password1">
+                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                            </div>
                         <InputField label="Confirm password" type={showPassword ? "text" : "password"} name={"confirmpassword"} placeholder={''} />
-                        <div onClick={() => setShowPassword(!showPassword)} className="toggle-password2">
-                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                        </div>
+                            {errors?.confirmpassword?.message && <p className='error'>{errors?.confirmpassword?.message}</p>}
+                            <div onClick={() => setShowPassword(!showPassword)} className="toggle-password2">
+                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                            </div>
 
                     </div>
                     <ButtonField type={"submit"} text={"Sign up"} className={"blue_button"} />

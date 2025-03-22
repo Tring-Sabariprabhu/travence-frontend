@@ -15,9 +15,10 @@ export const GetInvitedlist = gql`
 
 export const GetGroupJoinRequests = gql`
     query getGroupRequests($email: String!){
-        getGroupJoinRequests(email: $email){
+        getGroupJoinRequestsForUser(email: $email){
             request_id,
             requested_at,
+            requested_by
             group_name,
             admin_name,
         }

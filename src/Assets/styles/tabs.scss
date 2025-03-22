@@ -1,8 +1,7 @@
 .tab{
     background-color: transparent;
-    border: 1px solid var(--color-blue);
-    transition: 0.1s ease-in !important;
-    outline: none;
+    outline: none;  
+    transition: 0.15s ease-in;
 }
 .active_tab{
     transform: translateY(-5px); 

@@ -8,6 +8,7 @@ import { makeToast } from "../../../Components/Toast/makeToast";
 import { dateformat } from "../../../Schema/StringFunctions/StringFuctions";
 import ButtonField from "../../../Components/ButtonField/ButtonField";
 import { GroupData } from "../../../ApolloClient/Queries/Groups";
+import './GroupMembers.scss';
 
 interface MemberTypeProps {
     member_id: string,
@@ -26,7 +27,7 @@ interface GroupMembersProps {
 export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup }) => {
     const location = useLocation();
     const group_id = location?.state?.group_id;
-    const { data: group_data, loading,error, refetch: refetchGroupData } = useQuery(GroupData,
+    const { data: group_data, loading, error, refetch: refetchGroupData } = useQuery(GroupData,
         {
             variables: { group_id: group_id },
             skip: !group_id,
@@ -37,6 +38,7 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup }) => {
         });
     const userIsLeader = userInGroup?.role === "admin";
     const group_members = group_data?.group?.group_members?.filter((member: MemberTypeProps) => userInGroup?.user_id !== member?.user_id);
+    const groupAdmins = group_data?.group?.group_members?.filter((member: MemberTypeProps)=> member?.role === "admin" );
 
     const [removeMemberPopupState, setRemoveMemberPopupState] = useState<boolean>(false);
     const [removeMemberID, setRemoveMemberID] = useState<string>();
@@ -44,12 +46,20 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup }) => {
     const [changeRolePopupState, setChangeRolePopupState] = useState<boolean>(false);
     const [changeRoleMemberID, setChangeRoleMemberID] = useState<string>();
 
-    
+
+    const checkAndSetChangeRoleMember=(member: MemberTypeProps)=>{
+        
+            if(member?.role === "member" && groupAdmins?.length === 2)
+                makeToast({message: "A Group can have 2 Admins only", toastType: "error"});
+            else
+                setChangeRoleMember(member?.member_id, true) 
+    }
     const setRemoveMember = (member_id: string, popupState: boolean) => {
         setRemoveMemberID(member_id);
         setRemoveMemberPopupState(popupState);
     }
-    const setChangeRoleMember = (member_id: string, popupState: boolean)=>{
+
+    const setChangeRoleMember = (member_id: string, popupState: boolean) => {
         setChangeRoleMemberID(member_id);
         setChangeRolePopupState(popupState);
     }
@@ -57,13 +67,13 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup }) => {
     const [remove] = useMutation(DeleteUserFromGroup);          // Remove Member Mutation
     const [change] = useMutation(ChangeRoleInGroup);            // Change Role  of Member Mutation
 
-    if(loading){
+    if (loading) {
         return <p>Loading...</p>;
     }
-    if(error){
+    if (error) {
         return <p>Error..</p>;
     }
-    const removeMember = async () => {
+    const removeMemberProcess = async () => {
         await remove({
             variables: { admin_id: userInGroup?.member_id, member_id: removeMemberID },
             onCompleted: (data) => {
@@ -76,78 +86,77 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup }) => {
         });
         setRemoveMember("", false);
     }
-    const changeRole= async ()=>{
+    const changeRoleProcess = async () => {
         await change({
-            variables: {admin_id: userInGroup?.member_id, member_id: changeRoleMemberID},
-            onCompleted: (data)=>{
-                makeToast({message: data?.changeRoleInGroup, toastType: "success"});
+            variables: { admin_id: userInGroup?.member_id, member_id: changeRoleMemberID },
+            onCompleted: (data) => {
+                makeToast({ message: data?.changeRoleInGroup, toastType: "success" });
                 refetchGroupData();
             },
-            onError: (err)=>{
-                makeToast({message: "Role Changes Failed", toastType: "error"});
+            onError: (err) => {
+                makeToast({ message: "Role Changes Failed", toastType: "error" });
                 console.log(err.message);
             }
         })
         setChangeRoleMember("", false);
     }
 
+   
     return (
         <div className="group-members">
-         { userInGroup &&
+            {userInGroup &&
                 <table>
-                    <tr>
-                        <th>Name</th>
-                        {/* <th>Email</th> */}
-                        <th>Role</th>
-                        <th>Joined at</th>
-                        {userIsLeader && group_members?.length > 0 &&
-                            <>
-                                <th></th>
-                                <th></th>
-                            </>
-                        }
-                    </tr>
-                    {userInGroup &&
+                    <thead>
                         <tr>
-                            <td className="capitalized">
-                                {userInGroup?.profile?.name}<p> (You)</p>
-                            </td>
-                            <td className="capitalized"> {userInGroup?.role}</td>
-                            <td>{dateformat({ date: userInGroup?.joined_at })} </td>
-
-                        </tr>}
-
-                    {group_members?.map((member: MemberTypeProps) => (
-                        <tr key={member?.member_id} title={group_data?.group?.created_by === member?.user_id ? "Group Owner" : member?.role}>
-                            <td className="capitalized">{member?.profile?.name}</td>
-                            <td className="capitalized">{member?.role}</td>
-                            <td>{dateformat({ date: member.joined_at })} </td>
-                            {userIsLeader  && 
-                            <>
-                                <td >
-                                <ButtonField
-                                    type={"button"}
-                                    className={group_data?.group?.created_by === member?.user_id ? "" : (member?.role==="admin" ? "blue_button": "darkblue_button")}
-                                    text={member?.role === "admin" ? "Set as Member" : "Set as Admin"}
-                                    onClick={() => {setChangeRoleMember(member?.member_id, true)}}
-                                    disabledState= {group_data?.group?.created_by === member?.user_id}
-                                />
-                                </td>
-                                <td >
-                                    <ButtonField
-                                        type={"button"}
-                                        className={group_data?.group?.created_by === member?.user_id ? "" : "red_button"}
-                                        text={"Remove"}
-                                        onClick={() => setRemoveMember(member?.member_id, true)}
-                                        disabledState= {group_data?.group?.created_by === member?.user_id}
-                                    />
-                                </td>
-                            </>}
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Joined at</th>
+                            {userIsLeader && <th></th>}
                         </tr>
-                    ))}
+                    </thead>
+                    <tbody>
+                        {userInGroup &&
+                            <tr>
+                                <td className="capitalized userInGroup">
+                                    <p>{userInGroup?.profile?.name}</p>
+                                    <p>(You)</p>
+                                </td>
+                                <td className="capitalized"> {userInGroup?.role}</td>
+                                <td>{dateformat({ date: userInGroup?.joined_at })} </td>
+                                
+                            </tr>}
+
+                        {group_members?.map((member: MemberTypeProps) => (
+                            <tr key={member?.member_id} >
+                                <td className="capitalized">{member?.profile?.name}</td>
+                                <td className="capitalized">{member?.role}</td>
+                                <td>{dateformat({ date: member.joined_at })} </td>
+                                {userIsLeader &&
+                                    <>
+                                        <td className="button_actions">
+                                            <ButtonField
+                                                type={"button"}
+                                                className={group_data?.group?.created_by === member?.user_id ? "" : "blue_button"}
+                                                text={member?.role === "admin" ? "Set as Member" : "Set as Admin"}
+                                                onClick={() => checkAndSetChangeRoleMember(member)}
+                                                disabledState={group_data?.group?.created_by === member?.user_id }
+                                            />
+                                       
+                                            <ButtonField
+                                                type={"button"}
+                                                className={group_data?.group?.created_by === member?.user_id ? "" : "red_button"}
+                                                text={"Remove"}
+                                                onClick={() => setRemoveMember(member?.member_id, true)}
+                                                disabledState={group_data?.group?.created_by === member?.user_id}
+                                            />
+                                        </td>
+                                    </>}
+                            </tr>
+                        ))}
+                    </tbody>
                 </table>}
-            <Confirmation open={removeMemberPopupState} onSuccess={() => removeMember()} onClose={() => setRemoveMember("", false)} title={`Remove `} closeButtonText={"Cancel"} confirmButtonText={"Confirm"} />
-            <Confirmation open={changeRolePopupState} onSuccess={() => changeRole()} onClose={() => setChangeRoleMember("", false)} title={`Change Role`} closeButtonText={"Cancel"} confirmButtonText={"Confirm"} />
+            <Confirmation open={removeMemberPopupState} onSuccess={() => removeMemberProcess()} onClose={() => setRemoveMember("", false)} title={`Remove `} closeButtonText={"Cancel"} confirmButtonText={"Confirm"} />
+            <Confirmation open={changeRolePopupState} onSuccess={() => changeRoleProcess()} onClose={() => setChangeRoleMember("", false)} title={`Change Role`} closeButtonText={"Cancel"} confirmButtonText={"Confirm"} />
         </div>
     )
 }

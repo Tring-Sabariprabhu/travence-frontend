@@ -25,7 +25,7 @@
 
     .logo {
       color: rgb(12, 109, 139);
-      font-size: 30px;
+      font-size: 15px;
       font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     }
 
@@ -54,7 +54,10 @@
       justify-content: center;
       align-items: center;
     }
-
+    .error{
+      color: rgba(255, 0, 0, 0.863);
+      font-size: 12px;
+    }
     div {
       width: 100%;
       display: flex;

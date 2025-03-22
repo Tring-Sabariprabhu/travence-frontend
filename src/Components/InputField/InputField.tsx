@@ -15,7 +15,7 @@ const InputField:React.FC<InputFieldProps>=({type ,label, name, placeholder})=>{
     const { register} = useFormContext(); 
     
     return(
-        <div className="input-box-container">
+        <div className="input-container">
             <label htmlFor={name}>{label}</label>
             <input
                 type={type}

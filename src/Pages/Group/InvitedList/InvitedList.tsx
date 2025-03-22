@@ -1,61 +1,149 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './InvitedList.scss';
-import ButtonField from '../../../Components/ButtonField/ButtonField';
-import { useQuery } from '@apollo/client';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../Redux/store';
-import { useLocation } from 'react-router-dom';
-import { GetInvitedlist } from '../../../ApolloClient/Queries/GroupRequests';
+import { useMutation } from '@apollo/client';
 import { dateformat } from '../../../Schema/StringFunctions/StringFuctions';
+import { makeToast } from '../../../Components/Toast/makeToast';
+import { DeleteGroupJoinRequests, ResendGroupJoinRequests } from '../../../ApolloClient/Mutation/GroupRequests';
+import ButtonField from '../../../Components/ButtonField/ButtonField';
+import { Confirmation } from '../../../Components/Confirmation/Confirmation';
 
-interface InvitedListProps{
-  invitedList: [GroupRequestProps]
-}
 
 interface GroupRequestProps {
     request_id: string,
-    email :string,
+    email: string,
     user_registered: boolean,
     requested_at: string,
     status: string
 }
+interface InvitedListProps {
+    invitedList: [GroupRequestProps],
+    admin_id: string,
+    onUpdated: () => void
+}
 
-export const InvitedList = ({invitedList}: InvitedListProps) => {
-    
+export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListProps) => {
+    const [selectedRequests, setSelectedRequests] = useState<string[]>([]);
+
+    const [resendRequestsPopup, setResendReqeustsPopup] = useState<boolean>(false);
+    const [deleteRequestsPopup, setDeleteReqeustsPopup] = useState<boolean>(false);
+
+    const [resendInviteRequests] = useMutation(ResendGroupJoinRequests);
+    const [deleteInviteRequests] = useMutation(DeleteGroupJoinRequests);
+
+    // const handleActions = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    //     if(selectedRequests.length === 0){
+    //         makeToast({message: "No Requests Selected", toastType: "error"});
+    //     }else{
+
+    //         }
+    //         else if (event?.target?.value === "delete") {
+    //            
+
+    //         }
+    //     }
+
+    // }
+    const resendInvite = async () => {
+        if (selectedRequests?.length > 0) {
+            await resendInviteRequests({
+                variables: { admin_id: admin_id, requestIDs: selectedRequests },
+                onCompleted: (data) => {
+                    makeToast({ message: data?.resendGroupJoinRequests, toastType: "success" });
+                    onUpdated();
+                },
+                onError: (err) => {
+                    console.log(err.message);
+                }
+            });
+            setResendReqeustsPopup(false);
+        }
+    }
+    const deleteInvite = async () => {
+        if (selectedRequests?.length > 0) {
+            await deleteInviteRequests({
+                variables: { admin_id: admin_id, requestIDs: selectedRequests },
+                onCompleted: (data) => {
+                    makeToast({ message: data?.deleteGroupJoinRequests, toastType: "success" });
+                    onUpdated();
+                },
+                onError: (err) => {
+                    console.log(err.message);
+                }
+            });
+            setDeleteReqeustsPopup(false);
+        }
+
+    }
+    const handleCheckBoxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, checked } = event?.target;
+        setSelectedRequests((prevSelected) => {
+            if (checked) {
+                return [...prevSelected, value];
+            } else {
+                return prevSelected.filter((id) => id !== value);
+            }
+        });
+    }
+
     return (
-        <div className="group-members">
+        <div className="invited-list group-members">
+            <div className='actions'>
+
+                {invitedList?.length > 0 &&
+                    <>
+                        <ButtonField 
+                            type={'button'} 
+                            text={'Resend'} 
+                            className={selectedRequests.length > 0 ? 'blue_button' : ""} 
+                            disabledState={selectedRequests?.length === 0} 
+                            onClick={()=>setResendReqeustsPopup(true)}/>
+                        <ButtonField 
+                            type={'button'} 
+                            text={'Delete'} 
+                            className={selectedRequests.length > 0 ? 'red_button' : ""} 
+                            disabledState={selectedRequests?.length === 0} 
+                            onClick={()=>setDeleteReqeustsPopup(true)}/>
+                    </>
+                }
+            </div>
             {invitedList?.length > 0 ?
                 <table>
-                    <tr>
-                        <th>Email</th>
-                        <th>Requested at</th>
-                        <th>Registered</th>
-                        <th>Status</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    {invitedList?.map((request: GroupRequestProps) => (
+                    <thead>
                         <tr>
-                            <td>{request?.email}</td>
-                            <td>{dateformat({date: request?.requested_at})}</td>
-                            <td>{request?.user_registered ? "Registered" : "Not Registered" }</td>
-                            <td className='capitalized'>{request?.status}</td>
-                            <td>
-                                <span >
-                                    <ButtonField type={'button'} text={'Resend'} className='darkblue_button'/>
-                                </span>
-                            </td>   
-                            <td>
-                                <span>
-                                    <ButtonField type={'button'} text={'Delete'} className='red_button'/>
-                                </span>
-                            </td>   
+                            <th></th>
+                            <th>Email</th>
+                            <th>Requested at</th>
+                            <th>Registered</th>
+                            <th>Status</th>
                         </tr>
-                    ))}
+                    </thead>
+                    <tbody>
+                        {invitedList?.map((request: GroupRequestProps) => (
+                            <tr key={request.request_id}>
+                                <td><input type="checkbox" name="" id="" value={request.request_id} onChange={handleCheckBoxChange} /></td>
+                                <td>{request?.email}</td>
+                                <td>{dateformat({ date: request?.requested_at })}</td>
+                                <td>{request?.user_registered ? "Registered" : "Not Registered"}</td>
+                                <td className='capitalized'>{request?.status}</td>
+                            </tr>
+                        ))}
+                    </tbody>
 
-                </table>
-            : <p>No Invite Sent</p>}
-
+                </table> : <p>No Invite Sent</p>}
+            <Confirmation
+                open={resendRequestsPopup}
+                onClose={() => setResendReqeustsPopup(false)}
+                title={'Do you want to Resend Invite Requests'}
+                confirmButtonText={'Yes'}
+                closeButtonText={'No'}
+                onSuccess={resendInvite} />
+            <Confirmation
+                open={deleteRequestsPopup}
+                onClose={() => setDeleteReqeustsPopup(false)}
+                title={'Do you want to Delete Invite Requests'}
+                confirmButtonText={'Yes'}
+                closeButtonText={'No'}
+                onSuccess={deleteInvite} />
         </div >
     )
 }

@@ -2,26 +2,28 @@
     // background-color: black;
     width: 35vw;
     // height: 60vh;
-    padding: 20px 30px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 15px;
 
-    input {
-        // Search email
-        width: 50%;
-        padding: 10px;
-        outline-color: var(--light-black);
-    }
- 
+   
   
     div.input-container{
         display: flex;
         flex-direction: column;
         gap: 5px;
+        input{
+            width: 100%;
+            padding: 10px;
+        }
         p{
             font-size: 11px;
         }
+    }
+    p.error{
+        font-size: 12px;
+        color: red;
     }
     div.selected-members {
         display: flex;
@@ -56,15 +58,19 @@
 
     .inviteOthers-footer {
         display: flex;
-        justify-content: end;
-        span {
+        // justify-content: space-between;
+        gap: 10px;
+        p{
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.647);
+        }
             // background-color: black;
             button {
                 font-size: 15px;
                 border-radius: 6px;
                 padding: 8px;
             }
-        }
+    
 
     }
 }

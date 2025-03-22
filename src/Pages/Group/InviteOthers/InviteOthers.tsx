@@ -3,14 +3,12 @@ import ButtonField from "../../../Components/ButtonField/ButtonField";
 import { RootState } from "../../../Redux/store";
 import CustomDialog from "../../../Components/CustomDialog/CustomDialog"
 import './InviteOthers.scss';
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { useLocation } from "react-router-dom";
-
+import { useMutation } from "@apollo/client";
 import { makeToast } from "../../../Components/Toast/makeToast";
 import { useState } from "react";
-import { SendGroupRequests } from "../../../ApolloClient/Mutation/GroupRequests";
+import { SendGroupJoinRequests } from "../../../ApolloClient/Mutation/GroupRequests";
 
-interface GroupMemberProps{
+interface GroupMemberProps {
     member_id: string
     user_id: string
     profile: {
@@ -21,7 +19,7 @@ interface GroupMemberProps{
     joined_at: string
     role: String
 }
-interface GroupDataProps{
+interface GroupDataProps {
     group_id: string,
     name: string,
     description: string,
@@ -31,19 +29,19 @@ interface GroupDataProps{
 interface InviteOthersProps {
     open: boolean
     onClose: () => void
-    onUpdated: ()=> void
+    onUpdated: () => void
     group_data: GroupDataProps
-    userInGroup: GroupMemberProps
+    admin_id: string
+    invitedEmails: [string]
 }
 
-export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group_data , userInGroup, onUpdated}) => {
-    const location = useLocation();
+export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group_data, admin_id, onUpdated, invitedEmails }) => {
 
     const user = useSelector((state: RootState) => state.user);
-    const group_id = group_data?.group_id;
-    const [emails, setEmails] = useState<string[]>([]);
+    const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
     const [inputValue, setInputValue] = useState<string>("");
-    const [sendInviteRequest] = useMutation(SendGroupRequests);
+    const [sendInviteRequest] = useMutation(SendGroupJoinRequests);
+    const [error, setError] = useState<string>("");
 
     const isValidEmail = (email: string): boolean => {
         if (email.length > 0) {
@@ -51,47 +49,58 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
         }
         return false;
     }
-    const group_members_emails = group_data?.group_members?.map((member: GroupMemberProps)=> member?.profile?.email);
-    
+    const group_members_emails = group_data?.group_members?.map((member: GroupMemberProps) => member?.profile?.email);
+
     const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter" || event.key === ",") {
             event.preventDefault();
-            const trimmedValue = inputValue.trim().toLowerCase();
-            if (isValidEmail(trimmedValue)) {
-                if (user?.email === trimmedValue) {
-                    makeToast({ message: "You are already in Group", toastType: "error" });
-                }else if (emails.includes(trimmedValue)) {
-                    makeToast({ message: `${inputValue} already in queue`, toastType: "error" });
-                }else {
-                    if(group_members_emails.includes(trimmedValue)){
-                        makeToast({message: "Selected Email already in Group", toastType: "error"});
-                    }
-                    else{
-                        setEmails([...emails, trimmedValue]);
-                    }
-                }
-                setInputValue("");
-            }else {
-                makeToast({ message: "Invalid Email", toastType: "error" });
+            emailCheck();
+        }
+    }
+    const emailCheck = () => {
+        const trimmedValue = inputValue.trim().toLowerCase();
+        if (isValidEmail(trimmedValue)) {
+            if (user?.email === trimmedValue) {
+                setError("You are already in Group");
+            } else if (selectedEmails.length > 0 && selectedEmails.includes(trimmedValue)) {
+                setError(`${inputValue} already in queue`);
+            } else if (invitedEmails.length > 0 && invitedEmails.includes(trimmedValue)) {
+                setError("This Email is already Invited");
             }
+            else {
+                if (group_members_emails.includes(trimmedValue)) {
+                    setError("Selected Email already in Group");
+                }
+                else {
+                    setError("");
+                    setSelectedEmails([...selectedEmails, trimmedValue]);
+                }
+            }
+            setInputValue("");
+        } else {
+            setError("Invalid Email");
         }
     }
     const handleRemoveEmail = (emailToRemove: string) => {
-        setEmails(emails.filter((email) => email !== emailToRemove));
+        setSelectedEmails(selectedEmails.filter((email) => email !== emailToRemove));
     };
 
     const inviteProcess = async () => {
-        if (emails.length > 0) {
-            const admin_id = userInGroup?.member_id;
-            await sendInviteRequest({variables: {admin_id: admin_id, emails: emails}, 
-                onCompleted: (data)=>{
-                    makeToast({ message: "Invite Sent", toastType: "success" }); 
+        if (inputValue?.length > 0) {
+            emailCheck();   
+        }
+        if (selectedEmails.length > 0) {
+            await sendInviteRequest({
+                variables: { admin_id: admin_id, emails: selectedEmails },
+                onCompleted: (data) => {
+                    makeToast({ message: "Invite Sent", toastType: "success" });
                     onUpdated();
                 },
-                onError: (err)=>{
-                    makeToast({message: err.message, toastType: "error"});
-                }})
-            setEmails([]);
+                onError: (err) => {
+                    makeToast({ message: err.message, toastType: "error" });
+                }
+            })
+            setSelectedEmails([]);
             onClose();
         }
         else {
@@ -99,32 +108,35 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
         }
 
     }
-
+    const handleClose = () => {
+        onClose();
+        setError("");
+    }
     return (
-        <CustomDialog open={open} onClose={onClose} dialog_title={"Invite Others"} >
+        <CustomDialog open={open} onClose={handleClose} dialog_title={"Invite Others"} >
             <div className="inviteOthers-form">
                 <div className="input-container">
-                    <input type="text" name="" placeholder="Enter Email"
+                    <input type="text" placeholder="Enter Email"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyDown={handleKeyDown} />
-                    <p>Note: Select multiple emails by entering comma (,) or enter </p>
+                    
                 </div>
                 <div className="selected-members">
-                    <label className="heading">{emails.length > 0 ? "Selected Emails" : "No Emails Selected"}</label>
-                    {emails.map((email) => (
-                        <ol>
+                    {error?.length > 0 && <p className="error">{error}</p>}
+                    {selectedEmails?.length > 0 && <label className="heading">Selected Emails</label>}
+                    <ol>
+                        {selectedEmails.map((email) => (
+
                             <li key={email} >
                                 {email} <button onClick={() => handleRemoveEmail(email)}>x</button>
                             </li>
-                        </ol>
-                    ))}
-                    
+                        ))}
+                    </ol>
                 </div>
                 <div className="inviteOthers-footer">
-                    <span onClick={inviteProcess}>
-                        <ButtonField type={"button"} text={"Invite"} className={"darkblue_button"} />
-                    </span>
+                    <p>ℹ️  Note: Select multiple emails by entering comma (,) or enter </p>
+                    <ButtonField type={"button"} text={"Invite"} className={"blue_button"} onClick={inviteProcess} />
                 </div>
             </div>
         </CustomDialog >

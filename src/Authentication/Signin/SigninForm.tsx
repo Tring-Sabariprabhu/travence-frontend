@@ -20,8 +20,6 @@ export default function SigninForm() {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [signInUser] = useMutation(Signin_user);
-  
-  const [getUserdetails] = useLazyQuery(UserDetails);
   const methods = useForm({
     defaultValues: {
       email: "",
@@ -30,21 +28,23 @@ export default function SigninForm() {
   });
 
   const {
-    handleSubmit,
+    handleSubmit, formState:{ errors }
   } = methods;
 
 
   const onSubmit = async (formdata: { email: string; password: string }) => {
     formdata.email = formdata.email.toLowerCase();
-    await signInUser({variables: {email: formdata.email, password: formdata.password},
-            onCompleted: async (data)=>{
-              makeToast({message: "Logged In Successfully", toastType: "success"});
-              localStorage.setItem("token", data?.signin?.token )
-              navigate('/');
-            },
-            onError: (error)=>{
-              makeToast({message: `${error.message}`, toastType: "error"});
-            }})
+    await signInUser({
+      variables: { email: formdata.email, password: formdata.password },
+      onCompleted: async (data) => {
+        makeToast({ message: "Logged In Successfully", toastType: "success" });
+        localStorage.setItem("token", data?.signin?.token)
+        navigate('/');
+      },
+      onError: (error) => {
+        makeToast({ message: `${error.message}`, toastType: "error" });
+      }
+    })
   };
 
   return (
@@ -53,13 +53,21 @@ export default function SigninForm() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="form-header">
             <h2>Sign in</h2>
-            <p className="logo"></p>
+            <img className='logo' src='dnskd' alt='logo'></img>
           </div>
           <div className="input-container">
-            <InputField label="Email" type="text" name={"email"}
+            <InputField 
+              label="Email" 
+              type="text" 
+              name={"email"}
               placeholder={"Enter your email"} />
-            <InputField label="Password" type={showPassword ? "text" : "password"} name="password"
+              {errors?.email?.message && <p className="error">{errors?.email?.message}</p>}
+            <InputField 
+              label="Password" 
+              type={showPassword ? "text" : "password"} 
+              name="password"
               placeholder="Enter your password" />
+              {errors?.password?.message && <p className="error">{errors?.password?.message}</p>}
             <div onClick={() => setShowPassword(!showPassword)} className="toggle-password">
               {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
             </div>

@@ -6,9 +6,7 @@ const httpLink = new HttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  // Get the latest token from localStorage
   const token = localStorage.getItem("token");
-  
   return {
     headers: {
       ...headers,

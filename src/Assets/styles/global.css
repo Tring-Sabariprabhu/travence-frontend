@@ -1,9 +1,12 @@
 
 :root{
-    --color-blue:  #34c1eb;
+    --color-blue:  #0ec1f8;
+    --color-white: #ffffff;
     --light-black: #706666;
     --light-blue: #34c0eb1f;
     --gray: #d1cece2a;
+    --dark-black: #000000ee;
+    --dark-blue:  #02a6d7;
     --poppins-font-medium: 'MyCustomFont'; 
 }
   

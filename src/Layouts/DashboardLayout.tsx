@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { SideBar } from "../Components/SideBar/SideBar";
 import './Dashboard.scss'
 import { useQuery } from "@apollo/client";
@@ -11,15 +11,18 @@ import { makeToast } from "../Components/Toast/makeToast";
 const DashboardLayout = () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     
     useQuery(UserDetails, {
         fetchPolicy: "network-only",
         onCompleted: (data)=>{
-            if(data?.getUser)
-                dispatch(setUser({user_id: data?.getUser?.user_id, name: data?.getUser?.name, email: data?.getUser?.email}));
+            if(data?.getAuthUser)
+                dispatch(setUser({user_id: data?.getAuthUser?.user_id, name: data?.getAuthUser?.name, email: data?.getAuthUser?.email}));
         },
         onError: (err)=>{
-            makeToast({message: `Error ${err.message}`, toastType: "error"});
+            // makeToast({message: `Error to Load User data`, toastType: "error"});
+            localStorage.removeItem("token");
+            navigate('/signin');
         }
     });
 
