@@ -12,6 +12,7 @@ export const TripDetails =()=>{
             <InputField type={"text"} label={"Trip name"} name={"trip_name"} placeholder={""}/>
             <TextAreaField label={"Trip descripton"} name={"trip_description"} placeholder={""} className={""}/>
             <InputField type={"text"} label={"Trip budget"} name={"trip_budget"} placeholder={""}/>
+            <InputField type={"date"} label={"Trip Date"} name={"trip_date"} placeholder={""}/>
         </div>
     )
 }

@@ -36,9 +36,8 @@ export const GroupList = () => {
         <div className='left-main-container grouplist-container'>
             <Header items={navItems} />
             <main>
-            {data?.groupList?.length === 0 && <p>No Groups found</p>}
-            {data?.groupList && data?.groupList?.map((group: GroupDataProps) =>
-            (   <div title='Click to view' key={group.group_id} className='group'
+            {data?.groupList?.length > 0 ? data?.groupList?.map((group: GroupDataProps) => (
+                <div title='Click to view' key={group.group_id} className='group'
                     onClick={() => navigate(`/group`, { state: { group_id: group.group_id, group_name: group.name } })}>    
                     <div >
                         <GroupOutlined className="icon"/>
@@ -51,10 +50,12 @@ export const GroupList = () => {
                         <h3>Owner</h3>
                         <p>{user?.email === group?.created_user_email ? "You" : group?.created_user_email }</p>
                     </div>
-                </div>  ))}
+                </div>))   :  <p>No Groups found</p>}
             </main>
-            <AddGroup  onUpdated={() => refetchGroupListData()}
-                open={openAddgroup} onClose={() => setOpenAddgroup(false)}
+            <AddGroup  
+                open={openAddgroup} 
+                onClose={() => setOpenAddgroup(false)}
+                onUpdated={refetchGroupListData}
             />
         </div>
     )

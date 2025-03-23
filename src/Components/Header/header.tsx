@@ -1,4 +1,5 @@
 import './header.scss';
+import logo from '../../Assets/images/travence-logo.png';
 interface NavItem {
     label: string;
     onClick?: () => void;
@@ -18,6 +19,7 @@ export const Header: React.FC<HeaderProps> = ({ items }) => {
                     </li>
                 ))}
             </ol>
+            <img src={logo} alt="" />
         </div>
     )
 }

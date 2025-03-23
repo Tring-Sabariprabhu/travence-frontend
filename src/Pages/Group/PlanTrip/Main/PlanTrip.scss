@@ -17,8 +17,7 @@
     .trip-details{
         display: flex;
         flex-direction: column;
-        gap: 20px;
-
+        gap: 15px;
         .input-container, .textarea-container{
             label{
                 font-size: 13px;
@@ -26,14 +25,14 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
-            input[type=text]{
+            input[type=text], input[type=date]{
                 // width: ;
-                padding: 10px;
+                padding: 5px;
                 outline-color: var(--color-blue);
             }
             textarea{
                 resize: none;
-                height: 70px;
+                height: 35px;
                 outline-color: var(--color-blue);
             }
         }       

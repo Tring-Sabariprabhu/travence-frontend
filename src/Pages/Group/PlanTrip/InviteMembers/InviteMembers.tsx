@@ -1,7 +1,7 @@
 export const InviteMembers=()=>{
     return (
         <div className="invite-members">
-            <h4>Invite Members</h4>
+            <h4>Invite Trip Members</h4>
             <div className="members">
                 <div >
                     <p>Demo1</p>

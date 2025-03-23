@@ -97,6 +97,10 @@ const Group = () => {
                         <h4>Group description :</h4>
                         <p>{group_data?.group?.description}</p>
                     </div>
+                    <div>
+                        <h4>Members :</h4>
+                        <p>{group_data?.group?.group_members?.length}</p>
+                    </div>
                 </div>
                 {userIsLeader &&
                     <ButtonField type={'button'}

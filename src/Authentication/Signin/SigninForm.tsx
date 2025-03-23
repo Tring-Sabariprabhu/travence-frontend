@@ -14,9 +14,11 @@ import { Signin_user } from "../../ApolloClient/Mutation/Auth";
 
 
 export default function SigninForm() {
+
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [signInUser] = useMutation(Signin_user);
+
   const methods = useForm({
     defaultValues: {
       email: "",
@@ -50,23 +52,20 @@ export default function SigninForm() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="form-header">
             <h2>Sign in</h2>
-            
             <img className='logo' src={logo} alt='logo'></img>
-            
-            
           </div>
           <div className="input-container">
             <InputField
-              label="Email"
-              type="text"
-              name={"email"}
-              placeholder={"Enter your email"} />
-            {errors?.email?.message && <p className="error">{errors?.email?.message}</p>}
+                label="Email"
+                type="text"
+                name={"email"}
+                placeholder={"Enter your email"} />
+              {errors?.email?.message && <p className="error">{errors?.email?.message}</p>}
             <InputField
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Enter your password" />
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter your password" />
             {errors?.password?.message && <p className="error">{errors?.password?.message}</p>}
             <div onClick={() => setShowPassword(!showPassword)} className="toggle-password">
               {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}

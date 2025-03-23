@@ -15,7 +15,7 @@ import { Signup_user } from '../../ApolloClient/Mutation/Auth';
 
 function SignupForm() {
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [signUpUser] = useMutation(Signup_user);
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -57,20 +57,36 @@ function SignupForm() {
                         <img className='logo' src={logo} alt='logo'></img>
                     </div>
                     <div className='input-container'>
-                        <InputField label="Name" type="text" name={"person_name"} placeholder={''} />
-                        {errors?.person_name?.message && <p className='error'>{errors?.person_name?.message}</p>}
-                        <InputField label="Email" type="text" name={"email"} placeholder={''} />
-                        {errors?.email?.message && <p className='error'>{errors?.email?.message}</p>}
-                        <InputField label="Password" type={showPassword ? "text" : "password"} name={"password"} placeholder={''} />
-                        {errors?.password?.message && <p className='error'>{errors?.password?.message}</p>}
-                        <div onClick={() => setShowPassword(!showPassword)} className="toggle-password1">
-                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                        </div>
-                        <InputField label="Confirm password" type={showPassword ? "text" : "password"} name={"confirmpassword"} placeholder={''} />
-                        {errors?.confirmpassword?.message && <p className='error'>{errors?.confirmpassword?.message}</p>}
-                        <div onClick={() => setShowPassword(!showPassword)} className="toggle-password2">
-                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                        </div>
+                        <InputField 
+                                label="Name" 
+                                type="text" 
+                                name={"person_name"} 
+                                placeholder={'Enter your name'} />
+                            {errors?.person_name?.message && <p className='error'>{errors?.person_name?.message}</p>}
+                        <InputField 
+                                label="Email" 
+                                type="text" 
+                                name={"email"} 
+                                placeholder={'Enter your email'} />
+                            {errors?.email?.message && <p className='error'>{errors?.email?.message}</p>}
+                        <InputField 
+                                label="Password" 
+                                type={showPassword ? "text" : "password"} 
+                                name={"password"} 
+                                placeholder={'Set your password'} />
+                            {errors?.password?.message && <p className='error'>{errors?.password?.message}</p>}
+                            <div onClick={() => setShowPassword(!showPassword)} className="toggle-password1">
+                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                            </div>
+                        <InputField 
+                                label="Confirm password" 
+                                type={showPassword ? "text" : "password"} 
+                                name={"confirmpassword"} 
+                                placeholder={'Confirm your password'} />
+                            {errors?.confirmpassword?.message && <p className='error'>{errors?.confirmpassword?.message}</p>}
+                            <div onClick={() => setShowPassword(!showPassword)} className="toggle-password2">
+                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                            </div>
 
                     </div>
                     <ButtonField type={"submit"} text={"Sign up"} className={"blue_button"} />

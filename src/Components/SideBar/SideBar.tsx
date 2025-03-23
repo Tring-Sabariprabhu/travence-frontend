@@ -7,7 +7,7 @@ import { RootState } from '../../Redux/store';
 import { setUser } from '../../Redux/userSlice';
 import { useState } from 'react';
 import { Confirmation } from '../Confirmation/Confirmation';
-import defaultImage from '../../Assets/images/default.jpg';
+import defaultImage from '../../Assets/images/default1.jpg';
 
 export const SideBar = () => {
     const navigate = useNavigate(); 
