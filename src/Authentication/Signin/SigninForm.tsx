@@ -1,7 +1,7 @@
 import { FormProvider, useForm } from "react-hook-form";
 import "./SigninForm.scss";
 import { Link, useNavigate } from "react-router-dom";
-
+import logo from '../../Assets/images/travence-logo.png';
 import InputField from "../../Components/InputField/InputField";
 import { makeToast } from "../../Components/Toast/makeToast";
 import { useState } from "react";
@@ -9,15 +9,12 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 import ButtonField from "../../Components/ButtonField/ButtonField";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Signin_user } from "../../ApolloClient/Mutation/Auth";
-import { UserDetails } from "../../ApolloClient/Queries/Users";
-import { useDispatch } from "react-redux";
 
 
 export default function SigninForm() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [signInUser] = useMutation(Signin_user);
   const methods = useForm({
@@ -28,7 +25,7 @@ export default function SigninForm() {
   });
 
   const {
-    handleSubmit, formState:{ errors }
+    handleSubmit, formState: { errors }
   } = methods;
 
 
@@ -53,21 +50,24 @@ export default function SigninForm() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="form-header">
             <h2>Sign in</h2>
-            <img className='logo' src='dnskd' alt='logo'></img>
+            
+            <img className='logo' src={logo} alt='logo'></img>
+            
+            
           </div>
           <div className="input-container">
-            <InputField 
-              label="Email" 
-              type="text" 
+            <InputField
+              label="Email"
+              type="text"
               name={"email"}
               placeholder={"Enter your email"} />
-              {errors?.email?.message && <p className="error">{errors?.email?.message}</p>}
-            <InputField 
-              label="Password" 
-              type={showPassword ? "text" : "password"} 
+            {errors?.email?.message && <p className="error">{errors?.email?.message}</p>}
+            <InputField
+              label="Password"
+              type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Enter your password" />
-              {errors?.password?.message && <p className="error">{errors?.password?.message}</p>}
+            {errors?.password?.message && <p className="error">{errors?.password?.message}</p>}
             <div onClick={() => setShowPassword(!showPassword)} className="toggle-password">
               {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
             </div>

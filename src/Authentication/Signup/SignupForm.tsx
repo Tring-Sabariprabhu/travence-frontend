@@ -2,7 +2,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import './Signup.scss';
 import { Link, useNavigate } from 'react-router-dom';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import logo from '../../Assets/images/travence-logo.png'
 import InputField from '../../Components/InputField/InputField';
 import { useState } from 'react';
 import { makeToast } from '../../Components/Toast/makeToast';
@@ -53,23 +54,23 @@ function SignupForm() {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className='form-header'>
                         <h2>Sign up</h2>
-                        <img className='logo' src='dnskd' alt='logo'></img>
+                        <img className='logo' src={logo} alt='logo'></img>
                     </div>
                     <div className='input-container'>
                         <InputField label="Name" type="text" name={"person_name"} placeholder={''} />
-                            {errors?.person_name?.message && <p className='error'>{errors?.person_name?.message}</p>}
+                        {errors?.person_name?.message && <p className='error'>{errors?.person_name?.message}</p>}
                         <InputField label="Email" type="text" name={"email"} placeholder={''} />
-                            {errors?.email?.message && <p className='error'>{errors?.email?.message}</p>}
+                        {errors?.email?.message && <p className='error'>{errors?.email?.message}</p>}
                         <InputField label="Password" type={showPassword ? "text" : "password"} name={"password"} placeholder={''} />
-                            {errors?.password?.message && <p className='error'>{errors?.password?.message}</p>}
-                            <div onClick={() => setShowPassword(!showPassword)} className="toggle-password1">
-                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                            </div>
+                        {errors?.password?.message && <p className='error'>{errors?.password?.message}</p>}
+                        <div onClick={() => setShowPassword(!showPassword)} className="toggle-password1">
+                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                        </div>
                         <InputField label="Confirm password" type={showPassword ? "text" : "password"} name={"confirmpassword"} placeholder={''} />
-                            {errors?.confirmpassword?.message && <p className='error'>{errors?.confirmpassword?.message}</p>}
-                            <div onClick={() => setShowPassword(!showPassword)} className="toggle-password2">
-                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                            </div>
+                        {errors?.confirmpassword?.message && <p className='error'>{errors?.confirmpassword?.message}</p>}
+                        <div onClick={() => setShowPassword(!showPassword)} className="toggle-password2">
+                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                        </div>
 
                     </div>
                     <ButtonField type={"submit"} text={"Sign up"} className={"blue_button"} />
