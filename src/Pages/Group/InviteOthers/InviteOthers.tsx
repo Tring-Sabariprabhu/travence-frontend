@@ -19,29 +19,23 @@ interface GroupMemberProps {
     joined_at: string
     role: String
 }
-interface GroupDataProps {
-    group_id: string,
-    name: string,
-    description: string,
-    created_by: string,
-    group_members: [GroupMemberProps]
-}
+
 interface InviteOthersProps {
     open: boolean
     onClose: () => void
     onUpdated: () => void
-    group_data: GroupDataProps
+    group_members: [GroupMemberProps]
     admin_id: string
     invitedEmails: [string]
 }
 
-export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group_data, admin_id, onUpdated, invitedEmails }) => {
+export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group_members, admin_id, onUpdated, invitedEmails }) => {
 
     const user = useSelector((state: RootState) => state.user);
     const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
     const [inputValue, setInputValue] = useState<string>("");
     const [sendInviteRequest] = useMutation(SendGroupJoinRequests);
-    const [error, setError] = useState<string>("");
+    const [errorState, setErrorState] = useState<string>("");
 
     const isValidEmail = (email: string): boolean => {
         if (email.length > 0) {
@@ -49,11 +43,10 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
         }
         return false;
     }
-    const group_members_emails = group_data?.group_members?.map((member: GroupMemberProps) => member?.profile?.email);
+    const group_members_emails = group_members?.map((member: GroupMemberProps) => member?.profile?.email);
 
     const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter" || event.key === ",") {
-            event.preventDefault();
             emailCheck();
         }
     }
@@ -61,25 +54,29 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
         const trimmedValue = inputValue.trim().toLowerCase();
         if (isValidEmail(trimmedValue)) {
             if (user?.email === trimmedValue) {
-                setError("You are already in Group");
+                setErrorState("You are already in Group");
             } else if (selectedEmails.length > 0 && selectedEmails.includes(trimmedValue)) {
-                setError(`${inputValue} already in queue`);
+                setErrorState(`${inputValue} already in queue`);
             } else if (invitedEmails.length > 0 && invitedEmails.includes(trimmedValue)) {
-                setError("This Email is already Invited");
+                setErrorState("This Email is already Invited");
             }
             else {
                 if (group_members_emails.includes(trimmedValue)) {
-                    setError("Selected Email already in Group");
+                    setErrorState("Selected Email already in Group");
                 }
                 else {
-                    setError("");
+                    setErrorState("");
                     setSelectedEmails([...selectedEmails, trimmedValue]);
                 }
             }
             setInputValue("");
         } else {
-            setError("Invalid Email");
+            setErrorState("Invalid Email");
         }
+        
+        setTimeout(()=>{
+            setErrorState("");
+        },3000);
     }
     const handleRemoveEmail = (emailToRemove: string) => {
         setSelectedEmails(selectedEmails.filter((email) => email !== emailToRemove));
@@ -106,11 +103,10 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
         else {
             makeToast({ message: "No Emails Selected", toastType: "warning" });
         }
-
     }
     const handleClose = () => {
         onClose();
-        setError("");
+        setErrorState("");
     }
     return (
         <CustomDialog open={open} onClose={handleClose} dialog_title={"Invite Others"} >
@@ -123,7 +119,7 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
                     
                 </div>
                 <div className="selected-members">
-                    {error?.length > 0 && <p className="error">{error}</p>}
+                    {errorState?.length > 0 && <p className="error">{errorState}</p>}
                     {selectedEmails?.length > 0 && <label className="heading">Selected Emails</label>}
                     <ol>
                         {selectedEmails.map((email) => (

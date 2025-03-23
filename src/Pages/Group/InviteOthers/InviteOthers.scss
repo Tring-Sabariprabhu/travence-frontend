@@ -2,7 +2,7 @@
     // background-color: black;
     width: 35vw;
     // height: 60vh;
-    padding: 20px;
+    padding: 20px 10px;
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -22,7 +22,7 @@
         }
     }
     p.error{
-        font-size: 12px;
+        font-size: 13px;
         color: red;
     }
     div.selected-members {

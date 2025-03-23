@@ -10,24 +10,20 @@ nav {
     border-right: 2px solid #ececec;
 
     .userProfile {
-        // padding: 0 20px;
-        // background-color: black;
-        // height: 30%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        // text-align: center;
         gap: 15px;
 
         img {
             width: 120px;
             height: 120px;
             border-radius: 10px;
-            // background-color: var(--gray);
             box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
         }
 
-        p {
+        .user-name {
+            text-transform: capitalize;
             font-size: 16px;
             font-weight: 500;
             color: #333;

@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { SideBar } from "../Components/SideBar/SideBar";
+import { SideBar } from "../Pages/SideBar/SideBar";
 import './Dashboard.scss'
 import { useQuery } from "@apollo/client";
 import { useDispatch } from "react-redux";

@@ -64,6 +64,7 @@ const Group = () => {
             fetchPolicy: "network-only"
         });
     const invitedEmails = invitedList?.getGroupInvitedList?.map((request: GroupRequestProps)=> request.email);
+
     if (loading) {
         return <p>Loading...</p>
     }
@@ -121,8 +122,7 @@ const Group = () => {
                             type={"button"}
                             text={"Invited List"}
                             className={groupChild === 1 ? 'active_tab tab' : 'tab'}
-                            onClick={() => setGroupChild(1)} />
-                    }
+                            onClick={() => setGroupChild(1)} />}
 
                 </div>
                 {userIsLeader &&
@@ -131,13 +131,15 @@ const Group = () => {
                         text={"Invite"}
                         className={"blue_button invite-button"}
                         onClick={() => setInvitePopupState(true)} />}
-
             </div>
 
             <div className='group-body'>
                 {groupChild === 0 && 
                     <GroupMembers 
-                        userInGroup={userInGroup} />}
+                        created_by = {group_data?.group?.created_by}
+                        group_members={group_data?.group?.group_members}
+                        userInGroup={userInGroup} 
+                        onUpdated={refetchGroupData}/>}
                 {groupChild === 1 && 
                     <InvitedList 
                         admin_id={userInGroup?.member_id}
@@ -152,7 +154,7 @@ const Group = () => {
                 group_description={group_data?.group?.description}
                 onUpdated={refetchGroupData} />
             <InviteOthers 
-                group_data={group_data?.group}
+                group_members={group_data?.group?.group_members}
                 admin_id={userInGroup?.member_id}
                 invitedEmails={invitedEmails}
                 open={invitePopupState}
