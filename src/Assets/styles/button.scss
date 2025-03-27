@@ -15,11 +15,11 @@ button {
 }
 
 .blue_button:hover {
-    background-color: #34c0eb9c;
+    background-color: var(--color-blue);
 }
 
 .green_button {
-    background-color: #29d729;
+    background-color: var(--color-green);
     color: white;
 }
 
@@ -28,7 +28,7 @@ button {
 }
 
 .red_button {
-    background-color: #ff0000;
+    background-color: var(--color-red);
     color: white;
 }
 

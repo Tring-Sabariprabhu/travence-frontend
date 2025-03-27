@@ -1,8 +1,7 @@
 
 .MuiDialog-paper{
-    // width: 30%; 
     background: black;
-    padding: 20px 20px;  
+    padding: 15px;  
     &::-webkit-scrollbar{
         display: none;
     }
@@ -11,6 +10,7 @@
         display: flex;
         justify-content: space-between;
         h2{
+            font-family: var(--font-medium);
             font-weight: 600;
         }
         button{  // Close Button

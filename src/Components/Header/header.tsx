@@ -6,14 +6,15 @@ interface NavItem {
 }
 
 interface HeaderProps {
-    items: NavItem[];
+    items?: NavItem[];
+    
 }
 
 export const Header: React.FC<HeaderProps> = ({ items }) => {
     return (
         <div className='header'>
             <ol>
-                {items.map((item, index) => (
+                {items && items.map((item, index) => (
                     <li key={index} onClick={item.onClick}>
                         <label>{item.label}</label>
                     </li>

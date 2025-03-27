@@ -1,0 +1,79 @@
+.group-details-container {
+    width: 100%;
+    .group-header {
+        width: 100%;
+        padding: 20px 30px;  
+        box-shadow: 0 1px 1px 1px var(--color-gray);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .group-data {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            div {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                h4{
+                    font-family: var(--font-medium);
+                    font-weight: 400;
+                }
+                p {
+                    font-family: var(--font-light);
+                    font-size: 13px;
+                    padding-left: 2px;
+                    color: rgb(87, 81, 81);
+                    width: 400px;   
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+
+            button {
+                // Edit Group details Button
+                font-family: var(--font-medium);
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 5px;
+            }
+        
+    }
+
+    .tabs-container {
+        padding: 20px 40px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        .tabs{
+            font-family: var(--font-medium);
+            height: 40px;
+            display: flex;
+            gap: 20px;
+            .tab{
+                cursor: pointer;
+                border-radius: 5px;
+                padding: 5px 10px;
+                font-size: 14px;
+                border: 2px solid var(--color-blue);
+                color: var(--color-blue);
+                box-shadow: 1px 3px 4px 0px rgba(0, 0, 0, 0.15);
+            }
+            .active-tab{
+                border-bottom-width: 3px;
+            }
+        }
+        .invite-button{
+            font-family: var(--font-medium);
+            height: 35px;
+            padding: 0 15px;
+            font-size: 15px;
+            border-radius: 5px;
+        }
+    }
+
+    .group-body{    
+        padding: 0 20px;
+    }
+}
+    

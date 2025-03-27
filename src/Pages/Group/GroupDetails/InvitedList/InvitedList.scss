@@ -1,0 +1,22 @@
+.invited-list{
+    .actions{
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        gap: 10px;
+        p{
+            font-family: var(--font-light);
+        }
+        button{
+            font-family: var(--font-medium);
+            box-shadow: 0px 1px 2px var(--light-black);
+            padding: 6px 8px;
+            border-radius: 3px;
+        }
+    }
+    table{
+        .request-status{
+            text-transform: capitalize;
+        }
+    }
+}

@@ -1,12 +1,9 @@
 import { FormProvider, useForm } from "react-hook-form";
 import "./SigninForm.scss";
 import { Link, useNavigate } from "react-router-dom";
-import logo from '../../Assets/images/travence-logo.png';
 import InputField from "../../Components/InputField/InputField";
 import { makeToast } from "../../Components/Toast/makeToast";
 import { useState } from "react";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 import ButtonField from "../../Components/ButtonField/ButtonField";
 import { useMutation } from "@apollo/client";
@@ -16,8 +13,11 @@ import { Signin_user } from "../../ApolloClient/Mutation/Auth";
 export default function SigninForm() {
 
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [signInUser] = useMutation(Signin_user);
+  const [disableButtonState, setDisableButtonState] = useState<boolean>(false);
+  //Set disable to button until wait for API
+
+
+  const [signInUser] = useMutation(Signin_user, { fetchPolicy: "network-only" });
 
   const methods = useForm({
     defaultValues: {
@@ -32,18 +32,20 @@ export default function SigninForm() {
 
 
   const onSubmit = async (formdata: { email: string; password: string }) => {
+    setDisableButtonState(true);
     formdata.email = formdata.email.toLowerCase();
     await signInUser({
       variables: { email: formdata.email, password: formdata.password },
       onCompleted: async (data) => {
         makeToast({ message: "Logged In Successfully", toastType: "success" });
-        localStorage.setItem("token", data?.signin?.token)
+        localStorage.setItem("token", data?.signin?.token);
         navigate('/');
       },
       onError: (error) => {
         makeToast({ message: `${error.message}`, toastType: "error" });
       }
     })
+    setDisableButtonState(false);
   };
 
   return (
@@ -52,33 +54,36 @@ export default function SigninForm() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="form-header">
             <h2>Sign in</h2>
-            <img className='logo' src={logo} alt='logo'></img>
+
           </div>
           <div className="input-container">
             <InputField
-                label="Email"
-                type="text"
-                name={"email"}
-                placeholder={"Enter your email"} />
-              {errors?.email?.message && <p className="error">{errors?.email?.message}</p>}
-            <InputField
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="Enter your password" />
-            {errors?.password?.message && <p className="error">{errors?.password?.message}</p>}
-            <div onClick={() => setShowPassword(!showPassword)} className="toggle-password">
-              {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-            </div>
+              label="Email"
+              type="text"
+              name={"email"}
+              placeholder={"Enter your email"} />
+            {errors?.email?.message && <p className="error">{errors?.email?.message}</p>}
           </div>
-          <ButtonField type={"submit"} text={"Sign in"} className={"blue_button"} />
+          <div className="input-container">
+            <InputField
+              label="Password"
+              type="password"
+              name="password"
+              placeholder="Enter your password" />
+            {errors?.password?.message && <p className="error">{errors?.password?.message}</p>}
+          </div>
+          <ButtonField
+            type={"submit"}
+            text={"Sign in"}
+            className={"blue_button"}
+            disabledState={disableButtonState} />
           <footer>
             <p>Don't have an Account?</p>
-            <span><Link to='/signup'>Register</Link></span>
+            <Link to='/signup'>Sign up</Link>
           </footer>
         </form>
       </FormProvider>
-    </div>
+    </div >
   );
 }
 

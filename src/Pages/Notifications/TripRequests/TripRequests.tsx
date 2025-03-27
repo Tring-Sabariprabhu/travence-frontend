@@ -1,5 +1,7 @@
+import { DataNotFound } from "../../../Components/DataNotFound/DataNotFound"
+
 export const TripRequests=()=>{
     return(
-        <p>Trip Requests</p>
+        <DataNotFound message={"Trip Requests Not found"}/>
     )
 }

@@ -4,21 +4,20 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     padding: 0 70px;
     gap: 40px;
     h1{
+        font-family: var(--font-medium);
         color: var(--color-blue);
-        img{
-            width: 180px;
-            // height: 100px;
-        }
         span{
+            font-family: var(--font-light);
             font-size: 35px;
             padding: 0 6px;
-            color: var(--dark-blue);
+            color: #FFB84C;
         }
     }
-    img{
-        width: 150px;
+    .personwalking{
+        width: 200px;
     }
 }

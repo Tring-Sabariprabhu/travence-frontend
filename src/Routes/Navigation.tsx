@@ -4,10 +4,13 @@ import { Home } from "../Pages/Home/Home"
 import { Notifications } from "../Pages/Notifications/Main/Notifications"
 import SigninForm from "../Authentication/Signin/SigninForm"
 import SignupForm from "../Authentication/Signup/SignupForm"
-import { GroupList } from "../Pages/GroupList/Main/GroupList"
+import { GroupList } from "../Pages/GroupList/GroupList"
 import { GroupRequests } from "../Pages/Notifications/GroupRequests/GroupRequests"
 import Profile from "../Pages/Profile/Profile"
 import { TripRequests } from "../Pages/Notifications/TripRequests/TripRequests"
+import { TripList } from "../Pages/Group/TripList/Main/TripList"
+import { GroupDetails } from "../Pages/Group/GroupDetails/Main/GroupDetails"
+import { PlanTrip } from "../Pages/Group/PlanTrip/Main/PlanTrip"
 
 export const publicRoutes = [
     {
@@ -34,8 +37,23 @@ export const privateRoutes = [
     },
     {
         path: 'group',
-        element: <Group />
+        element: <Group />,
+        childs:[
+            {
+                path: 'groupdetails',
+                element: <GroupDetails/>
+            },
+            {
+                path: 'trips',
+                element: <TripList/>
+            },
+            {
+                path: 'plan-trip',
+                element: <PlanTrip/>
+            }
+        ]
     },
+    
     {
         path: 'notifications',
         element: <Notifications />,

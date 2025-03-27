@@ -1,13 +1,14 @@
 import { gql } from "@apollo/client";
 
 
-export const UserDetails = gql`
+export const GetCurrentUser = gql`
     query Get{
         getAuthUser{
-        user_id
-        name,
-        email,
-        image
-    }
+            user_id
+            name,
+            email,
+            image,
+            password
+        }
     }
 `

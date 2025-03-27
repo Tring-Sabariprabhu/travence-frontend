@@ -7,6 +7,7 @@ export const GroupsList = gql`
             name,
             description,
             created_user_email,
+            created_user_name,
             created_by,
             created_at,
             updated_at

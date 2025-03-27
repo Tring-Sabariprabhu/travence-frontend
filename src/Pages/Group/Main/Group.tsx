@@ -1,52 +1,34 @@
 import { useQuery } from '@apollo/client';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
-import ButtonField from '../../../Components/ButtonField/ButtonField';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Header } from '../../../Components/Header/header';
-import { makeToast } from '../../../Components/Toast/makeToast';
 import { RootState } from '../../../Redux/store';
-import AddGroup from '../AddGroup/AddGroup';
-import { GroupMembers } from '../GroupMembers/GroupMembers';
-import { InvitedList } from '../InvitedList/InvitedList';
-import { InviteOthers } from '../InviteOthers/InviteOthers';
 import './Group.scss';
 import { GroupData } from '../../../ApolloClient/Queries/Groups';
 import { Confirmation } from '../../../Components/Confirmation/Confirmation';
-import { GetInvitedlist } from '../../../ApolloClient/Queries/GroupRequests';
-import { PlanTrip } from '../PlanTrip/Main/PlanTrip';
+import { Loader } from '../../../Components/Loader/Loader';
 
 interface Group_Member_Props {
-    user_id: String
-    role: String
+    user_id: string
+    role: string
     profile: {
-        name: String
-        email: String
+        name: string
+        email: string
     }
 }
-interface GroupRequestProps {
-    request_id: string,
-    email: string,
-    user_registered: boolean,
-    requested_at: string,
-    status: string
-}
-
 
 const Group = () => {
-    const [groupChild, setGroupChild] = useState<number>(0);
-
-    const user = useSelector((state: RootState) => state.user);
     const location = useLocation();
     const navigate = useNavigate();
     const group_id = location?.state?.group_id;
 
+    useEffect(()=>{
+        navigate('groupdetails', { state: { group_id: group_id,}});
+    },group_id);
 
-    const [editGroupPopupState, setEditGroupPopupState] = useState<boolean>(false);
-    const [invitePopupState, setInvitePopupState] = useState<boolean>(false);
-    const [planTripPopupState, setPlanTripPopupState] = useState<boolean>(false);
-
-    const { data: group_data, loading, error, refetch: refetchGroupData } = useQuery(GroupData,
+    const user = useSelector((state: RootState) => state.user);
+    const { data: group_data, loading, error } = useQuery(GroupData,
         {
             variables: { group_id: group_id },
             skip: !group_id,
@@ -55,112 +37,37 @@ const Group = () => {
                 console.log("Fetching Group Data failed ", err.message);
             }
         });
+
     const userInGroup = group_data?.group?.group_members?.find((member: Group_Member_Props) => member.user_id === user?.user_id);
     const userIsLeader = userInGroup?.role === "admin";
 
-    const { data: invitedList, refetch: refetchInvitedList } = useQuery(GetInvitedlist,
-        {
-            variables: { admin_id: userInGroup?.member_id },
-            fetchPolicy: "network-only"
-        });
-    const invitedEmails = invitedList?.getGroupInvitedList?.map((request: GroupRequestProps)=> request.email);
-
+    const MemberNavItems = [
+        { label: "Group", onClick: () => navigate('groupdetails',{ state: { group_id: group_id,}}) },
+    ]
+    const LeaderNavItems = [
+        { label: "Group", onClick: () => navigate('groupdetails', { state: { group_id: group_id,}}) },
+        { label: "Trips", onClick: () => navigate('trips', { state: { group_id: group_id,}}) }
+    ]
     if (loading) {
-        return <p>Loading...</p>
+        return <Loader />;
     }
     if (error) {
         return <p>Error</p>;
     }
-
-    const MemberNavItems = [
-        { label: "Group", onClick: () => setGroupChild(0) },
-    ]
-    const LeaderNavItems = [
-        { label: "Group", onClick: () => setGroupChild(0) },
-        { label: "Plan Trip", onClick: () => setPlanTripPopupState(true) },
-    ]
     return (
-        <div className="left-main-container group-container">
-            <Header items={userIsLeader ? LeaderNavItems : MemberNavItems} />
+        <div className='group-container'>
+            <Header items={userInGroup ? (userIsLeader ? LeaderNavItems : MemberNavItems) : []} />
+
             {group_data?.group?.group_members?.length > 0 && !userInGroup &&
                 <Confirmation
                     open={true}
                     onClose={() => navigate(-1)}
                     title={'You are Removed From this Group'}
                     confirmButtonText={'Ok'} />}
-            <div className='group-header'>
-                <div className='group-data'>
-                    <div>
-                        <h4>Group name : </h4>
-                        <p className='group_name'>{group_data?.group?.name}</p>
-                    </div>
-                    <div>
-                        <h4>Group description :</h4>
-                        <p>{group_data?.group?.description}</p>
-                    </div>
-                    <div>
-                        <h4>Members :</h4>
-                        <p>{group_data?.group?.group_members?.length}</p>
-                    </div>
-                </div>
-                {userIsLeader &&
-                    <ButtonField type={'button'}
-                        text={`Edit Group details`}
-                        className={'blue_button'}
-                        onClick={() => setEditGroupPopupState(true)} />
-                }
-            </div>
-            <div className="tabs-container">
-                <div className='tabs'>
-                    <ButtonField 
-                        type={"button"}
-                        text={"Group Members"}
-                        className={groupChild === 0 ? 'active_tab tab' : 'tab '}
-                        onClick={() => setGroupChild(0)} />
-                    {userIsLeader &&
-                        <ButtonField 
-                            type={"button"}
-                            text={"Invited List"}
-                            className={groupChild === 1 ? 'active_tab tab' : 'tab'}
-                            onClick={() => setGroupChild(1)} />}
 
-                </div>
-                {userIsLeader &&
-                    <ButtonField 
-                        type={"button"}
-                        text={"Invite"}
-                        className={"blue_button invite-button"}
-                        onClick={() => setInvitePopupState(true)} />}
+            <div className='group-body-container'>
+                <Outlet/>
             </div>
-
-            <div className='group-body'>
-                {groupChild === 0 && 
-                    <GroupMembers 
-                        created_by = {group_data?.group?.created_by}
-                        group_members={group_data?.group?.group_members}
-                        userInGroup={userInGroup} 
-                        onUpdated={refetchGroupData}/>}
-                {groupChild === 1 && 
-                    <InvitedList 
-                        admin_id={userInGroup?.member_id}
-                        invitedList={invitedList?.getGroupInvitedList}
-                        onUpdated={refetchInvitedList} />}
-            </div>
-            <AddGroup
-                open={editGroupPopupState}
-                onClose={() => setEditGroupPopupState(false)}
-                group_id={group_id}
-                group_name={group_data?.group?.name}
-                group_description={group_data?.group?.description}
-                onUpdated={refetchGroupData} />
-            <InviteOthers 
-                group_members={group_data?.group?.group_members}
-                admin_id={userInGroup?.member_id}
-                invitedEmails={invitedEmails}
-                open={invitePopupState}
-                onClose={() => setInvitePopupState(false)}
-                onUpdated={refetchInvitedList}  />
-            <PlanTrip openState={planTripPopupState} onClose={()=>setPlanTripPopupState(false)}/>
         </div>
 
     )

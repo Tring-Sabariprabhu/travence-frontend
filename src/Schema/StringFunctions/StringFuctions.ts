@@ -14,13 +14,6 @@ interface DateProps {
     date: string;
 }
 
-// export const dateSplit = ({ date }: DateProps) => {
-//     if(date.length > 0)
-//         return date.slice(0, date.indexOf("T")); 
-//     return "";
-// };
-
-
 export const dateformat = ({ date }: DateProps) => {
     if (date.length > 0) {
         const formattedDate = new Date(date).toLocaleDateString("en-US", {

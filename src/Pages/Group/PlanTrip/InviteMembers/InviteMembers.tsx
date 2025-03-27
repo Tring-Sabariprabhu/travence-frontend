@@ -3,21 +3,22 @@ export const InviteMembers=()=>{
         <div className="invite-members">
             <h4>Invite Trip Members</h4>
             <div className="members">
-                <div >
+                <div>
+                    <input type="checkbox" name="" id="" />
                     <p>Demo1</p>
-                    <input type="checkbox" name="" id="" />
+                    
                 </div>
                 <div>
+                    <input type="checkbox" name="" id="" />
                     <p>Demo2</p>
-                    <input type="checkbox" name="" id="" />
                 </div>
                 <div>
+                    <input type="checkbox" name="" id="" />
                     <p>Demo3</p>    
-                    <input type="checkbox" name="" id="" />
                 </div>
                 <div>
-                    <p>Demo4</p>
                     <input type="checkbox" name="" id="" />
+                    <p>Demo4</p>
                 </div>
             </div>
         </div>

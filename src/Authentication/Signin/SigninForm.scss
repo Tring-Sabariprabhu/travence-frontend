@@ -22,53 +22,31 @@
   .form-header {
     display: flex;
     justify-content: space-between;
-    
-      .logo {
-        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-        width: 150px;
-        height: 35px;
-      }
     h2 {
+      font-family: var(--font-medium);
       font-size: 28px;
       color: var(--color-blue);
     }
   }
-
   .input-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    position: relative;
-
-    .toggle-password {
-      width: 35px;
-      height: 35px;
-      cursor: pointer;
-      position: absolute;
-      left: 86%;
-      top: 77%;
-      color: var(--light-black);
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-    }
+    text-align: start;
     .error{
-      color: rgba(255, 0, 0, 0.863);
-      font-size: 12px;
+      width: 100%;
     }
     div {
       width: 100%;
       display: flex;
       flex-direction: column;
+      align-items: start;
       gap: 8px;
-
+      position: relative;
       label {
+        font-family: var(--font-medium);
         font-size: 14px;
         color: var(--light-black);
       }
-      
       input {
+        font-family: var(--font-light);
         width: 100%;
         padding: 10px;
         border: 1.5px solid #ccc;
@@ -79,11 +57,22 @@
 
         }
       }
+      .toggle-password {
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+        position: absolute;
+        left: 270px;
+        bottom: 0;
+        color: var(--light-black);
+      }
     }
+   
   }
 
 
   button[type=submit] {
+    font-family: var(--font-medium);
     width: 100%;
     padding: 10px;
     border: none;
@@ -93,12 +82,13 @@
   }
 
   footer {
+    font-family: var(--font-light);
     display: flex;
     flex-direction: row;
     justify-content: center;
     gap: 10px;
 
-    span>a {
+     a {
       color: var(--light-black);
       text-decoration: none;
       font-size: 15px;

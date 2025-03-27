@@ -1,0 +1,22 @@
+.triplist-container{
+    .triplist-header{
+        font-family: var(--font-medium);
+        height: 70px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 80px 10px 40px;
+        div{
+            display: flex;
+            gap: 10px;
+            select{
+                font-family: var(--font-light);
+            }
+        }
+        button{
+            border-radius: 5px;
+            padding: 6px 12px;
+            font-size: 16px;
+        }
+    }
+}

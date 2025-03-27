@@ -6,22 +6,13 @@
     table {
         width: 100%;
         border-collapse: collapse;
-        border-radius: 10px;
-        background-color: var(--gray);
-        // border: 1px solid var(--gray);
-        box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);            
+        border-radius: 6px;
+        box-shadow: 2px 0px 4px 1px rgba(0, 0, 0, 0.1);            
         th, td {
             padding: 12px 15px;
             text-align: center;
             font-size: 14px;
         }
-
-        th {
-            background-color: #e0e0e0;
-            font-weight: 600;
-            color: #333;
-        }
-
         td {
             div {
                 display: flex;
@@ -30,13 +21,18 @@
                 gap: 5px;
 
                 h3 {
+                    font-family: var(--font-medium);
                     font-weight: 500;
                     font-size: 16px;
                     color: #333;
                 }
+                p{
+                    font-family: var(--font-light);
+                }
             }
 
             button {  // Accept & Decline Buttons
+                font-family: var(--font-medium);
                 padding: 6px 12px;
                 font-size: 14px;
                 font-weight: 600;

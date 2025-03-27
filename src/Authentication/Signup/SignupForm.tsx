@@ -3,7 +3,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import './Signup.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
-import logo from '../../Assets/images/travence-logo.png'
 import InputField from '../../Components/InputField/InputField';
 import { useState } from 'react';
 import { makeToast } from '../../Components/Toast/makeToast';
@@ -16,10 +15,10 @@ import { Signup_user } from '../../ApolloClient/Mutation/Auth';
 function SignupForm() {
 
     const navigate = useNavigate();
+    const [disableButtonState, setDisableButtonState] = useState<boolean>(false);
+
     const [signUpUser] = useMutation(Signup_user);
-
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-
+    
     const methods = useForm({
         defaultValues: {
             person_name: "",
@@ -33,20 +32,20 @@ function SignupForm() {
     } = methods;
 
     const onSubmit = async (formdata: { person_name: string; email: string; password: string; confirmpassword: string }) => {
+        setDisableButtonState(true);
         formdata.person_name = formdata.person_name.trim();
         formdata.email = formdata.email.toLowerCase();
         await signUpUser({
             variables: { email: formdata.email, name: formdata.person_name, password: formdata.password },
             onCompleted: (data) => {
                 makeToast({ message: "Registered Successfully", toastType: "success" });
-                localStorage.setItem("token", data?.signup?.token);
-                navigate('/');
+                navigate('/signin');
             },
             onError: (error) => {
                 makeToast({ message: `${error.message}`, toastType: "error" });
             }
         });
-
+        setDisableButtonState(false);
     };
     return (
         <div className='signin-form-container signup-container'>
@@ -54,42 +53,45 @@ function SignupForm() {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className='form-header'>
                         <h2>Sign up</h2>
-                        <img className='logo' src={logo} alt='logo'></img>
                     </div>
                     <div className='input-container'>
-                        <InputField 
-                                label="Name" 
-                                type="text" 
-                                name={"person_name"} 
-                                placeholder={'Enter your name'} />
-                            {errors?.person_name?.message && <p className='error'>{errors?.person_name?.message}</p>}
-                        <InputField 
-                                label="Email" 
-                                type="text" 
-                                name={"email"} 
-                                placeholder={'Enter your email'} />
-                            {errors?.email?.message && <p className='error'>{errors?.email?.message}</p>}
-                        <InputField 
-                                label="Password" 
-                                type={showPassword ? "text" : "password"} 
-                                name={"password"} 
-                                placeholder={'Set your password'} />
-                            {errors?.password?.message && <p className='error'>{errors?.password?.message}</p>}
-                            <div onClick={() => setShowPassword(!showPassword)} className="toggle-password1">
-                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                            </div>
-                        <InputField 
-                                label="Confirm password" 
-                                type={showPassword ? "text" : "password"} 
-                                name={"confirmpassword"} 
-                                placeholder={'Confirm your password'} />
-                            {errors?.confirmpassword?.message && <p className='error'>{errors?.confirmpassword?.message}</p>}
-                            <div onClick={() => setShowPassword(!showPassword)} className="toggle-password2">
-                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                            </div>
-
+                        <InputField
+                            label="Name"
+                            type="text"
+                            name={"person_name"}
+                            placeholder={'Enter your name'} />
+                        {errors?.person_name?.message && <p className='error'>{errors?.person_name?.message}</p>}
                     </div>
-                    <ButtonField type={"submit"} text={"Sign up"} className={"blue_button"} />
+                    <div className='input-container'>
+                        <InputField
+                            label="Email"
+                            type="text"
+                            name={"email"}
+                            placeholder={'Enter your email'} />
+                        {errors?.email?.message && <p className='error'>{errors?.email?.message}</p>}
+                    </div>
+                    <div className='input-container'>
+                        <InputField
+                            label="Password"
+                            type={"password"}
+                            name={"password"}
+                            placeholder={'Set your password'} />
+                        {errors?.password?.message && <p className='error'>{errors?.password?.message}</p>}
+                    </div>
+                    <div className='input-container'>
+                        <InputField
+                            label="Confirm password"
+                            type={"password"}
+                            name={"confirmpassword"}
+                            placeholder={'Confirm your password'} />
+                        {errors?.confirmpassword?.message && <p className='error'>{errors?.confirmpassword?.message}</p>}
+                    </div>
+
+                    <ButtonField
+                        type={"submit"}
+                        text={"Sign up"}
+                        className={"blue_button"}
+                        disabledState={disableButtonState} />
                     <footer>
                         <p>Have an Account?</p>
                         <span><Link to="/signin">Sign in</Link></span>

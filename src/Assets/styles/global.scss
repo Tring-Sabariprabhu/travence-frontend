@@ -1,0 +1,20 @@
+
+@font-face { font-family: 'PoppinsMedium'; src: url('./Poppins-Medium.ttf') format('truetype');}
+@font-face {font-family:'PoppinsLight'; src: url('./Poppins-Light.ttf') format('truetype');}
+
+:root{
+    --color-blue:  #0ec1f8;
+    --color-white: #ffffff;
+    --color-red:#ff0000dc;
+    --color-green: #29d729;
+    --color-gray: #ede8e8b2;
+    --light-black: #706666;
+    --light-blue: #0ec1f8dd;
+    --dark-black: #000000ee;
+    --dark-blue:  #02a6d7;
+    --font-medium: 'PoppinsMedium'; 
+    --font-light: 'PoppinsLight';
+}
+.capitalized{
+    text-transform: capitalize;
+}

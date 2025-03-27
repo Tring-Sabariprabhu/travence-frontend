@@ -1,6 +1,6 @@
 export const ToDo=()=>{
     return (
-        <div>
+        <div className="trip-todo">
             <h4>
                 To Do
             </h4>

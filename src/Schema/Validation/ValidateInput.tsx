@@ -24,6 +24,7 @@ export const ValidationInput = ({ name , label}: RequiredCheckProps) => {
         case "person_name":
             return {
                 required: `Name is Required`,
+                minLength: minLengthCheck(6),
                 maxLength: maxLengthCheck(20),
                 pattern: {
                     value: /^[A-Za-z\s]*$/,
@@ -38,7 +39,12 @@ export const ValidationInput = ({ name , label}: RequiredCheckProps) => {
         case "group_name":
             return {
                 required: `Group name is Required`,
+                minLength: minLengthCheck(8),
                 maxLength: maxLengthCheck(25),
+                pattern: {
+                    value: /^[A-Za-z\s]*$/,
+                    message: "Name should contain only alphabets",
+                },
                 validate: {
                     emptyCheck: ()=>emptySpaceCheck()
                 }
@@ -46,6 +52,7 @@ export const ValidationInput = ({ name , label}: RequiredCheckProps) => {
         case "group_description":
             return {
                 required: `Group description is Required`,
+                minLength: minLengthCheck(8),
                 maxLength: maxLengthCheck(100),
                 validate: {
                     emptyCheck: ()=>emptySpaceCheck()
@@ -63,7 +70,7 @@ export const ValidationInput = ({ name , label}: RequiredCheckProps) => {
         case "password":
             return {
                 required: `Password is Required`,
-                // minLength: minLengthCheck(8),    
+                minLength: minLengthCheck(8),    
                 maxLength: maxLengthCheck(20),
                 pattern: {
                     value: /^(?=.*[A-Z])(?=.*[!@#$&*_])(?=.*[0-9])(?=.*[a-z])/,
@@ -79,11 +86,15 @@ export const ValidationInput = ({ name , label}: RequiredCheckProps) => {
         case "trip_name":
             return{
                 required: `Trip name Required`,
+                minLength: minLengthCheck(8),
+                pattern: {
+                    value: /^[A-Za-z\s]*$/,
+                    message: "Name should contain only alphabets",
+                },
                 validate: {
                     emptyCheck: emptySpaceCheck
                 }
             }
-
         default:
             return {};
     }
