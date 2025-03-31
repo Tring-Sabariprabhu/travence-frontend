@@ -13,29 +13,33 @@ const DashboardLayout = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    
-    const {loading, error} = useQuery(GetCurrentUser, {
-        fetchPolicy: "network-only",
-        onCompleted: (data)=>{
-            if(data?.getAuthUser)
-                dispatch(setUser(
+    const token = localStorage.getItem("token");
+    const { loading, error } = useQuery(GetCurrentUser,
+        {
+            variables: {
+                token: token
+            },
+            fetchPolicy: "network-only",
+            onCompleted: (data) => {
+                if (data?.getCurrentUser)
+                    dispatch(setUser(
                         {
-                            user_id: data?.getAuthUser?.user_id, 
-                            name: data?.getAuthUser?.name, 
-                            email: data?.getAuthUser?.email, 
-                            password: data?.getAuthUser?.password,
-                            image: data?.getAuthUser?.image}));
-        },
-        onError: (err)=>{
-            makeToast({message: err.message, toastType: "error"});
-            localStorage.removeItem("token");
-            navigate('/signin');
-        }
-    });
+                            user_id: data?.getCurrentUser?.user_id,
+                            name: data?.getCurrentUser?.name,
+                            email: data?.getCurrentUser?.email,
+                            password: data?.getCurrentUser?.password,
+                        }));
+            },
+            onError: (err) => {
+                makeToast({ message: err.message, toastType: "error" });
+                localStorage.removeItem("token");
+                // navigate('/signin');
+            }
+        });
     if (loading) {
-        return <Loader/>;
+        return <Loader />;
     }
-    if(error){
+    if (error) {
         return <p>Error</p>;
     }
     return (

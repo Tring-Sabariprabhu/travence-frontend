@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import InputField from "../../Components/InputField/InputField";
 import { makeToast } from "../../Components/Toast/makeToast";
 import { useState } from "react";
-
 import ButtonField from "../../Components/ButtonField/ButtonField";
 import { useMutation } from "@apollo/client";
 import { Signin_user } from "../../ApolloClient/Mutation/Auth";
@@ -15,7 +14,6 @@ export default function SigninForm() {
   const navigate = useNavigate();
   const [disableButtonState, setDisableButtonState] = useState<boolean>(false);
   //Set disable to button until wait for API
-
 
   const [signInUser] = useMutation(Signin_user, { fetchPolicy: "network-only" });
 
@@ -35,7 +33,7 @@ export default function SigninForm() {
     setDisableButtonState(true);
     formdata.email = formdata.email.toLowerCase();
     await signInUser({
-      variables: { email: formdata.email, password: formdata.password },
+      variables: { input: {email: formdata.email, password: formdata.password }},
       onCompleted: async (data) => {
         makeToast({ message: "Logged In Successfully", toastType: "success" });
         localStorage.setItem("token", data?.signin?.token);

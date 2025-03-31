@@ -6,26 +6,16 @@ import './InviteOthers.scss';
 import { useMutation } from "@apollo/client";
 import { makeToast } from "../../../../Components/Toast/makeToast";
 import { useState } from "react";
-import { SendGroupJoinRequests } from "../../../../ApolloClient/Mutation/GroupRequests";
 import { Info } from "@mui/icons-material";
+import { Group_Member_Props } from "../../Main/Group";
+import { SendGroupInvites } from "../../../../ApolloClient/Mutation/GroupInvites";
 
-interface GroupMemberProps {
-    member_id: string
-    user_id: string
-    profile: {
-        name: string,
-        email: string
-    }
-    group_id: string
-    joined_at: string
-    role: string
-}
 
 interface InviteOthersProps {
     open: boolean
     onClose: () => void
     onUpdated: () => void
-    group_members: [GroupMemberProps]
+    group_members: [Group_Member_Props]
     admin_id: string
     invitedEmails: [string]
 }
@@ -37,17 +27,17 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
 
     const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
     const [inputValue, setInputValue] = useState<string>("");
-    const [sendInviteRequest] = useMutation(SendGroupJoinRequests);
+    const [sendInviteRequest] = useMutation(SendGroupInvites);
     const [errorState, setErrorState] = useState<string>("");
 
     
     const isValidEmail = (email: string): boolean => {
-        if (email.length > 0) {
+        if (email?.length > 0) {
             return /^[^\s@]+@[^0-9\s@]+\.[^\s@]+$/.test(email);
         }
         return false;
     }
-    const group_members_emails = group_members?.map((member: GroupMemberProps) => member?.profile?.email);
+    const group_members_emails = group_members?.map((member: Group_Member_Props) => member?.user?.email);
 
     const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter" || event.key === ",") {
@@ -59,13 +49,13 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
         if (isValidEmail(trimmedValue)) {
             if (user?.email === trimmedValue) {
                 setErrorState("You are already in Group");
-            } else if (selectedEmails.length > 0 && selectedEmails.includes(trimmedValue)) {
+            } else if (selectedEmails?.length > 0 && selectedEmails?.includes(trimmedValue)) {
                 setErrorState(`${inputValue} already in queue`);
-            } else if (invitedEmails.length > 0 && invitedEmails.includes(trimmedValue)) {
+            } else if (invitedEmails?.length > 0 && invitedEmails?.includes(trimmedValue)) {
                 setErrorState("This Email is already Invited");
             }
             else {
-                if (group_members_emails.includes(trimmedValue)) {
+                if (group_members_emails?.includes(trimmedValue)) {
                     setErrorState("Selected Email already in Group");
                 }
                 else {
@@ -80,7 +70,7 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
         
     }
     const handleRemoveEmail = (emailToRemove: string) => {
-        setSelectedEmails(selectedEmails.filter((email) => email !== emailToRemove));
+        setSelectedEmails(selectedEmails?.filter((email) => email !== emailToRemove));
     };
 
     const inviteProcess = async () => {
@@ -88,11 +78,11 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
         if (inputValue?.length > 0) {
             emailCheck();   
         }
-        if (selectedEmails.length > 0) {
+        if (selectedEmails?.length > 0) {
             await sendInviteRequest({
-                variables: { admin_id: admin_id, emails: selectedEmails },
+                variables: { input: { invited_by: admin_id, emails: selectedEmails}},
                 onCompleted: (data) => {
-                    makeToast({ message: "Invite Sent", toastType: "success" });
+                    makeToast({ message: data?.createGroupInvites, toastType: "success" });
                     onUpdated();
                 },
                 onError: (err) => {
@@ -109,7 +99,7 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
     }
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
         setInputValue(e.target.value);
-        if(errorState.length > 0 && e.target.value === ""){
+        if(errorState?.length > 0 && e?.target?.value === ""){
             setErrorState("");
         }
     }
@@ -133,7 +123,7 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
                     {errorState?.length > 0 && <p className="error">{errorState}</p>}
                     {selectedEmails?.length > 0 && <label className="heading">Selected Emails</label>}
                     <ol>
-                        {selectedEmails.map((email) => (
+                        {selectedEmails?.map((email) => (
                             <li key={email} >
                                 {email} <button onClick={() => handleRemoveEmail(email)}>x</button>
                             </li>

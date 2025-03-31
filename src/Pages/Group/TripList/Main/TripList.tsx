@@ -3,9 +3,17 @@ import ButtonField from '../../../../Components/ButtonField/ButtonField';
 import '../../../GroupList/GroupList.scss';
 import './TripList.scss';
 import { PlanTrip } from '../../PlanTrip/Main/PlanTrip';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { ErrorPage } from '../../../../Components/ErrorPage/ErrorPage';
+import { DataNotFound } from '../../../../Components/DataNotFound/DataNotFound';
 export const TripList = () => {
     const navigate = useNavigate();
+    // if(true){
+    //     return <ErrorPage/>;
+    // }
+    const location = useLocation();
+    const group_id = location?.state?.group_id;
+
     return (
         <div className="grouplist-container triplist-container">
             <div className="triplist-header">
@@ -19,18 +27,19 @@ export const TripList = () => {
                 </div>
                 <ButtonField type={'button'} 
                     text={'Plan trip'} 
-                    onClick={()=>navigate('plan-trip')} 
+                    onClick={()=>navigate('/group/plan-trip' , { state: { group_id: group_id,}})} 
                     className='blue_button'/>
             </div>
             <main>            
-                <div className="group">
+                {/* <div className="group">
                     <div className='groupdata'>
                         <h3>Trip name</h3>
                         <p>Trip name</p>
                         <h3>Planned by</h3>
                         <p>Planned by</p>
                     </div>
-                </div>
+                </div> */}
+                <DataNotFound message={"Trips"}/>
             </main>
         </div>
     );

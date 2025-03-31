@@ -17,17 +17,17 @@ function App() {
         <Routes>
           <Route element={<PublicRoute />}>
             <Route element={<AuthLayout />}>
-              {publicRoutes.map((route, index) => (
+              {publicRoutes?.map((route, index) => (
                 <Route key={index} path={route.path} element={route.element}></Route>
               ))}
             </Route>
           </Route>
           <Route element={<PrivateRoute />}>
             <Route element={<DashboardLayout />}>
-              {privateRoutes.map((route, index) => (
+              {privateRoutes?.map((route, index) => (
                 <Route key={index} path={route.path} element={route.element} >
-                  {route?.childs && route?.childs.map((nest_route1, index)=>(
-                      <Route key={index} path={nest_route1.path} element={nest_route1.element} />
+                  {route?.childs && route?.childs?.map((sub_route, index)=>(
+                      <Route key={index} path={sub_route.path} element={sub_route.element}/>
                   ))}
                 </Route>
               )

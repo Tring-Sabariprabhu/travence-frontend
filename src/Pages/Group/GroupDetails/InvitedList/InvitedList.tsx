@@ -3,20 +3,16 @@ import './InvitedList.scss';
 import { useMutation } from '@apollo/client';
 import { dateformat } from '../../../../Schema/StringFunctions/StringFuctions';
 import { makeToast } from '../../../../Components/Toast/makeToast';
-import { DeleteGroupJoinRequests, ResendGroupJoinRequests } from '../../../../ApolloClient/Mutation/GroupRequests';
+import { DeleteGroupInvites, ResendGroupInvites } from '../../../../ApolloClient/Mutation/GroupInvites';
 import ButtonField from '../../../../Components/ButtonField/ButtonField';
 import { Confirmation } from '../../../../Components/Confirmation/Confirmation';
+import { DataNotFound } from '../../../../Components/DataNotFound/DataNotFound';
+import { GroupInviteProps } from '../Main/GroupDetails';
 
 
-interface GroupRequestProps {
-    request_id: string,
-    email: string,
-    user_registered: boolean,
-    requested_at: string,
-    status: string
-}
+
 interface InvitedListProps {
-    invitedList: [GroupRequestProps],
+    invitedList: [GroupInviteProps],
     admin_id: string,
     onUpdated: () => void
 }
@@ -26,50 +22,66 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
 
     const [resendRequestsPopup, setResendReqeustsPopup] = useState<boolean>(false);
     const [deleteRequestsPopup, setDeleteReqeustsPopup] = useState<boolean>(false);
-    
+
     const [resendDisableState, setResendDisableState] = useState<boolean>(false);
     const [deleteDisableState, setDeleteDisableState] = useState<boolean>(false);
 
-    const [resendInviteRequests] = useMutation(ResendGroupJoinRequests);
-    const [deleteInviteRequests] = useMutation(DeleteGroupJoinRequests);
+    const [resendInviteRequests] = useMutation(ResendGroupInvites);
+    const [deleteInviteRequests] = useMutation(DeleteGroupInvites);
 
-    const unSelectAllCheckBoxes = ()=>{
-        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-            (cb as HTMLInputElement).checked = false;
+    const unSelectAllCheckBoxes = () => {
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            (checkbox as HTMLInputElement).checked = false;
         });
     }
     const resendInvite = async () => {
+        setResendDisableState(true);
+        setResendReqeustsPopup(false);
         if (selectedRequests?.length > 0) {
             await resendInviteRequests({
-                variables: { admin_id: admin_id, requestIDs: selectedRequests },
+                variables:
+                {
+                    input: {
+                        invited_by: admin_id,
+                        invites: selectedRequests
+                    }
+                },
                 onCompleted: (data) => {
-                    makeToast({ message: data?.resendGroupJoinRequests, toastType: "success" });
+                    makeToast({ message: data?.resendGroupInvites, toastType: "success" });
                     onUpdated();
                 },
                 onError: (err) => {
-                    makeToast({message: err.message, toastType: "error"});
+                    makeToast({ message: err.message, toastType: "error" });
                 }
             });
+            setResendDisableState(false);
             unSelectAllCheckBoxes();
             setSelectedRequests([]);
-            setResendReqeustsPopup(false);
         }
     }
     const deleteInvite = async () => {
+        setDeleteDisableState(true);
+        setDeleteReqeustsPopup(false);
         if (selectedRequests?.length > 0) {
             await deleteInviteRequests({
-                variables: { admin_id: admin_id, requestIDs: selectedRequests },
+                variables:
+                {
+                    input: {
+                        invited_by: admin_id,
+                        invites: selectedRequests
+                    }
+                },
                 onCompleted: (data) => {
-                    makeToast({ message: data?.deleteGroupJoinRequests, toastType: "success" });
+                    makeToast({ message: data?.deleteGroupInvites, toastType: "success" });
                     onUpdated();
                 },
                 onError: (err) => {
-                    console.log(err.message);
+                    makeToast({message: err?.message, toastType: "error"});
                 }
             });
+            setDeleteDisableState(false);
             unSelectAllCheckBoxes();
             setSelectedRequests([]);
-            setDeleteReqeustsPopup(false);
         }
 
     }
@@ -85,55 +97,54 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
     }
 
     return (
-        <div className="invited-list group-members">
+        (invitedList ? <div className="invited-list group-members">
             <div className='actions'>
 
                 {invitedList?.length > 0 &&
                     <>
-                    <p>Actions : </p>
-                        <ButtonField 
-                            type={'button'} 
-                            text={'Resend'} 
-                            className={selectedRequests.length > 0 ? 'blue_button' : ""} 
-                            disabledState={selectedRequests?.length === 0} 
-                            onClick={()=>setResendReqeustsPopup(true)}/>
-                        <ButtonField 
-                            type={'button'} 
-                            text={'Delete'} 
-                            className={selectedRequests.length > 0 ? 'red_button' : ""} 
-                            disabledState={selectedRequests?.length === 0} 
-                            onClick={()=>setDeleteReqeustsPopup(true)}/>
+                        <p>Actions : </p>
+                        <ButtonField
+                            type={'button'}
+                            text={'Resend'}
+                            className={selectedRequests.length > 0 ? 'blue_button' : ""}
+                            disabledState={resendDisableState || selectedRequests?.length === 0}
+                            onClick={() => setResendReqeustsPopup(true)} />
+                        <ButtonField
+                            type={'button'}
+                            text={'Delete'}
+                            className={selectedRequests.length > 0 ? 'red_button' : ""}
+                            disabledState={deleteDisableState || selectedRequests?.length === 0}
+                            onClick={() => setDeleteReqeustsPopup(true)} />
                     </>
                 }
             </div>
-            {invitedList?.length > 0 ?
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Email</th>
-                            <th>Requested at</th>
-                            <th>Registered</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {invitedList?.map((request: GroupRequestProps) => (
-                            <tr key={request.request_id}>
-                                <td><input type="checkbox" name="" id="" value={request.request_id} onChange={handleCheckBoxChange} /></td>
-                                <td>{request?.email}</td>
-                                <td>{dateformat({ date: request?.requested_at })}</td>
-                                <td>{request?.user_registered ? "Registered" : "Not Registered"}</td>
-                                <td className='request-status'
-                                    style={
-                                            {color: (request?.status === 'rejected' ? "var(--color-red)": "var(--color-blue)")}}>
-                                    {request?.status}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
 
-                </table> : <p>No Invite Sent</p>}
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Email</th>
+                        <th>Requested at</th>
+                        <th>Registered</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {invitedList?.length > 0 ? invitedList?.map((invite: GroupInviteProps) => (
+                        <tr key={invite?.invite_id}>
+                            <td><input type="checkbox" name="" id="" value={invite.invite_id} onChange={handleCheckBoxChange} /></td>
+                            <td>{invite?.email}</td>
+                            <td>{dateformat({ date: invite?.invited_at })}</td>
+                            <td>{invite?.registered_user ? "Registered" : "Not Registered"}</td>
+                            <td className='invite_status'
+                                style={
+                                    { color: (invite?.invite_status === 'rejected' ? "var(--color-red)" : "var(--color-blue)") }}>
+                                {invite?.invite_status}
+                            </td>
+                        </tr>
+                    )) : <tr><td colSpan={5}><DataNotFound message={"Invited List"} /></td></tr>}
+                </tbody>
+            </table>
             <Confirmation
                 open={resendRequestsPopup}
                 onClose={() => setResendReqeustsPopup(false)}
@@ -148,6 +159,6 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
                 confirmButtonText={'Yes'}
                 closeButtonText={'No'}
                 onSuccess={deleteInvite} />
-        </div >
+        </div > : <DataNotFound message={"Invited List Not found"} />)
     )
 }

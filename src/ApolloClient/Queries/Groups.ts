@@ -1,38 +1,43 @@
 import { gql } from "@apollo/client";
 
 export const GroupsList = gql`
-    query($user_id: String!){
-        groupList(user_id: $user_id){
+    query($input: GroupListInput!){
+        groupList(input: $input){
             group_id,
-            name,
-            description,
-            created_user_email,
-            created_user_name,
-            created_by,
+            group_name,
+            group_description,
             created_at,
-            updated_at
+            updated_at,
+            created_by{
+                email,
+                name
+            }
         }
     }`
 
 export const GroupData = gql`
-    query ($group_id: String!){
-        group(group_id: $group_id){
+    query ($input: GroupInput!){
+        group(input: $input){
             group_id,
-            name,
-            description,
-            created_user_email,
-            created_by,
+            group_name,
+            group_description,
             created_at,
             updated_at,
+            created_by{
+                email,
+                name,
+                user_id
+            }
             group_members{
                 member_id,
-                user_id,
-                group_id,
-                role,
+                user_role,
                 joined_at,
-                profile{
+                deleted_at,
+                updated_at,
+                user{
                     name,
-                    email
+                    email,
+                    user_id
                 }
             }
         }

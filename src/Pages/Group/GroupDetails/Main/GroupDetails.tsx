@@ -2,33 +2,39 @@ import { useQuery } from "@apollo/client";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { GetInvitedlist } from "../../../../ApolloClient/Queries/GroupRequests";
+import { GetInvitedList } from "../../../../ApolloClient/Queries/GroupInvites";
 import { GroupData } from "../../../../ApolloClient/Queries/Groups";
 import ButtonField from "../../../../Components/ButtonField/ButtonField";
 import { Loader } from "../../../../Components/Loader/Loader";
 import { RootState } from "../../../../Redux/store";
 import AddGroup from "../AddGroup/AddGroup";
 import { GroupMembers } from "../GroupMembers/GroupMembers";
-import { InvitedList } from "../InvitedList/InvitedList";
 import { InviteOthers } from "../InviteOthers/InviteOthers";
 import './GroupDetails.scss';
 import { DataNotFound } from "../../../../Components/DataNotFound/DataNotFound";
+import { Group_Member_Props } from "../../Main/Group";
+import { InvitedList } from "../InvitedList/InvitedList";
+import { ErrorPage } from "../../../../Components/ErrorPage/ErrorPage";
 
 
-interface Group_Member_Props {
-    user_id: string
-    role: string
-    profile: {
-        name: string
-        email: string
-    }
-}
-interface GroupRequestProps {
-    request_id: string,
+
+export interface GroupInviteProps {
+    invite_id: string,
     email: string,
-    user_registered: boolean,
-    requested_at: string,
-    status: string
+    registered_user: boolean,
+    invite_status: string,
+    invited_at: string,
+    invited_by:{
+      member_id: string
+      user:{
+        name: string,
+        email: string
+      }
+      group:{
+        group_name: string,
+        group_description: string
+      }
+    }
 }
 
 
@@ -44,7 +50,7 @@ export const GroupDetails = () => {
 
     const { data: group_data, loading, error, refetch: refetchGroupData } = useQuery(GroupData,
         {
-            variables: { group_id: group_id },
+            variables: { input: { group_id: group_id }},
             skip: !group_id,
             fetchPolicy: "network-only",
             onError: (err) => {
@@ -52,12 +58,12 @@ export const GroupDetails = () => {
             }
         });
 
-    const userInGroup = group_data?.group?.group_members?.find((member: Group_Member_Props) => member.user_id === user?.user_id);
-    const userIsLeader = userInGroup?.role === "admin";
+    const userInGroup = group_data?.group?.group_members?.find((member: Group_Member_Props) => member?.user?.user_id === user?.user_id);
+    const userIsLeader = userInGroup?.user_role === "admin";
 
-    const { data: invitedList, refetch: refetchInvitedList } = useQuery(GetInvitedlist,
+    const { data: invitedList, refetch: refetchInvitedList } = useQuery(GetInvitedList,
         {
-            variables: { admin_id: userInGroup?.member_id },
+            variables: { input: {admin_id: userInGroup?.member_id} },
             fetchPolicy: "network-only"
         });
 
@@ -65,9 +71,9 @@ export const GroupDetails = () => {
         return <Loader />;
     }
     if (error) {
-        return <p>Error</p>;
+        return <ErrorPage/>;
     }
-    const invitedEmails = invitedList?.getGroupInvitedList?.map((request: GroupRequestProps) => request.email);
+    const invitedEmails = invitedList?.getGroupInvitedList?.map((invite: GroupInviteProps) => invite?.email);
 
     return (
         (group_data?.group ?
@@ -76,23 +82,17 @@ export const GroupDetails = () => {
                     <div className='group-data'>
                         <div>
                             <h4>Group name : </h4>
-                            <p className='group_name'>{group_data?.group?.name}</p>
+                            <p className='group_name'>{group_data?.group?.group_name}</p>
                         </div>
                         <div>
                             <h4>Group description :</h4>
-                            <p>{group_data?.group?.description}</p>
+                            <p>{group_data?.group?.group_description}</p>
                         </div>
                         <div>
                             <h4>Members :</h4>
                             <p>{group_data?.group?.group_members?.length}</p>
                         </div>
                     </div>
-                    {userIsLeader &&
-                        <ButtonField type={'button'}
-                            text={`Edit Group details`}
-                            className={'blue_button'}
-                            onClick={() => setEditGroupPopupState(true)} />
-                    }
                 </div>
                 <div className="tabs-container">
                     <div className='tabs'>
@@ -109,12 +109,21 @@ export const GroupDetails = () => {
                                 onClick={() => setGroupDetailsChild('invited-list')} />}
 
                     </div>
-                    {userIsLeader &&
-                        <ButtonField
-                            type={"button"}
-                            text={"Invite"}
-                            className={"blue_button invite-button"}
-                            onClick={() => setInvitePopupState(true)} />}
+                    <div className="Buttons">
+                        {userIsLeader &&
+                            <ButtonField type={'button'}
+                                text={`Edit Group details`}
+                                className={'blue_button'}
+                                onClick={() => setEditGroupPopupState(true)} />
+                        }
+                        {userIsLeader &&
+                            <ButtonField
+                                type={"button"}
+                                text={"Invite"}
+                                className={"blue_button invite-button"}
+                                onClick={() => setInvitePopupState(true)} />}
+                    </div>
+
                 </div>
 
                 <div className='group-body'>
@@ -133,9 +142,10 @@ export const GroupDetails = () => {
                 <AddGroup
                     open={editGroupPopupState}
                     onClose={() => setEditGroupPopupState(false)}
+                    admin_id={userInGroup?.member_id}
                     group_id={group_id}
-                    group_name={group_data?.group?.name}
-                    group_description={group_data?.group?.description}
+                    group_name={group_data?.group?.group_name}
+                    group_description={group_data?.group?.group_description}
                     onUpdated={refetchGroupData} />
                 <InviteOthers
                     group_members={group_data?.group?.group_members}
@@ -144,7 +154,7 @@ export const GroupDetails = () => {
                     open={invitePopupState}
                     onClose={() => setInvitePopupState(false)}
                     onUpdated={refetchInvitedList} />
-            </div> : <DataNotFound message={"Group Not Found"} />)
+            </div> : <DataNotFound message={"Group"} />)
 
     )
 }

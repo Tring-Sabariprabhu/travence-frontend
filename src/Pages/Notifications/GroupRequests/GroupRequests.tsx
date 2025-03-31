@@ -4,48 +4,48 @@ import { useSelector } from "react-redux"
 import ButtonField from "../../../Components/ButtonField/ButtonField"
 import { RootState } from "../../../Redux/store"
 import { dateformat } from "../../../Schema/StringFunctions/StringFuctions"
-import { GetGroupJoinRequests } from "../../../ApolloClient/Queries/GroupRequests"
-import './GroupRequests.scss';
-import { AcceptGroupJoinRequest, DeclineGroupJoinRequest } from "../../../ApolloClient/Mutation/GroupRequests"
+import { GetGroupInvites } from "../../../ApolloClient/Queries/GroupInvites"
+import { AcceptGroupInvite, RejectGroupInvite } from "../../../ApolloClient/Mutation/GroupInvites"
 import { makeToast } from "../../../Components/Toast/makeToast"
 import { useState } from "react"
 import { Loader } from "../../../Components/Loader/Loader"
 import { DataNotFound } from "../../../Components/DataNotFound/DataNotFound";
+import { GroupInviteProps } from "../../Group/GroupDetails/Main/GroupDetails"
+import './GroupRequests.scss';
+import { ErrorPage } from "../../../Components/ErrorPage/ErrorPage"
 
-interface GroupRequestsDataProps {
-    request_id: string
-    group_name: string
-    requested_at: string
-    requested_by: string
-    admin_name: string
-}
 
 export const GroupRequests = () => {
 
     const user = useSelector((state: RootState) => state.user);
 
-    const [acceptRequest] = useMutation(AcceptGroupJoinRequest);
+    const [acceptInvite] = useMutation(AcceptGroupInvite);
     const [acceptDisableState, setAcceptDisableState] = useState<boolean>(false);
 
-    const [declineRequest] = useMutation(DeclineGroupJoinRequest);
+    const [rejectInvite] = useMutation(RejectGroupInvite);
     const [declineDisableState, setDeclineDisableState] = useState<boolean>(false);
 
-    const { data: requests, loading, error, refetch: refetchRequests } = useQuery(GetGroupJoinRequests,
-        { variables: { email: user?.email }, fetchPolicy: "network-only" });
-
+    const { data: groupInvites, loading, error, refetch: refetchRequests } = useQuery(GetGroupInvites,
+        { variables: { input: {email: user?.email} }, fetchPolicy: "network-only" });
+    
     if (loading) {
         return <Loader />;
     }
     if (error) {
-        return <p>Error</p>;
+        return <ErrorPage/>;
     }
 
-    const afterClickAccept = async (request: GroupRequestsDataProps) => {
+    const afterClickAccept = async (invite: GroupInviteProps) => {
         setAcceptDisableState(true);
-        await acceptRequest({
-            variables: { request_id: request?.request_id, admin_id: request?.requested_by, user_id: user?.user_id },
+        await acceptInvite({
+            variables: 
+            { 
+                input: {
+                    invite_id: invite?.invite_id, 
+                }
+            },  
             onCompleted: (data) => {
-                makeToast({ message: data?.acceptGroupJoinRequest, toastType: "success" });
+                makeToast({ message: data?.acceptGroupInvite, toastType: "success" });
                 refetchRequests();
             },
             onError: (err) => {
@@ -54,12 +54,17 @@ export const GroupRequests = () => {
         });
         setAcceptDisableState(false);
     }
-    const afterClickDecline = async (request: GroupRequestsDataProps) => {
+    const afterClickDecline = async (invite: GroupInviteProps) => {
         setDeclineDisableState(true);
-        await declineRequest({
-            variables: { request_id: request?.request_id },
+        await rejectInvite({
+            variables: 
+            { 
+                input: {
+                    invite_id: invite?.invite_id, 
+                }
+            },  
             onCompleted: (data) => {
-                makeToast({ message: data?.declineGroupJoinRequest, toastType: "success" });
+                makeToast({ message: data?.rejectGroupInvite, toastType: "success" });
                 refetchRequests();
             },
             onError: (err) => {
@@ -69,29 +74,29 @@ export const GroupRequests = () => {
         setDeclineDisableState(false);
     }
     return (
-        (requests?.getGroupJoinRequestsForUser?.length > 0 ?
+        (groupInvites?.getGroupInvites?.length > 0 ?
             <div className="group-requests">
                 <table>
                     <tbody>
-                        {requests?.getGroupJoinRequestsForUser?.map((request: GroupRequestsDataProps, index: number) => (
+                        {groupInvites?.getGroupInvites?.map((invite: GroupInviteProps, index: number) => (
 
                             <tr key={index}>
                                 <td>
                                     <div>
                                         <h3>Group name</h3>
-                                        <p>{request?.group_name}</p>
+                                        <p>{invite?.invited_by?.group?.group_name}</p>
                                     </div>
                                 </td>
                                 <td>
                                     <div>
                                         <h3>Requested by</h3>
-                                        <p>{request?.admin_name}</p>
+                                        <p>{invite?.invited_by?.user?.name}</p>
                                     </div>
                                 </td>
                                 <td>
                                     <div>
                                         <h3>Requested at</h3>
-                                        <p>{dateformat({ date: request?.requested_at })}</p>
+                                        <p>{dateformat({ date: invite?.invited_at })}</p>
                                     </div>
                                 </td>
                                 <td>
@@ -99,7 +104,7 @@ export const GroupRequests = () => {
                                         type={"button"}
                                         text={"Accept"}
                                         className={"button_style green_button"}
-                                        onClick={() => afterClickAccept(request)}
+                                        onClick={() => afterClickAccept(invite)}
                                         disabledState={acceptDisableState} />}
                                 </td>
                                 <td>
@@ -107,13 +112,13 @@ export const GroupRequests = () => {
                                         type={"button"}
                                         text={"Decline"}
                                         className={"button_style red_button"}
-                                        onClick={() => afterClickDecline(request)}
+                                        onClick={() => afterClickDecline(invite)}
                                         disabledState={declineDisableState} />}
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-            </div> : <DataNotFound message={"Group Requests Not found"} />)
+            </div> : <DataNotFound message={"Group Requests"} />)
     )
 }

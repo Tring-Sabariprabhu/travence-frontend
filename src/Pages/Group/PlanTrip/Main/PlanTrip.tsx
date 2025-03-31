@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import ButtonField from "../../../../Components/ButtonField/ButtonField";
-import CustomDialog from "../../../../Components/CustomDialog/CustomDialog";
+// import ButtonField from "../../../../Components/ButtonField/ButtonField";
 import { InviteMembers } from "../InviteMembers/InviteMembers";
 import { TripDetails } from "../TripDetails.tsx/TripDetails";
 import './PlanTrip.scss';
+import { ToDo } from "../ToDo/ToDo";
+import { CheckLists } from "../CheckLists/CheckLists";
+import ButtonField from "../../../../Components/ButtonField/ButtonField";
+import { useNavigate } from "react-router-dom";
 export const PlanTrip=()=>{
+
+    const navigate = useNavigate();
     const methods = useForm();
-    const [formPageIndex, setFormPageIndex] = useState<number>(1);
-    
+
   const {
     handleSubmit } = methods;
 
@@ -16,29 +20,24 @@ export const PlanTrip=()=>{
         
     }
     return (
-        
+        <div className="plan-trip-container">
             <FormProvider {...methods}>
-                <form className="plan-trip-form" onSubmit={handleSubmit(onSubmit)}>
-                    {formPageIndex === 1 && <TripDetails/>}
-                    {formPageIndex === 2 && <InviteMembers/>}
-                    <div className="button-container">
-                        {
-                            formPageIndex < 2 &&
-                            <ButtonField type={"button"} text={"Next"} className={"blue_button"} 
-                                onClick={()=>setFormPageIndex(formPageIndex + 1)}/>
-                            }
-                        {
-                            formPageIndex === 2 &&
-                            <ButtonField type={"submit"} text={"Submit"} className="blue_button"/>
-                            }
-                        {
-                            formPageIndex > 1 &&
-                            <ButtonField type={"button"} text={"Back"} 
-                                onClick={()=>setFormPageIndex(formPageIndex - 1)}/>
-                            }
-                    </div>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <h2>Plan Trip</h2>
+                        <TripDetails/>
+                        <InviteMembers/>
+                        <ToDo/>
+                        <CheckLists/>
+                        <div className="Buttons">
+                            <ButtonField type={"button"} 
+                                text={"Save"} 
+                                className={"blue_button"}/>
+                            <ButtonField type={"button"} 
+                                text={"Cancel"} 
+                                onClick={()=> navigate(-1)}/>
+                        </div>
                 </form>
             </FormProvider>
-        
+        </div>
     )
 }

@@ -11,6 +11,8 @@ export const decryptPassword = (encryptedPassword) => {
     if(process.env.REACT_APP_CRYPTO_KEY){
       const bytes = CryptoJS.AES.decrypt(encryptedPassword, process.env.REACT_APP_CRYPTO_KEY);
       return bytes.toString(CryptoJS.enc.Utf8);
+    }else{
+      console.error("key not found")
     }
   }else{
     console.error('password undefined')

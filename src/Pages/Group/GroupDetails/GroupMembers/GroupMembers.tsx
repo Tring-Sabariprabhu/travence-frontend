@@ -9,30 +9,26 @@ import ButtonField from "../../../../Components/ButtonField/ButtonField";
 import './GroupMembers.scss';
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Redux/store";
+import { DataNotFound } from "../../../../Components/DataNotFound/DataNotFound";
+import { Group_Member_Props } from "../../Main/Group";
 
-interface MemberTypeProps {
-    member_id: string,
-    user_id: string,
-    role: string,
-    joined_at: string
-    profile: {
-        name: string
-        email: string
-    }
-}
+
+
 interface GroupMembersProps {
-    userInGroup: MemberTypeProps
-    group_members: [MemberTypeProps]
-    created_by: string
+    userInGroup: Group_Member_Props
+    group_members: [Group_Member_Props]
+    created_by: {
+        user_id: string
+    }
     onUpdated: () => void
 }
 
 export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_members, created_by, onUpdated }) => {
 
     const user = useSelector((state: RootState) => state.user);
-    const othersInGroup = group_members?.filter((member: MemberTypeProps) => member?.user_id !== user?.user_id);
-    const userIsLeader = userInGroup?.role === "admin";
-    const groupAdmins = group_members?.filter((member: MemberTypeProps) => member?.role === "admin");
+    const othersInGroup = group_members?.filter((member: Group_Member_Props) => member?.user?.user_id !== user?.user_id);
+    const userIsLeader = userInGroup?.user_role === "admin";
+    const groupAdmins = group_members?.filter((member: Group_Member_Props) => member?.user_role === "admin");
 
     const [removeMemberPopupState, setRemoveMemberPopupState] = useState<boolean>(false);
     const [changeRolePopupState, setChangeRolePopupState] = useState<boolean>(false);
@@ -44,9 +40,9 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
     const [changeRoleDisableState, setChangeRoleDisableState] = useState<boolean>(false);
 
 
-    const checkAndSetChangeRoleMember = (member: MemberTypeProps) => {
+    const checkAndSetChangeRoleMember = (member: Group_Member_Props) => {
 
-        if (member?.role === "member" && groupAdmins?.length === 2)
+        if (member?.user_role === "member" && groupAdmins?.length === 2)
             makeToast({ message: "A Group can have 2 Admins only", toastType: "error" });
         else{
             setChangeRoleMember(member?.member_id, true);
@@ -74,9 +70,15 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
         setChangeRoleDisableState(true);
         setChangeRolePopupState(false);
         await change({
-            variables: { admin_id: userInGroup?.member_id, member_id: changeRoleMemberID },
+            variables: 
+                { 
+                    input: {
+                        admin_id: userInGroup?.member_id, 
+                        member_id: changeRoleMemberID
+                    } 
+                },
             onCompleted: (data) => {
-                makeToast({ message: data?.changeRoleInGroup, toastType: "success" });
+                makeToast({ message: data?.changeRole, toastType: "success" });
                 onUpdated();
             },
             onError: (err) => {
@@ -84,21 +86,29 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
                 console.log(err.message);
             }
         })
+        setChangeRoleDisableState(false);
         setChangeRoleMember("", false);
     }
     const removeMemberProcess = async () => {
         setRemoveMemberDisableState(true);
         setRemoveMemberPopupState(false);
         await remove({
-            variables: { admin_id: userInGroup?.member_id, member_id: removeMemberID },
+            variables: 
+                { 
+                    input: {
+                        admin_id: userInGroup?.member_id, 
+                        member_id: removeMemberID 
+                    }
+                },
             onCompleted: (data) => {
-                makeToast({ message: data?.deleteUserFromGroup, toastType: "success" });
+                makeToast({ message: data?.deleteGroupMember, toastType: "success" });
                 onUpdated();
             },
             onError: (err) => {
                 makeToast({ message: err.message, toastType: "error" });
             }
         });
+        setRemoveMemberDisableState(false);
         setRemoveMember("", false);
     }
 
@@ -116,39 +126,39 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
                         </tr>
                     </thead>
                     <tbody>
-                        {userInGroup &&
+                        {userInGroup ?
                             <tr>
                                 <td className="user-name">
-                                    <p>{userInGroup?.profile?.name}</p>
+                                    <p>{userInGroup?.user?.name}</p>
                                     <p>(You)</p>
                                 </td>
-                                <td className="user-role"> {userInGroup?.role}</td>
+                                <td className="user-role"> {userInGroup?.user_role}</td>
                                 <td>{dateformat({ date: userInGroup?.joined_at })} </td>
 
-                            </tr>}
+                            </tr>: <tr><td colSpan={5}><DataNotFound message={"Group Members"}/></td></tr>}
 
-                        {othersInGroup?.map((member: MemberTypeProps) => (
+                        {othersInGroup && othersInGroup?.map((member: Group_Member_Props) => (
                             <tr key={member?.member_id} >
-                                <td className="user-name">{member?.profile?.name}</td>
-                                <td className="user-role">{member?.role}</td>
+                                <td className="user-name">{member?.user?.name}</td>
+                                <td className="user-role">{member?.user_role}</td>
                                 <td>{dateformat({ date: member.joined_at })} </td>
                                 {userIsLeader &&
                                     <>
                                         <td className="button_actions">
                                             <ButtonField
                                                 type={"button"}
-                                                className={created_by === member?.user_id ? "" : "blue_button"}
-                                                text={member?.role === "admin" ? "Set as Member" : "Set as Admin"}
+                                                className={created_by?.user_id === member?.user?.user_id ? "" : "blue_button"}
+                                                text={member?.user_role === "admin" ? "Set as Member" : "Set as Admin"}
                                                 onClick={() => checkAndSetChangeRoleMember(member)}
-                                                disabledState={created_by === member?.user_id || changeRoleDisableState}
+                                                disabledState={created_by?.user_id === member?.user?.user_id || changeRoleDisableState}
                                             />
 
                                             <ButtonField
                                                 type={"button"}
-                                                className={created_by === member?.user_id ? "" : "red_button"}
+                                                className={created_by?.user_id === member?.user?.user_id ? "" : "red_button"}
                                                 text={"Remove"}
                                                 onClick={() => checkAndSetRemoveMember(member?.member_id)}
-                                                disabledState={created_by === member?.user_id || removeMemberDisableState}
+                                                disabledState={created_by?.user_id === member?.user?.user_id || removeMemberDisableState}
                                             />
                                         </td>
                                     </>}
@@ -160,14 +170,14 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
                 open={removeMemberPopupState}
                 onSuccess={() => removeMemberProcess()}
                 onClose={() => setRemoveMember("", false)}
-                title={`Do you want to Remove a member?`}
+                title={`Do you want to Remove a user?`}
                 closeButtonText={"Cancel"}
                 confirmButtonText={"Confirm"} />
             <Confirmation
                 open={changeRolePopupState}
                 onSuccess={() => changeRoleProcess()}
                 onClose={() => setChangeRoleMember("", false)}
-                title={`Do you want to Change Role of member?`}
+                title={`Do you want to Change Role of user?`}
                 closeButtonText={"Cancel"}
                 confirmButtonText={"Confirm"} />
         </div>

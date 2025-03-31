@@ -36,7 +36,7 @@ function SignupForm() {
         formdata.person_name = formdata.person_name.trim();
         formdata.email = formdata.email.toLowerCase();
         await signUpUser({
-            variables: { email: formdata.email, name: formdata.person_name, password: formdata.password },
+            variables: { input: { email: formdata.email, name: formdata.person_name, password: formdata.password }},
             onCompleted: (data) => {
                 makeToast({ message: "Registered Successfully", toastType: "success" });
                 navigate('/signin');

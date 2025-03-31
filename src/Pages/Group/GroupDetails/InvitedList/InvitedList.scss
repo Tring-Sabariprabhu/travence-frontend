@@ -15,8 +15,19 @@
         }
     }
     table{
-        .request-status{
-            text-transform: capitalize;
+        tr{
+            td{
+                input[type=checkbox]{
+                    cursor: pointer;
+                }
+            }
+            .invite_status{
+                font-size: 16px;
+                text-transform: capitalize;
+                font-weight: 700;
+            }
         }
+        
+       
     }
 }

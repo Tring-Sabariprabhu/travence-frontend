@@ -1,67 +1,157 @@
-.plan-trip-form{
-    width: 30vw;
-    padding: 30px 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    .button-container{
-        display: flex;
-        gap: 20px;
-        button{
+.plan-trip-container {
+    width: 100%;
+    height: 80vh;
+    overflow-y: auto;
+
+    form {
+        padding: 20px 40px;
+        h2 {
             font-family: var(--font-medium);
-            font-size: 15px;
-            width: 80px;
-            padding: 8px 0;
-            border-radius: 5px;
         }
-    }
-    .trip-details{
+        .Buttons{
+            padding: 0 40px;
+            width: 100%;
+            display: flex;
+            justify-content: end;
+            gap: 30px;
+            button{
+                font-size: 16px;
+                width: fit-content;
+                padding: 8px 15px;
+                border-radius: 5px;
+            }
+        }
+        width: 100%;
+        height: 100%;
         display: flex;
         flex-direction: column;
-        gap: 15px;
-        h4{
-            font-family: var(--font-medium);
-        }
-        .input-container{
-            display: flex;
-            flex-direction: column;
-            div{
-                label{
-                    font-family: var(--font-medium);
-                    font-size: 13px;
-                }
+        gap: 50px;
+
+        .trip-details,
+        .invite-members,
+        .trip-todo, .trip-checklists {
+            .container{
+                padding: 0 20px;
                 display: flex;
                 flex-direction: column;
-                gap: 5px;
-                input[type=text], input[type=date], textarea{
-                    font-family: var(--font-light);
-                }
-                input[type=text], input[type=date]{
-                    padding: 5px;
-                    outline-color: var(--color-blue);
-                }
-                textarea{
-                    resize: none;
-                    height: 40px;
-                    outline-color: var(--color-blue);
+                gap: 25px;
+            }
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            h3 {
+                font-family: var(--font-light);
+            }
+            input[type=checkbox] {
+                cursor: pointer;
+                width: 15px;
+            }
+            textarea, input[type=text]{
+                outline-color: var(--color-blue);
+            }
+            input[type=text],
+            input[type=date],
+            textarea {
+                font-family: var(--font-light);
+            }
+            textarea{
+                padding: 10px;
+                resize: none;
+            }
+            input[type=text], input[type=date]{
+                height: min-content;
+                padding: 8px;
+            }
+        }
+        
+        .trip-details {
+            .container {
+                .input-container {
+                    div {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 5px;
+                        label {
+                            font-family: var(--font-medium);
+                            font-size: 13px;
+                        }
+                        textarea {
+                            height: 100px;
+                        }
+                    }
                 }
             }
-        }       
-    }
-    .invite-members{
-        h4{
-            font-family: var(--font-medium);
+
         }
-        .members{
-            padding: 30px;
-            div{
+
+        .invite-members {
+            .container {
+                div {
+                    display: flex;
+                    gap: 10px;
+                    p {
+                        font-family: var(--font-light);
+                    }
+                }
+            }
+        }
+
+        .trip-todo {
+            .container {
+
+                .todo {
+                    display: flex;
+                    gap: 20px;
+                    div {
+                        display: flex;
+                        gap: 10px;
+                        label {
+                            font-family: var(--font-medium);
+                        }
+                        textarea {
+                            width: 300px;
+                            height: 100px;
+                        }
+                    }
+                    button {
+                        height: fit-content;
+                    }
+                }
+                button {
+                    width: fit-content;
+                    border-radius: 5px;
+                    font-size: 14px;
+                    padding: 8px 10px;
+                }
+            }
+        }
+        .trip-checklists{
+            button{
+                width: fit-content;
+                height: fit-content;
+                padding: 6px 10px;
+                border-radius: 5px;
+            }
+            .container{
                 display: flex;
-                gap: 10px;
-                p{
-                    font-family: var(--font-light);
+                flex-direction: column;
+                gap: 50px;
+                .package{
+                    input[type=text], textarea{
+                        width: 250px;
+                    }
+                    div{
+                        display: flex;
+                        gap: 10px;
+                        label{
+                            font-family: var(--font-medium);
+                        }
+                    }
+                    .package-items{
+                        padding: 10px 20px;
+                    }
                 }
             }
         }
     }
-    
 }

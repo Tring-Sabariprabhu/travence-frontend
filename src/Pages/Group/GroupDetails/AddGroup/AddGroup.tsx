@@ -12,15 +12,16 @@ import TextAreaField from "../../../../Components/TextAreaField/TextAreaField";
 import { CreateGroup, UpdateGroup } from "../../../../ApolloClient/Mutation/Groups";
 
 type AddGroupProps = {
+    admin_id?: string
+    group_id?: string
     group_name?: string
     group_description?: string
-    group_id?: string
     open: boolean;
     onClose: () => void;
     onUpdated: () => void;
 };
 
-const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_name = "", group_description = "", group_id }) => {
+const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_name = "", group_description = "", group_id, admin_id}) => {
 
     const user = useSelector((state: RootState) => state.user);
     const [disableButtonState, setDisableButtonState] = useState<boolean>(false);
@@ -51,7 +52,13 @@ const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_nam
         if (group_id) {
             if (formdata.group_name !== group_name || formdata.group_description !== group_description) {
                 await updateGroup({
-                    variables: { group_id: group_id, name: formdata?.group_name, description: formdata?.group_description },
+                    variables: { 
+                        input: {
+                            admin_id: admin_id,
+                            group_name: formdata?.group_name,
+                            group_description: formdata?.group_description
+                        }
+                    },
                     onCompleted: (data) => {
                         makeToast({ message: data?.updateGroup, toastType: "success" });
                         onUpdated();
@@ -66,7 +73,7 @@ const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_nam
             }
         } else {
             await createGroup({
-                variables: { created_by: user?.user_id, name: formdata?.group_name, description: formdata?.group_description },
+                variables: { input: { created_by: user?.user_id, group_name: formdata?.group_name, group_description: formdata?.group_description }},
                 onCompleted: (data) => {
                     makeToast({ message: data?.createGroup, toastType: "success" });
                     onUpdated();

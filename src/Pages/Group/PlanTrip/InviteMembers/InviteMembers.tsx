@@ -1,8 +1,8 @@
 export const InviteMembers=()=>{
     return (
         <div className="invite-members">
-            <h4>Invite Trip Members</h4>
-            <div className="members">
+            <h3>Invite Members</h3>
+            <div className="container">
                 <div>
                     <input type="checkbox" name="" id="" />
                     <p>Demo1</p>

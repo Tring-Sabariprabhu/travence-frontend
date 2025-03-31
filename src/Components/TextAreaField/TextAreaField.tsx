@@ -1,12 +1,10 @@
-
-// import { UseFormRegister } from "react-hook-form"
 import { useFormContext } from "react-hook-form";
 import { ValidationInput } from "../../Schema/Validation/ValidateInput";
 interface TextAreaFieldProps {
     label: string,
     name: string,
     placeholder: string,
-    className: string,
+    className?: string,
 
 }
 const TextAreaField: React.FC<TextAreaFieldProps> = ({ label, name, placeholder }) => {

@@ -45,7 +45,7 @@ export const privateRoutes = [
             },
             {
                 path: 'trips',
-                element: <TripList/>
+                element: <TripList/>,
             },
             {
                 path: 'plan-trip',

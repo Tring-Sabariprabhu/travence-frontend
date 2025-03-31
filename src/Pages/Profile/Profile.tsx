@@ -33,37 +33,41 @@ const Profile = () => {
     const [updateConfirmState, setUpdateConfirmState] = useState<boolean>(false);
     const [updateDisableState, setUpdateDisableState] = useState<boolean>(false);
 
-    const [getUserDetails] = useLazyQuery(GetCurrentUser, {
-        fetchPolicy: "network-only",
-        onCompleted: (data) => {
-            console.log("data found")
-            const { getAuthUser: updated } = data;
-            dispatch(setUser({ user_id: updated?.user_id, name: updated?.name, email: updated?.email, image: updated?.image, password: updated?.password }));
-            if (watch("password") !== decryptedPassword) {
-                localStorage.removeItem("token");
-                navigate('/signin');
-            } else {
-                navigate('/');
+    const token = localStorage?.getItem("token");
+    const [getUserDetails] = useLazyQuery(GetCurrentUser,
+        {
+            variables: {
+                token: token
+            },
+            fetchPolicy: "network-only",
+            onCompleted: (data) => {
+                const { getCurrentUser: updated } = data;
+                dispatch(setUser({ user_id: updated?.user_id, name: updated?.name, email: updated?.email, password: updated?.password }));
+                if (watch("password") !== decryptedPassword) {
+                    localStorage.removeItem("token");
+                    navigate('/signin');
+                } else {
+                    navigate('/');
+                }
+            },
+            onError: (err) => {
+                makeToast({ message: err.message, toastType: "error" });
             }
-        },
-        onError: (err) => {
-            makeToast({ message: err.message, toastType: "error" });
-        }
-    });
+        });
     const [decryptedPassword, setDecryptedPassword] = useState<string>();
 
-    useEffect(()=>{
-        if(user?.name)
+    useEffect(() => {
+        if (user?.name)
             setValue("person_name", user?.name);
-        if(user?.email)
+        if (user?.email)
             setValue("email", user?.email);
-        if(user?.password){
+        if (user?.password) {
             setDecryptedPassword(decryptPassword(user?.password));
             setValue("password", decryptPassword(user?.password));
         }
         setImageSelected(user?.image);
-            
-    },[user]);
+
+    }, [user]);
 
 
     const methods = useForm<profileData>({
@@ -73,20 +77,28 @@ const Profile = () => {
     });
     const { formState: { errors }, watch, setValue, handleSubmit } = methods;
 
-    
+
 
     const update = async () => {
-        setUpdateDisableState(true);
         setUpdateConfirmState(false);
+        setUpdateDisableState(true);
+        const name = watch("person_name");
         const encryptedPassword = encryptPassword(watch("password"));
         await updateUserDetails({
-            variables: { user_id: user?.user_id, name: watch("person_name"), password: encryptedPassword, image: imageSelected },
+            variables:
+            {
+                input: {
+                    user_id: user?.user_id,
+                    name: name,
+                    password: encryptedPassword,
+                }
+            },
             onCompleted: (data) => {
                 makeToast({ message: data?.updateUser, toastType: "success" });
                 getUserDetails();
             },
             onError: (err) => {
-                makeToast({ message: err.message, toastType: "error" });
+                makeToast({ message: err?.message, toastType: "error" });
             }
         });
         setUpdateDisableState(false);
@@ -109,11 +121,11 @@ const Profile = () => {
         const allowedExtensions = [".jpg", ".jpeg", ".png", ".svg"];
         if (event?.target?.files) {
             const imageURL = (event?.target?.files[0]?.name);
-            const imageExtension = imageURL?.slice(imageURL.indexOf("."));
-            if (allowedExtensions.includes(imageExtension)) {
-                setImageSelected(URL.createObjectURL(event?.target?.files[0]));   
+            const imageExtension = imageURL?.slice(imageURL?.indexOf("."));
+            if (allowedExtensions?.includes(imageExtension)) {
+                setImageSelected(URL?.createObjectURL(event?.target?.files[0]));
             } else {
-                makeToast({message: "Upload Valid Image with extensions .jpg, .jpeg, .png, .svg", toastType: "warning", closeTime: 2000});
+                makeToast({ message: "Upload Valid Image with extensions .jpg, .jpeg, .png, .svg", toastType: "warning", closeTime: 2000 });
             }
         }
     }
@@ -125,7 +137,7 @@ const Profile = () => {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className='user-image'>
                             <img src={imageSelected ? imageSelected : defaultImage} alt="" />
-                            <ChangeCircleOutlined className='icon' onClick={() => document.getElementById('image-input')?.click()} />
+                            <ChangeCircleOutlined className='icon' onClick={() => document?.getElementById('image-input')?.click()} />
                             <input
                                 type="file"
                                 id='image-input'
@@ -145,10 +157,10 @@ const Profile = () => {
                             <InputField type={'password'} label={'Password'} name={'password'} />
                             {errors?.password?.message && <p className='error'>{errors?.password?.message}</p>}
                         </div>
-                        <ButtonField type={'submit'} 
-                            text={'Save Changes'} 
-                            className={'blue_button'} 
-                            disabledState={updateDisableState}/>
+                        <ButtonField type={'submit'}
+                            text={'Save Changes'}
+                            className={'blue_button'}
+                            disabledState={updateDisableState} />
                     </form>
                 </FormProvider>
             </div>

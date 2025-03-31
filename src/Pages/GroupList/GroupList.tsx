@@ -9,59 +9,67 @@ import './GroupList.scss';
 import { GroupOutlined } from "@mui/icons-material";
 import { GroupsList } from "../../ApolloClient/Queries/Groups";
 import { Loader } from "../../Components/Loader/Loader";
+import { DataNotFound } from "../../Components/DataNotFound/DataNotFound";
+import { ErrorPage } from "../../Components/ErrorPage/ErrorPage";
 
 
 interface GroupDataProps {
     group_id: number,
-    name: string,
-    created_user_email: string,
-    created_user_name: string,
-    created_at: string
+    group_name: string,
+    group_description: string,
+    created_at: string,
+    deleted_at: string,
+    updated_at: string,
+    created_by:{
+        name: string,
+        email: string
+    }
 }
 
 export const GroupList = () => {
-    
+
     const navigate = useNavigate();
 
     const user = useSelector((state: RootState) => state.user);
     const [openAddgroup, setOpenAddgroup] = useState<boolean>(false);
-    const {data, loading, error, refetch: refetchGroupListData} = useQuery(GroupsList, 
-        {   variables: {user_id: user?.user_id}, 
+    const { data, loading, error, refetch: refetchGroupListData } = useQuery(GroupsList,
+        {
+            variables: { input: { user_id: user?.user_id }},
             fetchPolicy: "network-only"
-            })
+        })
 
-    if(loading){
-        return <Loader/>;
+    if (loading) {
+        return <Loader />;
     }
-    if(error){
-        return <p>Error</p>
+    if (error) {
+        return <ErrorPage/>;
     }
     const navItems = [
-        { label: `Create Group`, onClick: () => setOpenAddgroup(true)},
+        { label: `Create Group`, onClick: () => setOpenAddgroup(true) },
     ];
 
     return (
         <div className="grouplist-container">
             <Header items={navItems} />
             <main>
-            {data?.groupList?.length > 0 ? data?.groupList?.map((group: GroupDataProps) => (
-                <div title='Click to view' key={group.group_id} className='group'
-                    onClick={() => navigate(`/group`, { state: { group_id: group.group_id, group_name: group.name } })}>    
-                    <div >
-                        <GroupOutlined className="icon"/>
-                    </div>
-                    <div >
-                        <h3>Group name </h3>
-                        <p>{group.name}</p>
-                    </div>
-                    <div>
-                        <h3>Owner</h3>
-                        <p>{user?.email === group?.created_user_email ? "You" : group?.created_user_name }</p>
-                    </div>
-                </div>))   :  <p>No Groups found</p>}
+                {data?.groupList?.length > 0 ? data?.groupList?.map((group: GroupDataProps) => (
+                    <div title='Click to view' key={group.group_id} className='group'
+                        onClick={() => navigate(`/group`, { state: { group_id: group.group_id, group_name: group.group_name } })}>
+                        <div >
+                            <GroupOutlined className="icon" />
+                        </div>
+                        <div >
+                            <h3>Group name </h3>
+                            <p>{group.group_name}</p>
+                        </div>
+                        <div>
+                            <h3>Owner</h3>
+                            <p>{user?.email === group?.created_by?.email ? "You" : group?.created_by?.name}</p>
+                        </div>
+                    </div>)) : <DataNotFound message={"Groups"} />}
             </main>
-            <AddGroup  
-                open={openAddgroup} 
+            <AddGroup
+                open={openAddgroup}
                 onClose={() => setOpenAddgroup(false)}
                 onUpdated={refetchGroupListData}
             />
