@@ -1,7 +1,7 @@
 import { DataNotFound } from "../../../Components/DataNotFound/DataNotFound"
 
-export const TripRequests=()=>{
+export const TripInvites=()=>{
     return(
-        <DataNotFound message={"Trip Requests"}/>
+        <DataNotFound message={"Trip Invites"}/>
     )
 }

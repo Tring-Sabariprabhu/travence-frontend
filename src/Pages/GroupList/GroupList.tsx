@@ -54,7 +54,7 @@ export const GroupList = () => {
             <main>
                 {data?.groupList?.length > 0 ? data?.groupList?.map((group: GroupDataProps) => (
                     <div title='Click to view' key={group.group_id} className='group'
-                        onClick={() => navigate(`/group`, { state: { group_id: group.group_id, group_name: group.group_name } })}>
+                        onClick={() => navigate(`/group/group-details`, { state: { group_id: group.group_id, group_name: group.group_name } })}>
                         <div >
                             <GroupOutlined className="icon" />
                         </div>

@@ -8,8 +8,8 @@ export const Notifications = ()=>{
     return(
         <div className='notification-container'>
             <Header items={[
-                {label: "Group Requests", onClick: ()=>{navigate('group_requests')}},
-                {label: "Trip Requests", onClick: ()=>{navigate('trip_requests')}},
+                {label: "Group Invites", onClick: ()=>{navigate('group-invites')}},
+                {label: "Trip Invites", onClick: ()=>{navigate('trip-invites')}},
             ]}/>
             <Outlet/>
         </div>

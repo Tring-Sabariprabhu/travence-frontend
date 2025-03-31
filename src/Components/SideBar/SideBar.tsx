@@ -38,7 +38,7 @@ export const SideBar = () => {
                     <AccountCircle className='icon' /> 
                     Profile
                 </li>
-                <li onClick={()=> navigate('/notifications/group_requests')} >
+                <li onClick={()=> navigate('/notifications/group-invites')} >
                     <NotificationsRounded className='icon'/>
                         Notifications
                 </li>

@@ -11,11 +11,11 @@ import { useState } from "react"
 import { Loader } from "../../../Components/Loader/Loader"
 import { DataNotFound } from "../../../Components/DataNotFound/DataNotFound";
 import { GroupInviteProps } from "../../Group/GroupDetails/Main/GroupDetails"
-import './GroupRequests.scss';
+import './GroupInvites.scss';
 import { ErrorPage } from "../../../Components/ErrorPage/ErrorPage"
 
 
-export const GroupRequests = () => {
+export const GroupInvites = () => {
 
     const user = useSelector((state: RootState) => state.user);
 
@@ -23,7 +23,7 @@ export const GroupRequests = () => {
     const [acceptDisableState, setAcceptDisableState] = useState<boolean>(false);
 
     const [rejectInvite] = useMutation(RejectGroupInvite);
-    const [declineDisableState, setDeclineDisableState] = useState<boolean>(false);
+    const [rejectDisableState, setRejectDisableState] = useState<boolean>(false);
 
     const { data: groupInvites, loading, error, refetch: refetchRequests } = useQuery(GetGroupInvites,
         { variables: { input: {email: user?.email} }, fetchPolicy: "network-only" });
@@ -54,8 +54,8 @@ export const GroupRequests = () => {
         });
         setAcceptDisableState(false);
     }
-    const afterClickDecline = async (invite: GroupInviteProps) => {
-        setDeclineDisableState(true);
+    const afterClickReject = async (invite: GroupInviteProps) => {
+        setRejectDisableState(true);
         await rejectInvite({
             variables: 
             { 
@@ -71,54 +71,38 @@ export const GroupRequests = () => {
                 makeToast({ message: err?.message, toastType: "error" });
             }
         });
-        setDeclineDisableState(false);
+        setRejectDisableState(false);
     }
     return (
         (groupInvites?.getGroupInvites?.length > 0 ?
-            <div className="group-requests">
-                <table>
-                    <tbody>
+            <div className="group-invite-container">
+               
                         {groupInvites?.getGroupInvites?.map((invite: GroupInviteProps, index: number) => (
-
-                            <tr key={index}>
-                                <td>
-                                    <div>
-                                        <h3>Group name</h3>
-                                        <p>{invite?.invited_by?.group?.group_name}</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>
-                                        <h3>Requested by</h3>
-                                        <p>{invite?.invited_by?.user?.name}</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div>
-                                        <h3>Requested at</h3>
-                                        <p>{dateformat({ date: invite?.invited_at })}</p>
-                                    </div>
-                                </td>
-                                <td>
-                                    {<ButtonField
+                               <div className="invite">                                
+                                    <h4>
+                                        You have Invited by <span>{invite?.invited_by?.user?.name}</span> to Join their Group <span>{invite?.invited_by?.group?.group_name}</span>
+                                    </h4>
+                                    <div className="buttons">
+                                    <ButtonField
                                         type={"button"}
                                         text={"Accept"}
                                         className={"button_style green_button"}
                                         onClick={() => afterClickAccept(invite)}
-                                        disabledState={acceptDisableState} />}
-                                </td>
-                                <td>
-                                    {<ButtonField
+                                        disabledState={acceptDisableState} />
+                                
+                                
+                                    <ButtonField
                                         type={"button"}
-                                        text={"Decline"}
+                                        text={"Reject"}
                                         className={"button_style red_button"}
-                                        onClick={() => afterClickDecline(invite)}
-                                        disabledState={declineDisableState} />}
-                                </td>
-                            </tr>
+                                        onClick={() => afterClickReject(invite)}
+                                        disabledState={rejectDisableState} />
+                                    </div>
+                                    
+                                
+                            </div>
                         ))}
-                    </tbody>
-                </table>
-            </div> : <DataNotFound message={"Group Requests"} />)
+                    
+            </div> : <DataNotFound message={"Group Invites"} />)
     )
 }

@@ -18,16 +18,16 @@ interface InvitedListProps {
 }
 
 export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListProps) => {
-    const [selectedRequests, setSelectedRequests] = useState<string[]>([]);
+    const [selectedInvites, setSelectedInvites] = useState<string[]>([]);
 
-    const [resendRequestsPopup, setResendReqeustsPopup] = useState<boolean>(false);
-    const [deleteRequestsPopup, setDeleteReqeustsPopup] = useState<boolean>(false);
+    const [resendInvitesPopup, setResendInvitesPopup] = useState<boolean>(false);
+    const [deleteInvitesPopup, setDeleteInvitesPopup] = useState<boolean>(false);
 
     const [resendDisableState, setResendDisableState] = useState<boolean>(false);
     const [deleteDisableState, setDeleteDisableState] = useState<boolean>(false);
 
-    const [resendInviteRequests] = useMutation(ResendGroupInvites);
-    const [deleteInviteRequests] = useMutation(DeleteGroupInvites);
+    const [resendInvites] = useMutation(ResendGroupInvites);
+    const [deleteInvites] = useMutation(DeleteGroupInvites);
 
     const unSelectAllCheckBoxes = () => {
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
@@ -36,14 +36,14 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
     }
     const resendInvite = async () => {
         setResendDisableState(true);
-        setResendReqeustsPopup(false);
-        if (selectedRequests?.length > 0) {
-            await resendInviteRequests({
+        setResendInvitesPopup(false);
+        if (selectedInvites?.length > 0) {
+            await resendInvites({
                 variables:
                 {
                     input: {
                         invited_by: admin_id,
-                        invites: selectedRequests
+                        invites: selectedInvites
                     }
                 },
                 onCompleted: (data) => {
@@ -56,19 +56,19 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
             });
             setResendDisableState(false);
             unSelectAllCheckBoxes();
-            setSelectedRequests([]);
+            setSelectedInvites([]);
         }
     }
     const deleteInvite = async () => {
         setDeleteDisableState(true);
-        setDeleteReqeustsPopup(false);
-        if (selectedRequests?.length > 0) {
-            await deleteInviteRequests({
+        setDeleteInvitesPopup(false);
+        if (selectedInvites?.length > 0) {
+            await deleteInvites({
                 variables:
                 {
                     input: {
                         invited_by: admin_id,
-                        invites: selectedRequests
+                        invites: selectedInvites
                     }
                 },
                 onCompleted: (data) => {
@@ -81,23 +81,23 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
             });
             setDeleteDisableState(false);
             unSelectAllCheckBoxes();
-            setSelectedRequests([]);
+            setSelectedInvites([]);
         }
 
     }
     const handleCheckBoxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = event?.target;
-        setSelectedRequests((prevSelected) => {
+        setSelectedInvites((prevInvites) => {
             if (checked) {
-                return [...prevSelected, value];
+                return [...prevInvites, value];
             } else {
-                return prevSelected.filter((id) => id !== value);
+                return prevInvites.filter((id) => id !== value);
             }
         });
     }
 
     return (
-        (invitedList ? <div className="invited-list group-members">
+        (invitedList ? <div className="invited-list group-members-container">
             <div className='actions'>
 
                 {invitedList?.length > 0 &&
@@ -106,15 +106,15 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
                         <ButtonField
                             type={'button'}
                             text={'Resend'}
-                            className={selectedRequests.length > 0 ? 'blue_button' : ""}
-                            disabledState={resendDisableState || selectedRequests?.length === 0}
-                            onClick={() => setResendReqeustsPopup(true)} />
+                            className={selectedInvites.length > 0 ? 'blue_button' : ""}
+                            disabledState={resendDisableState || selectedInvites?.length === 0}
+                            onClick={() => setResendInvitesPopup(true)} />
                         <ButtonField
                             type={'button'}
                             text={'Delete'}
-                            className={selectedRequests.length > 0 ? 'red_button' : ""}
-                            disabledState={deleteDisableState || selectedRequests?.length === 0}
-                            onClick={() => setDeleteReqeustsPopup(true)} />
+                            className={selectedInvites.length > 0 ? 'red_button' : ""}
+                            disabledState={deleteDisableState || selectedInvites?.length === 0}
+                            onClick={() => setDeleteInvitesPopup(true)} />
                     </>
                 }
             </div>
@@ -124,7 +124,7 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
                     <tr>
                         <th></th>
                         <th>Email</th>
-                        <th>Requested at</th>
+                        <th>Invited at</th>
                         <th>Registered</th>
                         <th>Status</th>
                     </tr>
@@ -146,15 +146,15 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
                 </tbody>
             </table>
             <Confirmation
-                open={resendRequestsPopup}
-                onClose={() => setResendReqeustsPopup(false)}
+                open={resendInvitesPopup}
+                onClose={() => setResendInvitesPopup(false)}
                 title={'Do you want to Resend Invite Requests'}
                 confirmButtonText={'Yes'}
                 closeButtonText={'No'}
                 onSuccess={resendInvite} />
             <Confirmation
-                open={deleteRequestsPopup}
-                onClose={() => setDeleteReqeustsPopup(false)}
+                open={deleteInvitesPopup}
+                onClose={() => setDeleteInvitesPopup(false)}
                 title={'Do you want to Delete Invite Requests'}
                 confirmButtonText={'Yes'}
                 closeButtonText={'No'}

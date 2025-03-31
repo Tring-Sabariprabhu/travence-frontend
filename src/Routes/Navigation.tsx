@@ -5,9 +5,9 @@ import { Notifications } from "../Pages/Notifications/Main/Notifications"
 import SigninForm from "../Authentication/Signin/SigninForm"
 import SignupForm from "../Authentication/Signup/SignupForm"
 import { GroupList } from "../Pages/GroupList/GroupList"
-import { GroupRequests } from "../Pages/Notifications/GroupRequests/GroupRequests"
+import { GroupInvites } from "../Pages/Notifications/GroupInvites/GroupInvites"
 import Profile from "../Pages/Profile/Profile"
-import { TripRequests } from "../Pages/Notifications/TripRequests/TripRequests"
+import { TripInvites } from "../Pages/Notifications/TripInvites/TripInvites"
 import { TripList } from "../Pages/Group/TripList/Main/TripList"
 import { GroupDetails } from "../Pages/Group/GroupDetails/Main/GroupDetails"
 import { PlanTrip } from "../Pages/Group/PlanTrip/Main/PlanTrip"
@@ -40,7 +40,7 @@ export const privateRoutes = [
         element: <Group />,
         childs:[
             {
-                path: 'groupdetails',
+                path: 'group-details',
                 element: <GroupDetails/>
             },
             {
@@ -59,12 +59,12 @@ export const privateRoutes = [
         element: <Notifications />,
         childs: [
             {
-                path: 'group_requests',
-                element: <GroupRequests />,
+                path: 'group-invites',
+                element: <GroupInvites />,
             },
             {
-                path: 'trip_requests',
-                element: <TripRequests/>
+                path: 'trip-invites',
+                element: <TripInvites/>
             }
         ]
     }

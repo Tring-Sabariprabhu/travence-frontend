@@ -64,6 +64,7 @@ export const GroupDetails = () => {
     const { data: invitedList, refetch: refetchInvitedList } = useQuery(GetInvitedList,
         {
             variables: { input: {admin_id: userInGroup?.member_id} },
+            skip: !userInGroup?.member_id,
             fetchPolicy: "network-only"
         });
 

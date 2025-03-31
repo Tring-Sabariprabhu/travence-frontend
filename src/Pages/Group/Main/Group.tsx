@@ -1,10 +1,8 @@
-import { useQuery } from '@apollo/client';
-import { useEffect } from 'react';
+import { gql, useQuery } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Header } from '../../../Components/Header/header';
 import { RootState } from '../../../Redux/store';
-import { GroupData } from '../../../ApolloClient/Queries/Groups';
 import { Confirmation } from '../../../Components/Confirmation/Confirmation';
 import { Loader } from '../../../Components/Loader/Loader';
 import './Group.scss';
@@ -15,10 +13,6 @@ export interface Group_Member_Props {
     joined_at: string
     updated_at: string
     deleted_at: string
-    created_by: {
-        email: string,
-        name: string,
-    }
     user: {
         name: string,
         email: string,
@@ -32,10 +26,20 @@ const Group = () => {
     const navigate = useNavigate();
     const group_id = location?.state?.group_id;
 
-    useEffect(()=>{
-        navigate('groupdetails', { state: { group_id: group_id,}});
-    },group_id);
-
+    const GroupData = gql`
+        query get($input: GroupInput!){
+            group(input: $input){
+                group_id,
+                group_name,
+                group_description,
+                group_members{
+                    user{
+                        user_id
+                    }
+                }
+            }
+        }
+    `
     const user = useSelector((state: RootState) => state.user);
     const { data: group_data, loading, error } = useQuery(GroupData,
         {
@@ -49,7 +53,7 @@ const Group = () => {
 
     const userInGroup = group_data?.group?.group_members?.find((member: Group_Member_Props) => member?.user?.user_id === user?.user_id);
     const NavItems = [
-        { label: "Group", onClick: () => navigate('groupdetails', { state: { group_id: group_id,}}) },
+        { label: "Group", onClick: () => navigate('group-details', { state: { group_id: group_id,}}) },
         { label: "Trips", onClick: () => navigate('trips', { state: { group_id: group_id,}}) }
     ]
     if (loading) {

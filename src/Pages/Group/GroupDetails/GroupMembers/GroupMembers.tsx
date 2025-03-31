@@ -11,6 +11,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../Redux/store";
 import { DataNotFound } from "../../../../Components/DataNotFound/DataNotFound";
 import { Group_Member_Props } from "../../Main/Group";
+import { AdminPanelSettings, Leaderboard, Person, Person2Rounded, Person3, Person4, PersonRemove } from "@mui/icons-material";
+import { ListSubheader } from "@mui/material";
 
 
 
@@ -32,7 +34,7 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
 
     const [removeMemberPopupState, setRemoveMemberPopupState] = useState<boolean>(false);
     const [changeRolePopupState, setChangeRolePopupState] = useState<boolean>(false);
-    
+
     const [removeMemberID, setRemoveMemberID] = useState<string>();
     const [changeRoleMemberID, setChangeRoleMemberID] = useState<string>();
 
@@ -44,11 +46,11 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
 
         if (member?.user_role === "member" && groupAdmins?.length === 2)
             makeToast({ message: "A Group can have 2 Admins only", toastType: "error" });
-        else{
+        else {
             setChangeRoleMember(member?.member_id, true);
-        }    
+        }
     }
-    const checkAndSetRemoveMember = (member_id: string)=>{
+    const checkAndSetRemoveMember = (member_id: string) => {
         setRemoveMember(member_id, true);
     }
 
@@ -70,13 +72,13 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
         setChangeRoleDisableState(true);
         setChangeRolePopupState(false);
         await change({
-            variables: 
-                { 
-                    input: {
-                        admin_id: userInGroup?.member_id, 
-                        member_id: changeRoleMemberID
-                    } 
-                },
+            variables:
+            {
+                input: {
+                    admin_id: userInGroup?.member_id,
+                    member_id: changeRoleMemberID
+                }
+            },
             onCompleted: (data) => {
                 makeToast({ message: data?.changeRole, toastType: "success" });
                 onUpdated();
@@ -93,13 +95,13 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
         setRemoveMemberDisableState(true);
         setRemoveMemberPopupState(false);
         await remove({
-            variables: 
-                { 
-                    input: {
-                        admin_id: userInGroup?.member_id, 
-                        member_id: removeMemberID 
-                    }
-                },
+            variables:
+            {
+                input: {
+                    admin_id: userInGroup?.member_id,
+                    member_id: removeMemberID
+                }
+            },
             onCompleted: (data) => {
                 makeToast({ message: data?.deleteGroupMember, toastType: "success" });
                 onUpdated();
@@ -114,58 +116,57 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
 
 
     return (
-        <div className="group-members">
-            {userInGroup &&
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Role</th>
-                            <th>Joined at</th>
-                            {userIsLeader && <th></th>}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {userInGroup ?
-                            <tr>
-                                <td className="user-name">
-                                    <p>{userInGroup?.user?.name}</p>
-                                    <p>(You)</p>
-                                </td>
-                                <td className="user-role"> {userInGroup?.user_role}</td>
-                                <td>{dateformat({ date: userInGroup?.joined_at })} </td>
+        <div className="group-members-container">
+            {userInGroup ?
+                <div className="group-members-list">
+                    <div className="person">
+                        <Person />
+                        <div className="person-details">
+                            <h4 className="user-name">{userInGroup?.user?.name} (You)</h4>
+                            <h4 className="user-role">{userInGroup?.user_role}</h4>
+                        </div>
+                        <div>
+                            <h5 title="joined date">{dateformat({ date: userInGroup?.joined_at })}</h5>
+                        </div>
+                    </div>
+                    {
+                        othersInGroup &&
+                        othersInGroup.map((member, index) => (
+                            <div className="person" key={index}>
+                                <Person />
+                                <div className="person-details">
+                                    <h4 className="user-name">{member?.user?.name}</h4>
+                                    <h4 className="user-role">{member?.user_role}</h4>
+                                </div>
+                                <div>
+                                    <h5 title="joined date">{dateformat({ date: member?.joined_at })}</h5>
+                                </div>
+                                {
+                                    userInGroup?.user_role === 'admin' &&
+                                    <div className="button_actions">
 
-                            </tr>: <tr><td colSpan={5}><DataNotFound message={"Group Members"}/></td></tr>}
+                                        <ButtonField
+                                            type={"button"}
+                                            className={created_by?.user_id === member?.user?.user_id ? "" : "blue_button"}
+                                            text={member?.user_role === "admin" ? "Set as Member" : "Set as Admin"}
+                                            onClick={() => checkAndSetChangeRoleMember(member)}
+                                            disabledState={created_by?.user_id === member?.user?.user_id || changeRoleDisableState}
+                                        />
 
-                        {othersInGroup && othersInGroup?.map((member: Group_Member_Props) => (
-                            <tr key={member?.member_id} >
-                                <td className="user-name">{member?.user?.name}</td>
-                                <td className="user-role">{member?.user_role}</td>
-                                <td>{dateformat({ date: member.joined_at })} </td>
-                                {userIsLeader &&
-                                    <>
-                                        <td className="button_actions">
-                                            <ButtonField
-                                                type={"button"}
-                                                className={created_by?.user_id === member?.user?.user_id ? "" : "blue_button"}
-                                                text={member?.user_role === "admin" ? "Set as Member" : "Set as Admin"}
-                                                onClick={() => checkAndSetChangeRoleMember(member)}
-                                                disabledState={created_by?.user_id === member?.user?.user_id || changeRoleDisableState}
-                                            />
+                                        <ButtonField
+                                            type={"button"}
+                                            className={created_by?.user_id === member?.user?.user_id ? "" : "red_button"}
+                                            text={"Remove"}
+                                            onClick={() => checkAndSetRemoveMember(member?.member_id)}
+                                            disabledState={created_by?.user_id === member?.user?.user_id || removeMemberDisableState}
+                                        />
+                                    </div>}
+                            </div>
+                        ))
+                    }
+                </div> : <DataNotFound message={"Group Members"} />
+            }
 
-                                            <ButtonField
-                                                type={"button"}
-                                                className={created_by?.user_id === member?.user?.user_id ? "" : "red_button"}
-                                                text={"Remove"}
-                                                onClick={() => checkAndSetRemoveMember(member?.member_id)}
-                                                disabledState={created_by?.user_id === member?.user?.user_id || removeMemberDisableState}
-                                            />
-                                        </td>
-                                    </>}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>}
             <Confirmation
                 open={removeMemberPopupState}
                 onSuccess={() => removeMemberProcess()}

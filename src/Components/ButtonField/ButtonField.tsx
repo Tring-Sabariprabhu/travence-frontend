@@ -1,7 +1,7 @@
 
 interface buttonFieldProps{
     type: "submit" | "reset" | "button" ,
-    text: string,
+    text: string ,
     className?: string
     onClick?: ()=>void
     disabledState?: boolean
