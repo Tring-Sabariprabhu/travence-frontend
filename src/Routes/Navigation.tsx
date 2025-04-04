@@ -7,7 +7,6 @@ import SignupForm from "../Authentication/Signup/SignupForm"
 import { GroupList } from "../Pages/GroupList/GroupList"
 import { GroupInvites } from "../Pages/Notifications/GroupInvites/GroupInvites"
 import Profile from "../Pages/Profile/Profile"
-import { TripInvites } from "../Pages/Notifications/TripInvites/TripInvites"
 import { TripList } from "../Pages/Group/TripList/Main/TripList"
 import { GroupDetails } from "../Pages/Group/GroupDetails/Main/GroupDetails"
 import { PlanTrip } from "../Pages/Group/PlanTrip/Main/PlanTrip"
@@ -62,10 +61,6 @@ export const privateRoutes = [
                 path: 'group-invites',
                 element: <GroupInvites />,
             },
-            {
-                path: 'trip-invites',
-                element: <TripInvites/>
-            }
         ]
     }
 ]

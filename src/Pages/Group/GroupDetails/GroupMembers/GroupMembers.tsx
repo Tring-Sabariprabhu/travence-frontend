@@ -134,7 +134,7 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
                         othersInGroup.map((member, index) => (
                             <div className="person" key={index}>
                                 <Person />
-                                <div className="person-details">
+                                <div >
                                     <h4 className="user-name">{member?.user?.name}</h4>
                                     <h4 className="user-role">{member?.user_role}</h4>
                                 </div>

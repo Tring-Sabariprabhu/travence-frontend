@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,8 +15,9 @@ import { DataNotFound } from "../../../../Components/DataNotFound/DataNotFound";
 import { Group_Member_Props } from "../../Main/Group";
 import { InvitedList } from "../InvitedList/InvitedList";
 import { ErrorPage } from "../../../../Components/ErrorPage/ErrorPage";
-
-
+import { Confirmation } from "../../../../Components/Confirmation/Confirmation";
+import { DeleteGroup } from "../../../../ApolloClient/Mutation/Groups";
+import { makeToast } from "../../../../Components/Toast/makeToast";
 
 export interface GroupInviteProps {
     invite_id: string,
@@ -24,16 +25,16 @@ export interface GroupInviteProps {
     registered_user: boolean,
     invite_status: string,
     invited_at: string,
-    invited_by:{
-      member_id: string
-      user:{
-        name: string,
-        email: string
-      }
-      group:{
-        group_name: string,
-        group_description: string
-      }
+    invited_by: {
+        member_id: string
+        user: {
+            name: string,
+            email: string
+        }
+        group: {
+            group_name: string,
+            group_description: string
+        }
     }
 }
 
@@ -48,9 +49,12 @@ export const GroupDetails = () => {
     const [editGroupPopupState, setEditGroupPopupState] = useState<boolean>(false);
     const [invitePopupState, setInvitePopupState] = useState<boolean>(false);
 
+    const [deleteGroupConfirm, setDeleteGroupConfirm] = useState<boolean>(false);
+    const [deleteGroupDisable, setDeleteGroupDisable] = useState<boolean>(false);
+    const [deleteGroup] = useMutation(DeleteGroup);
     const { data: group_data, loading, error, refetch: refetchGroupData } = useQuery(GroupData,
         {
-            variables: { input: { group_id: group_id }},
+            variables: { input: { group_id: group_id } },
             skip: !group_id,
             fetchPolicy: "network-only",
             onError: (err) => {
@@ -63,7 +67,7 @@ export const GroupDetails = () => {
 
     const { data: invitedList, refetch: refetchInvitedList } = useQuery(GetInvitedList,
         {
-            variables: { input: {admin_id: userInGroup?.member_id} },
+            variables: { input: { admin_id: userInGroup?.member_id } },
             skip: !userInGroup?.member_id,
             fetchPolicy: "network-only"
         });
@@ -72,9 +76,30 @@ export const GroupDetails = () => {
         return <Loader />;
     }
     if (error) {
-        return <ErrorPage/>;
+        return <ErrorPage />;
     }
+    
     const invitedEmails = invitedList?.getGroupInvitedList?.map((invite: GroupInviteProps) => invite?.email);
+
+    const deleteGroupProcess = async ()=>{
+        setDeleteGroupConfirm(false);
+        setDeleteGroupDisable(true);
+        await deleteGroup(
+            {
+                variables: {
+                    input: {
+                        admin_id: userInGroup?.member_id
+                    }
+                },
+                onCompleted: (data)=>{
+                    const {deleteGroup: message} = data;
+                    makeToast({message: message, toastType: "success"});
+                },
+                onError: (err)=>{
+                    makeToast({message: err?.message, toastType: "error"});
+                }});
+        setDeleteGroupDisable(false);
+    }
 
     return (
         (group_data?.group ?
@@ -94,6 +119,22 @@ export const GroupDetails = () => {
                             <p>{group_data?.group?.group_members?.length}</p>
                         </div>
                     </div>
+                    <div className="Buttons">
+                        {userIsLeader &&
+                            <ButtonField type={"button"}
+                                text={"Edit Group details"}
+                                className={"blue_button"}
+                                onClick={() => setEditGroupPopupState(true)} />
+                        }
+                        {
+                            group_data?.group?.created_by?.user_id === user?.user_id &&
+                            <ButtonField type={"button"}
+                                text={"Delete Group"}
+                                className="red_button" 
+                                onClick={()=>setDeleteGroupConfirm(true)}
+                                disabledState={deleteGroupDisable}/>
+                        }
+                    </div>
                 </div>
                 <div className="tabs-container">
                     <div className='tabs'>
@@ -111,12 +152,6 @@ export const GroupDetails = () => {
 
                     </div>
                     <div className="Buttons">
-                        {userIsLeader &&
-                            <ButtonField type={'button'}
-                                text={`Edit Group details`}
-                                className={'blue_button'}
-                                onClick={() => setEditGroupPopupState(true)} />
-                        }
                         {userIsLeader &&
                             <ButtonField
                                 type={"button"}
@@ -155,6 +190,13 @@ export const GroupDetails = () => {
                     open={invitePopupState}
                     onClose={() => setInvitePopupState(false)}
                     onUpdated={refetchInvitedList} />
+                <Confirmation 
+                    open={deleteGroupConfirm} 
+                    onClose={()=> setDeleteGroupConfirm(false)} 
+                    title={"Do you want to delete this Group ?"} 
+                    closeButtonText={"Cancel"}
+                    confirmButtonText={"Confirm"}
+                    onSuccess={deleteGroupProcess}/>
             </div> : <DataNotFound message={"Group"} />)
 
     )

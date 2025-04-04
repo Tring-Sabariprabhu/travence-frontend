@@ -95,11 +95,19 @@ const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_nam
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)} className="addgroup-form">
                     <div className="input-container">
-                        <InputField type="text" label="Group Name" name="group_name" placeholder="Enter Group name" />
+                        <InputField type="text" 
+                            label={"Group Name"} 
+                            name="group_name" 
+                            placeholder="Enter Group name" 
+                            required={true}/>
                         {errors?.group_name?.message && <p className="error">{errors?.group_name?.message}</p>}
                     </div>
                     <div className="input-container">
-                        <TextAreaField label={"Group Description"} name={"group_description"} placeholder={"Enter Group description"} className={""} />
+                        <TextAreaField 
+                            label={"Group Description"} 
+                            name={"group_description"} 
+                            placeholder={"Enter Group description"} 
+                            required={true} />
                         {errors?.group_description?.message && <p className="error">{errors?.group_description?.message}</p>}
                     </div>
                     <div className="button-container">

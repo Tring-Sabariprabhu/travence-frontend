@@ -9,7 +9,6 @@ export const Notifications = ()=>{
         <div className='notification-container'>
             <Header items={[
                 {label: "Group Invites", onClick: ()=>{navigate('group-invites')}},
-                {label: "Trip Invites", onClick: ()=>{navigate('trip-invites')}},
             ]}/>
             <Outlet/>
         </div>

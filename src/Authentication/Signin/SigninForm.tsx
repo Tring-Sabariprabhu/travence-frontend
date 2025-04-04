@@ -13,7 +13,6 @@ export default function SigninForm() {
 
   const navigate = useNavigate();
   const [disableButtonState, setDisableButtonState] = useState<boolean>(false);
-  //Set disable to button until wait for API
 
   const [signInUser] = useMutation(Signin_user, { fetchPolicy: "network-only" });
 
@@ -59,7 +58,8 @@ export default function SigninForm() {
               label="Email"
               type="text"
               name={"email"}
-              placeholder={"Enter your email"} />
+              placeholder={"Enter your email"} 
+              required={true}/>
             {errors?.email?.message && <p className="error">{errors?.email?.message}</p>}
           </div>
           <div className="input-container">
@@ -67,7 +67,8 @@ export default function SigninForm() {
               label="Password"
               type="password"
               name="password"
-              placeholder="Enter your password" />
+              placeholder="Enter your password" 
+              required={true}/>
             {errors?.password?.message && <p className="error">{errors?.password?.message}</p>}
           </div>
           <ButtonField

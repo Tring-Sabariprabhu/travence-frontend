@@ -8,11 +8,10 @@ import { ErrorPage } from '../../../../Components/ErrorPage/ErrorPage';
 import { DataNotFound } from '../../../../Components/DataNotFound/DataNotFound';
 export const TripList = () => {
     const navigate = useNavigate();
-    // if(true){
-    //     return <ErrorPage/>;
-    // }
+
     const location = useLocation();
     const group_id = location?.state?.group_id;
+    const admin_id = location?.state?.admin_id;
 
     return (
         <div className="grouplist-container triplist-container">
@@ -26,9 +25,16 @@ export const TripList = () => {
                     </select>
                 </div>
                 <ButtonField type={'button'} 
-                    text={'Plan trip'} 
-                    onClick={()=>navigate('/group/plan-trip' , { state: { group_id: group_id,}})} 
-                    className='blue_button'/>
+                    text={'Plan Trip'} 
+                    className={'blue_button'}
+                    onClick={()=> navigate('/group/plan-trip', 
+                        { 
+                            state: { 
+                                group_id: group_id, 
+                                admin_id: admin_id
+                            }
+                        }
+                        )}/>
             </div>
             <main>            
                 {/* <div className="group">

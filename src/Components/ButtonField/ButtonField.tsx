@@ -9,7 +9,7 @@ interface buttonFieldProps{
 const ButtonField: React.FC<buttonFieldProps>= ({ type, text, className, onClick, disabledState = false}) => {
     return (
         <button type={type} className={className} onClick={onClick} disabled={disabledState}>
-            {text}
+            {text} 
         </button>
     )
 }

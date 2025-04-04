@@ -11,19 +11,15 @@ export const UpdateGroup = gql`
     }`
 
 export const DeleteGroup = gql`
-mutation delete($group_id: String!){
-    deleteGroup(group_id: $group_id)
+mutation delete($input: DeleteGroupInput!){
+    deleteGroup(input: $input)
 }`
 
-// export const AddUserToGroup = gql`
-// mutation insert($group_id: String!, $user_id: String!, $role: String){
-//     addUserToGroup(group_id: $group_id, user_id: $user_id, role: $role)
-// }`
 export const ChangeRoleInGroup = gql`
-mutation change($input: ChangeRoleInput!){
+mutation change($input: GroupMemberActionsInput!){
     changeRole(input: $input)
 }`
 export const DeleteUserFromGroup = gql`
-mutation delete($input: DeleteGroupMemberInput!){
+mutation delete($input: GroupMemberActionsInput!){
     deleteGroupMember(input: $input)
 }`
