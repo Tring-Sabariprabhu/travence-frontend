@@ -10,6 +10,8 @@ export const AddMembers = () => {
     const location = useLocation();
     const group_id = location?.state?.group_id;
     const member_id = location?.state?.member_id;
+    const trip_id = location?.state?.trip_id;
+    
     const {data: groupdata} = useQuery(GroupData,
         {
             variables: {

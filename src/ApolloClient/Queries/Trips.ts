@@ -35,15 +35,6 @@ export const TripData = gql`
                     email
                 }
             }
-            trip_members{
-                trip_member_id
-                group_member{
-                    user{
-                        name,
-                        email
-                    }
-                }
-            }
             trip_checklists
             trip_activities{
                 activity

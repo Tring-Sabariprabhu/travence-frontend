@@ -8,16 +8,20 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { AddMembers } from "../AddMembers/AddMembers";
 import { TripDetails } from "../TripDetails/TripDetails";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { CreateTrip } from "../../../ApolloClient/Mutation/Trips";
 import { makeToast } from "../../../Components/Toast/makeToast";
+import { Loader } from "../../../Components/Loader/Loader";
+import { ErrorPage } from "../../../Components/ErrorPage/ErrorPage";
+import { TripData } from "../../../ApolloClient/Queries/Trips";
+import { useEffect } from "react";
 
 
 interface Activity {
     activity: string
     budget: number
 }
-interface FormValues {
+export interface PlanTripFormValues {
     trip_name: string;
     trip_description: string;
     trip_start_date: Date;
@@ -31,6 +35,8 @@ export const PlanTrip = () => {
     const location = useLocation();
     const group_id = location?.state?.group_id;
     const member_id = location?.state?.member_id;
+    const trip_id = location?.state?.trip_id;
+
     const navigate = useNavigate();
     const schema = yup
         .object()
@@ -41,39 +47,66 @@ export const PlanTrip = () => {
             trip_days_count: yup.number().positive().required("Trip days count required"),
             trip_members: yup
                 .array()
-                .of( yup.string().required())
+                .of(yup.string().required())
                 .required("Trip Members are required"),
             trip_activities: yup
                 .array()
-                .of( yup.object().shape({
-                        activity: yup.string().required(),
-                        budget: yup.number().positive().required("Budget required")
-                    }))
+                .of(yup.object().shape({
+                    activity: yup.string().required(),
+                    budget: yup.number().positive().required("Budget required")
+                }))
                 .required("Trip Activities are required")
                 .min(2),
             trip_checklists: yup
                 .array()
-                .of( yup.string().required("Checklist Item is required"))
+                .of(yup.string().required("Checklist Item is required"))
                 .required("Trip Checklists are required")
                 .min(2),
         })
-    const methods = useForm<FormValues>({
+    const methods = useForm<PlanTripFormValues>({
         resolver: yupResolver(schema)
     });
 
-    const { handleSubmit } = methods;
+    const { handleSubmit, setValue } = methods;
+    const { data: tripdata, loading, error } = useQuery(TripData,
+        {
+            variables: {
+                input: {
+                    member_id: member_id,
+                    trip_id: trip_id
+                }
+            }, skip: !trip_id
+        });
     const [createTrip] = useMutation(CreateTrip);
-    const onSubmit = async (formdata: FormValues) => {
+
+    useEffect(() => {
+        if (tripdata) {
+            const { trip } = tripdata;
+            setValue("trip_name", trip?.trip_name);
+            setValue("trip_description", trip?.trip_description);
+            setValue("trip_days_count", trip?.trip_days_count);
+            setValue("trip_start_date", new Date(trip?.trip_start_date));
+            setValue("trip_checklists", trip?.trip_checklists);
+            setValue("trip_activities", trip?.trip_activities);
+        }
+
+    }, [trip_id]);
+
+    if (loading) {
+        return <Loader />;
+    } else if (error) {
+        return <ErrorPage />;
+    }
+    const onSubmit = async (formdata: PlanTripFormValues) => {
         formdata.trip_members.push(member_id);
         let trip_budget = 0;
-        for(const activity of formdata?.trip_activities){
-             trip_budget = trip_budget + activity?.budget;
+        for (const activity of formdata?.trip_activities) {
+            trip_budget = trip_budget + activity?.budget;
         }
         await createTrip(
             {
                 variables: {
                     input: {
-                        group_id: group_id,
                         admin_id: member_id,
                         trip_name: formdata?.trip_name,
                         trip_description: formdata?.trip_description,
@@ -85,12 +118,12 @@ export const PlanTrip = () => {
                         trip_checklists: formdata?.trip_checklists,
                     }
                 },
-                onCompleted: (data)=>{
-                    makeToast({message: data?.createTrip, toastType: "success"});
+                onCompleted: (data) => {
+                    makeToast({ message: data?.createTrip, toastType: "success" });
                     navigate(-1);
                 },
-                onError:(err)=>{
-                    makeToast({message: err?.message, toastType: "error"});
+                onError: (err) => {
+                    makeToast({ message: err?.message, toastType: "error" });
                 }
             },)
     }
@@ -99,7 +132,7 @@ export const PlanTrip = () => {
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <h2>Plan Trip</h2>
-                    <TripDetails/>
+                    <TripDetails />
                     <AddMembers />
                     <Activities />
                     <CheckLists />
