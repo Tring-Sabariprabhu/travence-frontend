@@ -42,3 +42,10 @@ export const GroupData = gql`
             }
         }
     }`
+
+export const GroupMemberDetails = gql`
+    query($member_id: String!){
+        groupMember(member_id: $member_id){
+            user_role
+        }
+    }`

@@ -20,7 +20,6 @@
             gap: 5px;
             width: 250px;
             height: 200px;
-
             border-radius: 10px;
             transition:  0.3s ease-in-out ;
             &:hover {
@@ -39,11 +38,17 @@
                 }
 
                 p {
+                    text-transform: capitalize;
                     font-family: var(--font-light);
                     font-size: 13px;
                 }
             }
-
+            .dropdown-item{
+                .dropdown{
+                    height: 20px;
+                }
+                align-items: end;
+            }
         }
     }
 

@@ -29,7 +29,6 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
 
     const user = useSelector((state: RootState) => state.user);
     const othersInGroup = group_members?.filter((member: Group_Member_Props) => member?.user?.user_id !== user?.user_id);
-    const userIsLeader = userInGroup?.user_role === "admin";
     const groupAdmins = group_members?.filter((member: Group_Member_Props) => member?.user_role === "admin");
 
     const [removeMemberPopupState, setRemoveMemberPopupState] = useState<boolean>(false);
@@ -119,7 +118,7 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
         <div className="group-members-container">
             {userInGroup ?
                 <div className="group-members-list">
-                    <div className="person">
+                    <div className="member">
                         <Person />
                         <div className="person-details">
                             <h4 className="user-name">{userInGroup?.user?.name} (You)</h4>
@@ -132,7 +131,7 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
                     {
                         othersInGroup &&
                         othersInGroup.map((member, index) => (
-                            <div className="person" key={index}>
+                            <div className="member" key={index}>
                                 <Person />
                                 <div >
                                     <h4 className="user-name">{member?.user?.name}</h4>

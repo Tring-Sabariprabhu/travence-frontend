@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form"
-import InputField from "../../../../Components/FormFields/InputField/InputField";
-import TextAreaField from "../../../../Components/FormFields/TextareaField/TextareaField";
+import InputField from "../../../Components/FormFields/InputField/InputField";
+import TextAreaField from "../../../Components/FormFields/TextareaField/TextareaField";
 
 export const TripDetails = () => {
 

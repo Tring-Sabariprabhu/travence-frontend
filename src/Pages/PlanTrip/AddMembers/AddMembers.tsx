@@ -1,9 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { MenuItem, Select, SelectChangeEvent } from "@mui/material"
 import { useState } from "react";
-import { GroupData } from "../../../../ApolloClient/Queries/Groups";
+import { GroupData } from "../../../ApolloClient/Queries/Groups";
 import { useLocation } from "react-router-dom";
-import { Group_Member_Props } from "../../Main/Group";
+import { Group_Member_Props } from "../../Group/Main/Group";
 import { useFormContext } from "react-hook-form";
 
 export const AddMembers = () => {

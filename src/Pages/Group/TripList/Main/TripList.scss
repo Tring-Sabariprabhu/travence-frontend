@@ -23,10 +23,11 @@
         .group{
             justify-content: space-between;
             .trip_status{
+                font-size: 13px;
                 padding: 5px 10px;
+                border-radius: 8px;
                 width: fit-content;
                 background-color: var(--light-gray);
-                border-radius: 10px;
                 text-transform: capitalize;
                 font-family: var(--font-medium);
             }

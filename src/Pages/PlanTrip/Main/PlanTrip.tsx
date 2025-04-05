@@ -1,7 +1,7 @@
 import { useForm, FormProvider } from "react-hook-form";
 import './PlanTrip.scss';
 import { CheckLists } from "../CheckLists/CheckLists";
-import ButtonField from "../../../../Components/ButtonField/ButtonField";
+import ButtonField from "../../../Components/ButtonField/ButtonField";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Activities } from "../Activities/Activities";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,8 +9,8 @@ import * as yup from 'yup';
 import { AddMembers } from "../AddMembers/AddMembers";
 import { TripDetails } from "../TripDetails/TripDetails";
 import { useMutation } from "@apollo/client";
-import { CreateTrip } from "../../../../ApolloClient/Mutation/Trips";
-import { makeToast } from "../../../../Components/Toast/makeToast";
+import { CreateTrip } from "../../../ApolloClient/Mutation/Trips";
+import { makeToast } from "../../../Components/Toast/makeToast";
 
 
 interface Activity {
@@ -42,8 +42,7 @@ export const PlanTrip = () => {
             trip_members: yup
                 .array()
                 .of( yup.string().required())
-                .required("Trip Members are required")
-                .min(1),
+                .required("Trip Members are required"),
             trip_activities: yup
                 .array()
                 .of( yup.object().shape({
@@ -66,7 +65,10 @@ export const PlanTrip = () => {
     const [createTrip] = useMutation(CreateTrip);
     const onSubmit = async (formdata: FormValues) => {
         formdata.trip_members.push(member_id);
-        //Adding Member who is created this Trip
+        let trip_budget = 0;
+        for(const activity of formdata?.trip_activities){
+             trip_budget = trip_budget + activity?.budget;
+        }
         await createTrip(
             {
                 variables: {
@@ -77,6 +79,7 @@ export const PlanTrip = () => {
                         trip_description: formdata?.trip_description,
                         trip_start_date: formdata?.trip_start_date,
                         trip_days_count: formdata?.trip_days_count,
+                        trip_budget: trip_budget,
                         trip_members: formdata?.trip_members,
                         trip_activities: formdata?.trip_activities,
                         trip_checklists: formdata?.trip_checklists,
@@ -87,7 +90,6 @@ export const PlanTrip = () => {
                     navigate(-1);
                 },
                 onError:(err)=>{
-                    console.error(err);
                     makeToast({message: err?.message, toastType: "error"});
                 }
             },)

@@ -1,0 +1,12 @@
+h4, h5{
+    font-family: var(--font-light);
+}
+.name{
+    text-transform: capitalize;
+}
+.trip-page-container{
+    padding: 20px;
+    .group-members-container{
+        height: fit-content; 
+    }
+}

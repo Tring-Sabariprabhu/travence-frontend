@@ -7,6 +7,7 @@ import { Confirmation } from '../../../Components/Confirmation/Confirmation';
 import { Loader } from '../../../Components/Loader/Loader';
 import './Group.scss';
 import { ErrorPage } from '../../../Components/ErrorPage/ErrorPage';
+import { makeToast } from '../../../Components/Toast/makeToast';
 
 export interface Group_Member_Props {
     member_id: string
@@ -49,7 +50,8 @@ const Group = () => {
             skip: !group_id,
             fetchPolicy: "network-only",
             onError: (err) => {
-                console.log("Fetching Group Data failed ", err.message);
+                console.log(err.message);
+                makeToast({message: err?.message, toastType: "error"});
             }
         });
 

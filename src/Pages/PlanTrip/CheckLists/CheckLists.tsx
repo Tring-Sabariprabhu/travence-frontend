@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ButtonField from "../../../../Components/ButtonField/ButtonField";
-import TextAreaField from "../../../../Components/FormFields/TextareaField/TextareaField";
+import ButtonField from "../../../Components/ButtonField/ButtonField";
+import TextAreaField from "../../../Components/FormFields/TextareaField/TextareaField";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 export const CheckLists = () => {

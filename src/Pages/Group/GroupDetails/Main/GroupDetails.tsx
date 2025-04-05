@@ -58,7 +58,8 @@ export const GroupDetails = () => {
             skip: !group_id,
             fetchPolicy: "network-only",
             onError: (err) => {
-                console.log("Fetching Group Data failed ", err.message);
+                console.log(err.message);
+                makeToast({message: err?.message, toastType: "error"});
             }
         });
 

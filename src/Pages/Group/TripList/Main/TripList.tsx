@@ -5,6 +5,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { DataNotFound } from '../../../../Components/DataNotFound/DataNotFound';
 import { useQuery } from '@apollo/client';
 import { JoinedTrips } from '../../../../ApolloClient/Queries/Trips';
+import { Loader } from '../../../../Components/Loader/Loader';
+import { ErrorPage } from '../../../../Components/ErrorPage/ErrorPage';
+import { GroupMemberDetails } from '../../../../ApolloClient/Queries/Groups';
+import { makeToast } from '../../../../Components/Toast/makeToast';
+
 interface Trip_Props {
     trip_id: string
     trip_name: string
@@ -14,7 +19,7 @@ interface Trip_Props {
     trip_start_date: string
     created_by: {
         member_id: string
-        user:{
+        user: {
             name: string
             email: string
         }
@@ -36,27 +41,46 @@ interface Trip_Props {
     }
 }
 export const TripList = () => {
+    const getTripStatusColor = (status: string) => {
+        switch (status) {
+            case "upcoming":
+                return "--color-green";
+            case "canceled":
+                return "--color-red";
+            case "completed":
+                return "--color-blue";
+        }
+    }
     const navigate = useNavigate();
 
     const location = useLocation();
     const group_id = location?.state?.group_id;
     const member_id = location?.state?.member_id;
 
-    const { data: tripdata } = useQuery(JoinedTrips,
+    const {data: userInGroup} = useQuery(GroupMemberDetails, 
+        {
+            variables: {
+                member_id: member_id
+            },
+            onError:(err)=> {
+                makeToast({message: err?.message, toastType: "error"});
+            }
+        },
+    );
+    const { data: tripdata , loading, error} = useQuery(JoinedTrips,
         {
             variables: {
                 input: {
                     member_id: member_id
                 }
-            },
-            onCompleted: () => {
-                console.log(tripdata?.joinedTrips);
-            },
-            onError: (err) => {
-                console.log(err?.message);
             }
         })
-
+    if(loading){
+        return <Loader/>;
+    }else if(error){
+        return <ErrorPage/>;
+    }
+    console.log(userInGroup?.groupMember)
     return (
         <div className="grouplist-container triplist-container">
             <div className="triplist-header">
@@ -68,7 +92,10 @@ export const TripList = () => {
                         <option value="">Upcoming</option>
                     </select>
                 </div>
-                <ButtonField type={'button'}
+                {
+                    userInGroup?.groupMember?.user_role === 'admin' 
+                    &&
+                    <ButtonField type={'button'}
                     text={'Plan Trip'}
                     className={'blue_button'}
                     onClick={() => navigate('/group/plan-trip',
@@ -79,27 +106,37 @@ export const TripList = () => {
                             }
                         }
                     )} />
+                }
+                
             </div>
             <main>
-                {
-                    tripdata?.joinedTrips ?
-                    tripdata?.joinedTrips?.map((trip: Trip_Props, index: number)=> (
-                        <div className="group">
-                            <p className='trip_status'
-                                    style={{color: `var(${(trip?.trip_status === "upcoming" ? "--color-blue" : "--color-green")})`}}>{trip?.trip_status}</p>
-                            <div className='group-data'>
-                                <div>
-                                <h3>Trip name</h3>
-                                <p>{trip?.trip_name}</p>
+                { tripdata?.joinedTrips?.length > 0 ?
+                        tripdata?.joinedTrips?.map((trip: Trip_Props) => (
+                            <div className="group" key={trip?.trip_id}
+                                onClick={()=> navigate('/group/trip', 
+                                {        
+                                    state: {
+                                            group_id: group_id,
+                                            member_id: member_id,
+                                            trip_id: trip?.trip_id
+                                        }
+                                    }
+                                )}>
+                                <p className='trip_status'
+                                    style={{ color: `var(${getTripStatusColor(trip?.trip_status)}` }}>{trip?.trip_status}</p>
+                                <div className='group-data'>
+                                    <div>
+                                        <h3>Trip name</h3>
+                                        <p>{trip?.trip_name}</p>
+                                    </div>
+                                    <div>
+                                        <h3>Planned by</h3>
+                                        <p>{trip?.created_by?.user?.name}</p>
+                                    </div>
+
                                 </div>
-                                <div>
-                                <h3>Planned by</h3>
-                                <p>{trip?.created_by?.user?.name}</p>
-                                </div>
-                                
                             </div>
-                        </div>
-                    )): <DataNotFound message={"Trips"} />
+                        )) : <DataNotFound message={"Trips"} />
                 }
             </main>
         </div>

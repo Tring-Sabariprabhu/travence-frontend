@@ -1,6 +1,6 @@
-import ButtonField from "../../../../Components/ButtonField/ButtonField"
-import TextAreaField from "../../../../Components/FormFields/TextareaField/TextareaField"
-import InputField from "../../../../Components/FormFields/InputField/InputField"
+import ButtonField from "../../../Components/ButtonField/ButtonField"
+import TextAreaField from "../../../Components/FormFields/TextareaField/TextareaField"
+import InputField from "../../../Components/FormFields/InputField/InputField"
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 export const Activities = () => {
