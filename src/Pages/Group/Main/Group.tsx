@@ -34,6 +34,7 @@ const Group = () => {
                 group_name,
                 group_description,
                 group_members{
+                    member_id
                     user{
                         user_id
                     }
@@ -58,7 +59,7 @@ const Group = () => {
             { 
                 state: { 
                     group_id: group_id, 
-                    admin_id: userInGroup?.member?.member_id
+                    member_id: userInGroup?.member_id
                 }
             }
         ) },
@@ -66,7 +67,7 @@ const Group = () => {
             { 
                 state: { 
                     group_id: group_id, 
-                    admin_id: userInGroup?.member?.member_id
+                    member_id: userInGroup?.member_id
                 }
             }
             ) },

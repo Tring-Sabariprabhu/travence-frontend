@@ -30,7 +30,7 @@ export const PlanTrip = () => {
 
     const location = useLocation();
     const group_id = location?.state?.group_id;
-    const admin_id = location?.state?.admin_id;
+    const member_id = location?.state?.member_id;
     const navigate = useNavigate();
     const schema = yup
         .object()
@@ -65,14 +65,14 @@ export const PlanTrip = () => {
     const { handleSubmit } = methods;
     const [createTrip] = useMutation(CreateTrip);
     const onSubmit = async (formdata: FormValues) => {
-        console.log("Form submitted");
-        console.log(admin_id)
+        formdata.trip_members.push(member_id);
+        //Adding Member who is created this Trip
         await createTrip(
             {
                 variables: {
                     input: {
                         group_id: group_id,
-                        admin_id: admin_id,
+                        admin_id: member_id,
                         trip_name: formdata?.trip_name,
                         trip_description: formdata?.trip_description,
                         trip_start_date: formdata?.trip_start_date,
@@ -87,6 +87,7 @@ export const PlanTrip = () => {
                     navigate(-1);
                 },
                 onError:(err)=>{
+                    console.error(err);
                     makeToast({message: err?.message, toastType: "error"});
                 }
             },)

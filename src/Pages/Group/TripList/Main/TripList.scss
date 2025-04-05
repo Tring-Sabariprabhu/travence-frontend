@@ -19,4 +19,17 @@
             }
         }
     }
+    main{
+        .group{
+            justify-content: space-between;
+            .trip_status{
+                padding: 5px 10px;
+                width: fit-content;
+                background-color: var(--light-gray);
+                border-radius: 10px;
+                text-transform: capitalize;
+                font-family: var(--font-medium);
+            }
+        }
+    }
 }

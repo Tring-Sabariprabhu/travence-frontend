@@ -8,6 +8,7 @@
     --color-red:#ff0000dc;
     --color-green: #29d729;
     --color-gray: #ede8e8b2;
+    --light-gray: #ede8e841;;
     --light-black: #706666;
     --light-blue: #0ec1f8dd;
     --dark-black: #000000ee;
@@ -15,6 +16,7 @@
     --font-medium: 'PoppinsMedium'; 
     --font-light: 'PoppinsLight';
 }
+
 .input-required{
     padding-left: 2px;
     color: var(--color-red);

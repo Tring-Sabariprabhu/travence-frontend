@@ -9,6 +9,7 @@ import { useFormContext } from "react-hook-form";
 export const AddMembers = () => {
     const location = useLocation();
     const group_id = location?.state?.group_id;
+    const member_id = location?.state?.member_id;
     const {data: groupdata} = useQuery(GroupData,
         {
             variables: {
@@ -20,18 +21,12 @@ export const AddMembers = () => {
             fetchPolicy: "network-only"
         }
     )
-    const group_members = groupdata?.group?.group_members;
+    const group_members = groupdata?.group?.group_members?.filter((member:Group_Member_Props)=> member.member_id !== member_id);
     const {setValue} = useFormContext();
     const [addMembers, setAddMembers] = useState<string[]>([]);
     const addMember = (event: SelectChangeEvent<typeof addMembers>) => {
-        // event?.target?.
-        // const {target: {value}} = event;
-        // if(addMembers.includes(event?.target?.value as string)){
-        //     addMembers?.findIndex(value);
-        // }else{
-            setAddMembers(event.target.value as string[]);
-        // }
-        setValue("trip_members", event?.target?.value as string[]);
+       setAddMembers(event.target.value as string[]);
+       setValue("trip_members", event?.target?.value as string[]);
       };
     const {formState: {errors}} = useFormContext();
     return (
@@ -47,7 +42,7 @@ export const AddMembers = () => {
                         group_members?.length > 0 
                         &&
                         group_members?.map((member: Group_Member_Props, index: number)=> (
-                            <MenuItem value={member?.member_id}>
+                            <MenuItem value={member?.member_id} key={index}>
                                 {member?.user?.name}
                             </MenuItem>
                         ))
