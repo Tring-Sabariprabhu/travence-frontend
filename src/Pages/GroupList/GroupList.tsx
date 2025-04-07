@@ -6,11 +6,12 @@ import { Header } from "../../Components/Header/header";
 import { RootState } from "../../Redux/store";
 import AddGroup from "../Group/GroupDetails/AddGroup/AddGroup";
 import './GroupList.scss';
-import { GroupOutlined } from "@mui/icons-material";
+import { ExpandMore, GroupOutlined } from "@mui/icons-material";
 import { GroupsList } from "../../ApolloClient/Queries/Groups";
 import { Loader } from "../../Components/Loader/Loader";
 import { DataNotFound } from "../../Components/DataNotFound/DataNotFound";
 import { ErrorPage } from "../../Components/ErrorPage/ErrorPage";
+import { Menu, MenuItem, Select } from "@mui/material";
 
 
 interface GroupDataProps {
@@ -29,7 +30,7 @@ interface GroupDataProps {
 export const GroupList = () => {
 
     const navigate = useNavigate();
-
+    const [menuOpenState, setMenuOpenState] = useState<boolean>(false);
     const user = useSelector((state: RootState) => state.user);
     const [openAddgroup, setOpenAddgroup] = useState<boolean>(false);
     const { data, loading, error, refetch: refetchGroupListData } = useQuery(GroupsList,
@@ -53,12 +54,30 @@ export const GroupList = () => {
             <Header items={navItems} />
             <main>
                 {data?.groupList?.length > 0 ? data?.groupList?.map((group: GroupDataProps) => (
-                    <div title='Click to view' key={group.group_id} className='group'
-                        onClick={() => navigate(`/group/group-details`, { state: { group_id: group.group_id, group_name: group.group_name } })}>
+                    <div className='group'  
+                        key={group.group_id} 
+                        title='Click to view'
+                        onClick={() => navigate(`/group/group-details`, 
+                            {
+                                 state: { 
+                                    group_id: group.group_id, 
+                                    group_name: group.group_name 
+                                    } 
+                                }
+                            )}
+                            >
+                        <div className="dropdown-item">
+                            <ExpandMore/>
+                            <Menu className="dropdown" open={menuOpenState} onClose={()=>setMenuOpenState(false)}>
+                                <MenuItem value="open">Open</MenuItem>
+                                <MenuItem value="edit">Edit</MenuItem>
+                                <MenuItem value="delete">Delete</MenuItem>
+                            </Menu>
+                        </div>
                         <div >
                             <GroupOutlined className="icon" />
                         </div>
-                        <div >
+                        <div>
                             <h3>Group name </h3>
                             <p>{group.group_name}</p>
                         </div>

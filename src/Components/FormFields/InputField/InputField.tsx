@@ -1,7 +1,6 @@
 
 
 import { useFormContext } from "react-hook-form";
-import { ValidationInput } from "../../Schema/Validation/ValidateInput";
 import { useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -27,7 +26,7 @@ const InputField: React.FC<InputFieldProps> = ({ type, label, name, placeholder,
             <input
                 type={showPassword ? "text" : type}
                 placeholder={placeholder}
-                {...register(name, ValidationInput({ name, label }))}
+                {...register(name)}
                 disabled={disableState}
                 style={disableState ? { cursor: "not-allowed" } : {}}
             />

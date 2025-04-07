@@ -1,0 +1,16 @@
+h4, h5{
+    font-family: var(--font-light);
+}
+.name{
+    text-transform: capitalize;
+}
+.trip-page-container{
+    button{
+        padding: 8px 10px;
+        border-radius: 5px;
+    }
+    padding: 20px;
+    .group-members-container{
+        height: fit-content; 
+    }
+}

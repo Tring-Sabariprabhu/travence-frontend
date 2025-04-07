@@ -7,10 +7,10 @@ import SignupForm from "../Authentication/Signup/SignupForm"
 import { GroupList } from "../Pages/GroupList/GroupList"
 import { GroupInvites } from "../Pages/Notifications/GroupInvites/GroupInvites"
 import Profile from "../Pages/Profile/Profile"
-import { TripInvites } from "../Pages/Notifications/TripInvites/TripInvites"
 import { TripList } from "../Pages/Group/TripList/Main/TripList"
 import { GroupDetails } from "../Pages/Group/GroupDetails/Main/GroupDetails"
-import { PlanTrip } from "../Pages/Group/PlanTrip/Main/PlanTrip"
+import { PlanTrip } from "../Pages/PlanTrip/Main/PlanTrip"
+import { Trip } from "../Pages/Group/Trip/Main/Trip"
 
 export const publicRoutes = [
     {
@@ -48,6 +48,10 @@ export const privateRoutes = [
                 element: <TripList/>,
             },
             {
+                path: 'trip',
+                element: <Trip/>,
+            },
+            {
                 path: 'plan-trip',
                 element: <PlanTrip/>
             }
@@ -62,10 +66,6 @@ export const privateRoutes = [
                 path: 'group-invites',
                 element: <GroupInvites />,
             },
-            {
-                path: 'trip-invites',
-                element: <TripInvites/>
-            }
         ]
     }
 ]

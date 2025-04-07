@@ -6,6 +6,8 @@ import { RootState } from '../../../Redux/store';
 import { Confirmation } from '../../../Components/Confirmation/Confirmation';
 import { Loader } from '../../../Components/Loader/Loader';
 import './Group.scss';
+import { ErrorPage } from '../../../Components/ErrorPage/ErrorPage';
+import { makeToast } from '../../../Components/Toast/makeToast';
 
 export interface Group_Member_Props {
     member_id: string
@@ -33,6 +35,7 @@ const Group = () => {
                 group_name,
                 group_description,
                 group_members{
+                    member_id
                     user{
                         user_id
                     }
@@ -47,20 +50,35 @@ const Group = () => {
             skip: !group_id,
             fetchPolicy: "network-only",
             onError: (err) => {
-                console.log("Fetching Group Data failed ", err.message);
+                console.log(err.message);
+                makeToast({message: err?.message, toastType: "error"});
             }
         });
 
     const userInGroup = group_data?.group?.group_members?.find((member: Group_Member_Props) => member?.user?.user_id === user?.user_id);
     const NavItems = [
-        { label: "Group", onClick: () => navigate('group-details', { state: { group_id: group_id,}}) },
-        { label: "Trips", onClick: () => navigate('trips', { state: { group_id: group_id,}}) }
+        { label: "Group", onClick: () => navigate('group-details', 
+            { 
+                state: { 
+                    group_id: group_id, 
+                    member_id: userInGroup?.member_id
+                }
+            }
+        ) },
+        { label: "Trips", onClick: () => navigate('trips', 
+            { 
+                state: { 
+                    group_id: group_id, 
+                    member_id: userInGroup?.member_id
+                }
+            }
+            ) },
     ]
     if (loading) {
         return <Loader />;
     }
     if (error) {
-        return <p>Error</p>;
+        return <ErrorPage/>;
     }
     return (
         <div className='group-container'>

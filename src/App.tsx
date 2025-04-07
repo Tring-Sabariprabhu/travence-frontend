@@ -5,7 +5,7 @@ import PrivateRoute from './Routes/PrivateRoute';
 import AuthLayout from './Layouts/AuthLayout';
 import DashboardLayout from './Layouts/DashboardLayout';
 import { privateRoutes, publicRoutes } from './Routes/Navigation';
-import { PageNotFound } from './Pages/PageNotFound/PageNotFound';
+import { PageNotFound } from './Components/PageNotFound/PageNotFound';
 
 
 function App() {

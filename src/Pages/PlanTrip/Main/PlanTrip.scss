@@ -2,12 +2,18 @@
     width: 100%;
     height: 80vh;
     overflow-y: auto;
-
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    h2 {
+        font-family: var(--font-medium);
+    }
     form {
-        padding: 20px 40px;
-        h2 {
-            font-family: var(--font-medium);
-        }
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        gap: 50px;
         .Buttons{
             padding: 0 40px;
             width: 100%;
@@ -21,24 +27,20 @@
                 border-radius: 5px;
             }
         }
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 50px;
 
         .trip-details,
         .invite-members,
-        .trip-todo, .trip-checklists {
+        .trip-activities, .trip-checklists {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
             .container{
+                width: 600px;
                 padding: 0 20px;
                 display: flex;
                 flex-direction: column;
                 gap: 25px;
             }
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
             h3 {
                 font-family: var(--font-light);
             }
@@ -84,22 +86,9 @@
 
         }
 
-        .invite-members {
+        .trip-activities {
             .container {
-                div {
-                    display: flex;
-                    gap: 10px;
-                    p {
-                        font-family: var(--font-light);
-                    }
-                }
-            }
-        }
-
-        .trip-todo {
-            .container {
-
-                .todo {
+                .activity {
                     display: flex;
                     gap: 20px;
                     div {
@@ -126,31 +115,19 @@
             }
         }
         .trip-checklists{
+            
+            .container{
+                .item{
+                    input[type=text], textarea{
+                        width: 250px;
+                    }
+                }
+            }
             button{
                 width: fit-content;
                 height: fit-content;
                 padding: 6px 10px;
                 border-radius: 5px;
-            }
-            .container{
-                display: flex;
-                flex-direction: column;
-                gap: 50px;
-                .package{
-                    input[type=text], textarea{
-                        width: 250px;
-                    }
-                    div{
-                        display: flex;
-                        gap: 10px;
-                        label{
-                            font-family: var(--font-medium);
-                        }
-                    }
-                    .package-items{
-                        padding: 10px 20px;
-                    }
-                }
             }
         }
     }

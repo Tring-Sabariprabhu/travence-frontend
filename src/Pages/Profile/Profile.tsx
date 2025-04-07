@@ -83,7 +83,7 @@ const Profile = () => {
         setUpdateConfirmState(false);
         setUpdateDisableState(true);
         const name = watch("person_name");
-        const encryptedPassword = encryptPassword(watch("password"));
+        const encryptedPassword = encryptPassword(watch("password") as string);
         await updateUserDetails({
             variables:
             {

@@ -17,12 +17,12 @@ export const Confirmation: React.FC<ConfirmationProps> = ({ open, onSuccess, onC
             <div className='confirmation-container'>
                 <p>{title}</p>
                 <div className="buttons">
-                    {closeButtonText && <ButtonField type={"button"} text={closeButtonText} onClick={onClose} />}
                     <ButtonField
                         type={"button"}
                         text={confirmButtonText}
                         onClick={onSuccess ? onSuccess : onClose}
                         className={"blue_button"} />
+                    {closeButtonText && <ButtonField type={"button"} text={closeButtonText} onClick={onClose} />}
                 </div>
 
             </div>

@@ -8,6 +8,17 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        .Buttons{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            button{
+                width: fit-content;
+                padding: 5px;
+                border-radius: 6px;
+            }
+        }
         .group-data {
             display: flex;
             flex-direction: column;
@@ -32,14 +43,6 @@
                     text-overflow: ellipsis;
                 }
             }
-        }
-
-        button {
-            // Edit Group details Button
-            font-family: var(--font-medium);
-            padding: 10px;
-            font-size: 14px;
-            border-radius: 5px;
         }
 
     }
@@ -77,8 +80,8 @@
                 font-family: var(--font-medium);
                 height: 35px;
                 padding: 0 15px;
-                font-size: 15px;
-                border-radius: 5px;
+                font-size: 14px;
+                border-radius: 6px;
             }
         }
     }

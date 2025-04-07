@@ -6,6 +6,11 @@
         justify-content: space-between;
         align-items: center;
         padding: 10px 80px 10px 40px;
+        button{
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 15px;
+        }
         div{
             display: flex;
             gap: 10px;
@@ -13,10 +18,19 @@
                 font-family: var(--font-light);
             }
         }
-        button{
-            border-radius: 5px;
-            padding: 6px 12px;
-            font-size: 16px;
+    }
+    main{
+        .group{
+            justify-content: space-between;
+            .trip_status{
+                font-size: 13px;
+                padding: 5px 10px;
+                border-radius: 8px;
+                width: fit-content;
+                background-color: var(--light-gray);
+                text-transform: capitalize;
+                font-family: var(--font-medium);
+            }
         }
     }
 }

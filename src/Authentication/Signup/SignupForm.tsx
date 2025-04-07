@@ -7,8 +7,6 @@ import InputField from '../../Components/InputField/InputField';
 import { useState } from 'react';
 import { makeToast } from '../../Components/Toast/makeToast';
 import ButtonField from '../../Components/ButtonField/ButtonField';
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Signup_user } from '../../ApolloClient/Mutation/Auth';
 
 
@@ -59,7 +57,8 @@ function SignupForm() {
                             label="Name"
                             type="text"
                             name={"person_name"}
-                            placeholder={'Enter your name'} />
+                            placeholder={'Enter your name'}
+                            required={true} />
                         {errors?.person_name?.message && <p className='error'>{errors?.person_name?.message}</p>}
                     </div>
                     <div className='input-container'>
@@ -67,7 +66,8 @@ function SignupForm() {
                             label="Email"
                             type="text"
                             name={"email"}
-                            placeholder={'Enter your email'} />
+                            placeholder={'Enter your email'} 
+                            required={true}/>
                         {errors?.email?.message && <p className='error'>{errors?.email?.message}</p>}
                     </div>
                     <div className='input-container'>
@@ -75,7 +75,8 @@ function SignupForm() {
                             label="Password"
                             type={"password"}
                             name={"password"}
-                            placeholder={'Set your password'} />
+                            placeholder={'Set your password'} 
+                            required={true}/>
                         {errors?.password?.message && <p className='error'>{errors?.password?.message}</p>}
                     </div>
                     <div className='input-container'>
@@ -83,7 +84,8 @@ function SignupForm() {
                             label="Confirm password"
                             type={"password"}
                             name={"confirmpassword"}
-                            placeholder={'Confirm your password'} />
+                            placeholder={'Confirm your password'} 
+                            required={true}/>
                         {errors?.confirmpassword?.message && <p className='error'>{errors?.confirmpassword?.message}</p>}
                     </div>
 
