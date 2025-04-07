@@ -20,12 +20,14 @@ export const TripDetails = () => {
 
     const [leaveTripConfirm, setLeaveTripConfirm] = useState<boolean>(false);
     const [leaveTripDisable, setLeaveTripDisable] = useState<boolean>(false);
+    const [expenseRemainderPopup, setExpenseRemaiderPopup] = useState<boolean>(false);
 
-    const { data: tripmemberdata } = useQuery(TripMemberDetails,
+    const { data: tripmemberdata , refetch: refetchTripMember} = useQuery(TripMemberDetails,
         {
             variables: {
                 input: {
-                    group_member_id: member_id
+                    group_member_id: member_id,
+                    trip_id: trip_id
                 }
             }
         }
@@ -40,9 +42,7 @@ export const TripDetails = () => {
                 trip_days_count,
                 trip_start_date,
                 created_by{
-                 
-                        member_id
-                    
+                    member_id
                 }
             }
         }
@@ -68,6 +68,7 @@ export const TripDetails = () => {
             },
             onCompleted: (data) => {
                 makeToast({ message: data?.deleteTripMember, toastType: "success" });
+                refetchTripMember();
             },
             onError: (err) => {
                 makeToast({ message: err?.message, toastType: "error" });
@@ -75,6 +76,7 @@ export const TripDetails = () => {
         })
         setLeaveTripDisable(false);
     }
+    
     if (loading) {
         return <Loader />;
     } else if (error) {
@@ -83,6 +85,8 @@ export const TripDetails = () => {
     return (
         <main className="trip-details-container">
             {
+                tripmemberdata?.tripMember 
+                &&
                 tripdata?.trip?.created_by?.member_id !== member_id
                 &&
                 <ButtonField type={"button"}
@@ -118,6 +122,7 @@ export const TripDetails = () => {
                 confirmButtonText={"Confirm"}
                 closeButtonText={"Cancel"}
                 onSuccess={deleteTripMemberProcess} />
+            
         </main>
     )
 }

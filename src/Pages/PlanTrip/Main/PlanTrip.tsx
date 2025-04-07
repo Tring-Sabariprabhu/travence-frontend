@@ -43,12 +43,13 @@ export const PlanTrip = () => {
         .shape({
             trip_name: yup.string().required("Trip name required"),
             trip_description: yup.string().required("Trip decription required"),
-            trip_start_date: yup.date().required("Trip start date required"),
+            trip_start_date: yup.date().required("Trip start date required").min(new Date(), "Enter Valid date"),
             trip_days_count: yup.number().positive().required("Trip days count required"),
             trip_members: yup
                 .array()
+                .required()
                 .of(yup.string().required())
-                .required("Trip Members are required"),
+                ,
             trip_activities: yup
                 .array()
                 .of(yup.object().shape({
@@ -64,7 +65,10 @@ export const PlanTrip = () => {
                 .min(2, "Trip Checklists must have 2 items"),
         })
     const methods = useForm<PlanTripFormValues>({
-        resolver: yupResolver(schema)
+        resolver: yupResolver(schema),
+        defaultValues:{
+            trip_members: []
+        }
     });
 
     const { handleSubmit, setValue } = methods;
@@ -108,9 +112,10 @@ export const PlanTrip = () => {
         for (const activity of formdata?.trip_activities) {
             trip_budget = trip_budget + activity?.budget;
         }
-        if (!formdata?.trip_members?.includes(member_id)) {
+        if(!trip_id && !formdata?.trip_members?.includes(member_id)){
             formdata?.trip_members.push(member_id);
         }
+        
         if (trip_id) {
             await updateTrip(
                 {
