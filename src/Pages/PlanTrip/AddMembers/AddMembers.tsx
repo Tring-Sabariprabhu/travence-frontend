@@ -1,10 +1,11 @@
 import { useQuery } from "@apollo/client";
 import { MenuItem, Select, SelectChangeEvent } from "@mui/material"
 import { useState } from "react";
-import { GroupData } from "../../../ApolloClient/Queries/Groups";
+import { GroupMembersDetails } from "../../../ApolloClient/Queries/Groups";
 import { useLocation } from "react-router-dom";
 import { Group_Member_Props } from "../../Group/Main/Group";
 import { useFormContext } from "react-hook-form";
+import { ErrorText } from "../../../Components/ErrorText/ErrorText";
 
 export const AddMembers = () => {
     const location = useLocation();
@@ -12,7 +13,7 @@ export const AddMembers = () => {
     const member_id = location?.state?.member_id;
     const trip_id = location?.state?.trip_id;
     
-    const {data: groupdata} = useQuery(GroupData,
+    const {data: groupdata} = useQuery(GroupMembersDetails,
         {
             variables: {
                 input: {
@@ -30,6 +31,7 @@ export const AddMembers = () => {
        setAddMembers(event.target.value as string[]);
        setValue("trip_members", event?.target?.value as string[]);
       };
+      
     const {formState: {errors}} = useFormContext();
     return (
         <div className="invite-members">
@@ -50,7 +52,9 @@ export const AddMembers = () => {
                         ))
                     }
                 </Select>
-                {errors?.trip_members?.message && <p className="error">{errors?.trip_members?.message?.toString()}</p>}
+                {errors?.trip_members?.message 
+                    && 
+                <ErrorText message={errors?.trip_members?.message.toString()}/>}
             </div>
         </div>
     )

@@ -3,6 +3,7 @@ import TextAreaField from "../../../Components/FormFields/TextareaField/Textarea
 import InputField from "../../../Components/FormFields/InputField/InputField"
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { PlanTripFormValues } from "../Main/PlanTrip";
+import { ErrorText } from "../../../Components/ErrorText/ErrorText";
 
 export const Activities = () => {
 
@@ -43,7 +44,9 @@ export const Activities = () => {
                     text={"Add Activity"}
                     onClick={()=> append({activity: "", budget: 0})}
                     className={"blue_button"} />
-                {errors?.trip_activities?.message && <p className="error">{errors?.trip_activities?.message?.toString()}</p>}
+                {errors?.trip_activities?.message 
+                    && 
+                <ErrorText message={errors?.trip_activities?.message.toString()}/>}
             </div>
         </div>
     )

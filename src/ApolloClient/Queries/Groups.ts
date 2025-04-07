@@ -9,13 +9,22 @@ export const GroupsList = gql`
             created_at,
             updated_at,
             created_by{
+                user_id,
                 email,
                 name
             }
         }
     }`
-
-export const GroupData = gql`
+export const GroupDetails = gql`
+    query ($input: GroupInput!){
+        group(input: $input){
+            group_id,
+            group_name,
+            group_description,
+        }     
+    }
+`
+export const FullGroupDetails = gql`
     query ($input: GroupInput!){
         group(input: $input){
             group_id,
@@ -42,10 +51,28 @@ export const GroupData = gql`
             }
         }
     }`
-
+export const GroupMembersDetails = gql`
+    query ($input: GroupInput!){
+        group(input: $input){
+            group_members{
+                member_id,
+                user_role,
+                joined_at,
+                deleted_at,
+                updated_at,
+                user{
+                    name,
+                    email,
+                    user_id
+                }
+            }
+        }
+    }
+    `
 export const GroupMemberDetails = gql`
-    query($member_id: String!){
-        groupMember(member_id: $member_id){
+    query($input: GroupMemberInput!){
+        groupMember(input: $input){
+            member_id
             user_role
         }
     }`

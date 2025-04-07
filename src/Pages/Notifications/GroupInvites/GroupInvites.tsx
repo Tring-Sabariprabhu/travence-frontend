@@ -80,7 +80,10 @@ export const GroupInvites = () => {
                         {groupInvites?.getGroupInvites?.map((invite: GroupInviteProps, index: number) => (
                                <div className="invite">                                
                                     <h4>
-                                        You have Invited by <span>{invite?.invited_by?.user?.name}</span> to Join their Group <span>{invite?.invited_by?.group?.group_name}</span>
+                                        You have Invited by 
+                                        <span>{invite?.invited_by?.user?.name}</span> 
+                                        to Join their Group 
+                                        <span>{invite?.invited_by?.group?.group_name}</span>
                                     </h4>
                                     <div className="buttons">
                                     <ButtonField
@@ -103,6 +106,6 @@ export const GroupInvites = () => {
                             </div>
                         ))}
                     
-            </div> : <DataNotFound message={"Group Invites"} />)
+            </div> : <DataNotFound />)
     )
 }

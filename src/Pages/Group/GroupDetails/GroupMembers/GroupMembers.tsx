@@ -125,7 +125,7 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
                             <h4 className="user-role">{userInGroup?.user_role}</h4>
                         </div>
                         <div>
-                            <h5 title="joined date">{dateformat({ date: userInGroup?.joined_at })}</h5>
+                            <h5 title="joined date">{dateformat({ timestamp: userInGroup?.joined_at })}</h5>
                         </div>
                     </div>
                     {
@@ -138,7 +138,7 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
                                     <h4 className="user-role">{member?.user_role}</h4>
                                 </div>
                                 <div>
-                                    <h5 title="joined date">{dateformat({ date: member?.joined_at })}</h5>
+                                    <h5 title="joined date">{dateformat({ timestamp: member?.joined_at })}</h5>
                                 </div>
                                 {
                                     userInGroup?.user_role === 'admin' &&
@@ -163,7 +163,7 @@ export const GroupMembers: React.FC<GroupMembersProps> = ({ userInGroup, group_m
                             </div>
                         ))
                     }
-                </div> : <DataNotFound message={"Group Members"} />
+                </div> : <DataNotFound  />
             }
 
             <Confirmation

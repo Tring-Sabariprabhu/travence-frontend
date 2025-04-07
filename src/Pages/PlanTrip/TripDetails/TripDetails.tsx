@@ -1,6 +1,7 @@
 import { useFormContext } from "react-hook-form"
 import InputField from "../../../Components/FormFields/InputField/InputField";
 import TextAreaField from "../../../Components/FormFields/TextareaField/TextareaField";
+import { ErrorText } from "../../../Components/ErrorText/ErrorText";
 
 export const TripDetails = () => {
 
@@ -16,7 +17,9 @@ export const TripDetails = () => {
                         name={"trip_name"}
                         placeholder={"Trip name"} 
                         required={true}/>
-                    {errors?.trip_name?.message && <p className="error">{errors?.trip_name?.message?.toString()}</p>}
+                    {errors?.trip_name?.message 
+                        && 
+                    <ErrorText message={errors?.trip_name?.message.toString()}/>}
                 </div>
                 <div className="input-container">
                     <TextAreaField
@@ -25,7 +28,9 @@ export const TripDetails = () => {
                         placeholder={"Trip description"}
                         className={""}
                         required={true} />
-                    {errors?.trip_description?.message && <p className="error">{errors?.trip_description?.message?.toString()}</p>}
+                    {errors?.trip_description?.message 
+                        && 
+                    <ErrorText message={errors?.trip_description?.message.toString()}/>}
                 </div>
                 <div className="input-container">
                     <InputField
@@ -33,7 +38,9 @@ export const TripDetails = () => {
                         label={"Trip Start date"}
                         name={"trip_start_date"} 
                         required={true}/>
-                    {errors?.trip_start_date?.message && <p className="error">{errors?.trip_start_date?.message?.toString()}</p>}
+                    {errors?.trip_start_date?.message 
+                        && 
+                    <ErrorText message={errors?.trip_start_date?.message.toString()}/>}
                 </div>
                 <div className="input-container">
                     <InputField type={"text"}
@@ -41,7 +48,9 @@ export const TripDetails = () => {
                         name={"trip_days_count"}
                         placeholder={"Trip days count"}
                         required={true} />
-                    {errors?.trip_days_count?.message && <p className="error">{errors?.trip_days_count?.message?.toString()}</p>}
+                    {errors?.trip_days_count?.message 
+                        && 
+                    <ErrorText message={errors?.trip_days_count?.message.toString()}/>}
                 </div>
             </div>
         </div>

@@ -8,6 +8,7 @@ import { setUser } from "../Redux/userSlice";
 import { GetCurrentUser } from "../ApolloClient/Queries/Users";
 import { Loader } from "../Components/Loader/Loader";
 import { makeToast } from "../Components/Toast/makeToast";
+import { ErrorPage } from "../Components/ErrorPage/ErrorPage";
 
 const DashboardLayout = () => {
 
@@ -40,7 +41,7 @@ const DashboardLayout = () => {
         return <Loader />;
     }
     if (error) {
-        return <p>Error</p>;
+        return <ErrorPage/>;
     }
     return (
         <div className="dashboard-layout">

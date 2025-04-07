@@ -16,7 +16,7 @@ export const JoinedTrips = gql`
         }
     }
 `
-export const TripData = gql`
+export const FullTripDetails = gql`
     query($input: TripInput!){
         trip(input: $input){
             trip_id
@@ -43,12 +43,31 @@ export const TripData = gql`
         }
     }
 `
-export const TripMembersData= gql`
+export const TripActivities = gql`
+    query($input: TripInput!){
+        trip(input: $input){
+            trip_activities{
+                activity
+                budget
+            }
+        }
+    }`
+export const TripChecklists = gql`
+    query($input: TripInput!){
+        trip(input: $input){
+            trip_checklists
+        }
+    }`
+
+
+
+export const TripMembersDetails= gql`
  query($input: TripInput!){
         trip(input: $input){
             trip_members{
                 trip_member_id
                 group_member{
+                    member_id
                     user{
                         name,
                         email
@@ -58,3 +77,12 @@ export const TripMembersData= gql`
         }
     }
     `
+export const TripMemberDetails = gql`
+    query($input: TripMemberInput!){
+        tripMember(input: $input){
+            trip_member_id
+            group_member{
+                member_id
+            }
+        }
+    }`

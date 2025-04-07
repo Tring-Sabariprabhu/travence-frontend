@@ -1,4 +1,7 @@
 .triplist-container{
+    .name{
+        text-transform: capitalize;
+    }
     .triplist-header{
         font-family: var(--font-medium);
         height: 70px;
@@ -13,23 +16,24 @@
         }
         div{
             display: flex;
-            gap: 10px;
+            gap: 20px;
             select{
                 font-family: var(--font-light);
+                padding: 4px 0;
             }
         }
     }
     main{
         .group{
             justify-content: space-between;
-            .trip_status{
-                font-size: 13px;
-                padding: 5px 10px;
-                border-radius: 8px;
-                width: fit-content;
-                background-color: var(--light-gray);
-                text-transform: capitalize;
-                font-family: var(--font-medium);
+            .card-top{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                select{
+                    cursor: pointer;
+                    width: fit-content;
+                }
             }
         }
     }

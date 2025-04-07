@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Info } from "@mui/icons-material";
 import { Group_Member_Props } from "../../Main/Group";
 import { SendGroupInvites } from "../../../../ApolloClient/Mutation/GroupInvites";
+import { ErrorText } from "../../../../Components/ErrorText/ErrorText";
 
 
 interface InviteOthersProps {
@@ -120,7 +121,7 @@ export const InviteOthers: React.FC<InviteOthersProps> = ({ open, onClose, group
                     
                 </div>
                 <div className="selected-members">
-                    {errorState?.length > 0 && <p className="error">{errorState}</p>}
+                    {errorState?.length > 0 && <ErrorText message={errorState}/>}
                     {selectedEmails?.length > 0 && <label className="heading">Selected Emails</label>}
                     <ol>
                         {selectedEmails?.map((email) => (
