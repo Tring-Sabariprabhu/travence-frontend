@@ -1,6 +1,5 @@
 import { ArrowBack } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
-import './ArrowBack.scss';
 export const ArrowBackIcon = () => {
     const navigate = useNavigate();
     return (

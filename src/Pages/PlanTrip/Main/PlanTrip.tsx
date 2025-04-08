@@ -48,8 +48,7 @@ export const PlanTrip = () => {
             trip_members: yup
                 .array()
                 .required()
-                .of(yup.string().required())
-                ,
+                .of(yup.string().required()),
             trip_activities: yup
                 .array()
                 .of(yup.object().shape({
@@ -76,7 +75,6 @@ export const PlanTrip = () => {
         {
             variables: {
                 input: {
-                    member_id: member_id,
                     trip_id: trip_id
                 }
             }, skip: !trip_id
@@ -96,7 +94,7 @@ export const PlanTrip = () => {
             setValue("trip_name", trip?.trip_name);
             setValue("trip_description", trip?.trip_description);
             setValue("trip_days_count", trip?.trip_days_count);
-            setValue("trip_start_date", trip?.trip_start_date?.slice(0, 10));
+            setValue("trip_start_date", trip?.trip_start_date?.slice(0, trip?.trip_start_date?.indexOf('T') ));
             setValue("trip_checklists", trip?.trip_checklists);
             setValue("trip_activities", filtered_trip_activities);
         }

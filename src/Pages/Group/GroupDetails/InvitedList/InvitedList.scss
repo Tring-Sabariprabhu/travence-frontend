@@ -1,4 +1,4 @@
-.invited-list{
+.invited-list-container{
     .actions{
         display: flex;
         align-items: center;
@@ -14,20 +14,50 @@
             border-radius: 3px;
         }
     }
-    table{
-        tr{
-            td{
-                input[type=checkbox]{
-                    cursor: pointer;
-                }
-            }
-            .invite_status{
-                font-size: 16px;
-                text-transform: capitalize;
-                font-weight: 700;
+    table {
+        width: 100%;
+        border-collapse: collapse;
+
+        
+        th, td {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        th {
+            font-family: var(--font-medium);
+            background-color: var(--color-gray);
+            font-size: 16px;
+            color: var(--dark-black);
+            text-transform: uppercase; 
+        }
+
+        td {
+            font-family: var(--font-light);
+            font-size: 14px;
+        }
+        .button_actions{
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            
+            button{
+                font-family: var(--font-medium);
+                padding: 8px 10px;
+                border-radius: 5px;
             }
         }
-        
-       
+        td{
+            input[type=checkbox]{
+                cursor: pointer;
+            }
+        }
+        .invite_status{
+            font-size: 16px;
+            text-transform: capitalize;
+            font-weight: 700;
+        }
     }
+    
 }

@@ -10,6 +10,7 @@ import { Confirmation } from "../../../Components/Confirmation/Confirmation";
 import { DeleteTripMember } from "../../../ApolloClient/Mutation/Trips";
 import { makeToast } from "../../../Components/Toast/makeToast";
 import { getTripStatusColor } from "../../TripList/Main/TripList";
+import { ExpenseRemainder } from "../ExpenseRemainder/ExpenseRemainder";
 
 export const TripDetails = () => {
     const location = useLocation();
@@ -22,7 +23,7 @@ export const TripDetails = () => {
     const [leaveTripDisable, setLeaveTripDisable] = useState<boolean>(false);
     const [expenseRemainderPopup, setExpenseRemaiderPopup] = useState<boolean>(false);
 
-    const { data: tripmemberdata , refetch: refetchTripMember} = useQuery(TripMemberDetails,
+    const { data: tripmemberdata, refetch: refetchTripMember } = useQuery(TripMemberDetails,
         {
             variables: {
                 input: {
@@ -51,7 +52,6 @@ export const TripDetails = () => {
         {
             variables: {
                 input: {
-                    member_id: member_id,
                     trip_id: trip_id
                 }
             }
@@ -76,7 +76,7 @@ export const TripDetails = () => {
         })
         setLeaveTripDisable(false);
     }
-    
+
     if (loading) {
         return <Loader />;
     } else if (error) {
@@ -84,18 +84,7 @@ export const TripDetails = () => {
     }
     return (
         <main className="trip-details-container">
-            {
-                tripmemberdata?.tripMember 
-                &&
-                tripdata?.trip?.created_by?.member_id !== member_id
-                &&
-                <ButtonField type={"button"}
-                    text={"Leave"}
-                    className="red_button"
-                    disabledState={leaveTripDisable}
-                    onClick={() => setLeaveTripConfirm(true)} />
-            }
-            <div className="item">
+            <div>
                 <h4>Trip name : </h4><p className="name">{tripdata?.trip?.trip_name}</p>
             </div>
             <div>
@@ -103,8 +92,8 @@ export const TripDetails = () => {
             </div>
             <div>
                 <h4>Trip status : </h4>
-                    <p className="name"
-                        style={{color:`var(${getTripStatusColor(tripdata?.trip?.trip_status)})`}}    >{tripdata?.trip?.trip_status}</p>
+                <p className="name"
+                    style={{ color: `var(${getTripStatusColor(tripdata?.trip?.trip_status)})` }}    >{tripdata?.trip?.trip_status}</p>
             </div>
             <div>
                 <h4>Trip start date : </h4><p>{dateformat({ timestamp: tripdata?.trip?.trip_start_date })}</p>
@@ -115,14 +104,37 @@ export const TripDetails = () => {
             <div>
                 <h4>Trip description : </h4><p>{tripdata?.trip?.trip_description}</p>
             </div>
+            {
+                tripmemberdata?.tripMember
+                &&
+                tripdata?.trip?.created_by?.member_id !== member_id
+                &&
+                <div>
+                    <ButtonField type={"button"}
+                        text={"Leave"}
+                        className="red_button"
+                        disabledState={leaveTripDisable}
+                        onClick={() => setLeaveTripConfirm(true)} />
+                </div>
 
+            }
+            {
+                tripdata?.trip?.created_by?.member_id === member_id
+                &&
+                <div>
+                    <ButtonField type={"button"} text={"Send Expense Remainder"} className={"blue_button"}
+                        onClick={() => setExpenseRemaiderPopup(true)} />
+                </div>
+            }
             <Confirmation open={leaveTripConfirm}
                 onClose={() => setLeaveTripConfirm(false)}
                 title={`Do you want to leave from this Trip ${tripdata?.trip?.trip_name}`}
                 confirmButtonText={"Confirm"}
                 closeButtonText={"Cancel"}
                 onSuccess={deleteTripMemberProcess} />
-            
+            <ExpenseRemainder
+                open={expenseRemainderPopup}
+                onClose={() => setExpenseRemaiderPopup(false)} />
         </main>
     )
 }

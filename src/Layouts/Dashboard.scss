@@ -6,8 +6,9 @@
     flex-direction: row;
     
     .main-content{
+        width: calc(100% - 16%);
         box-shadow: inset 0px 2px 2px 2px rgba(0, 0, 0, 0.044);
-        width: 100%;
+        
         background-color: white;
     }
 }

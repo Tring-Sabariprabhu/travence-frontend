@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form";
 
 interface TextAreaFieldProps {
-    label: string,
+    label?: string,
     name: string,
     placeholder?: string,
     className?: string,
@@ -11,10 +11,15 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({ label, name, placeholder,
     const { register } = useFormContext();
     return (
         <div >
-            <label htmlFor={name}>
+            {
+                label
+                &&
+                <label htmlFor={name}>
                 {label}
                 {required && <span className="input-required">*</span>}
             </label>
+            }
+            
             <textarea
                 placeholder={placeholder}
                 {...register(name)}

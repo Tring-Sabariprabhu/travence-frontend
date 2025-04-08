@@ -2,5 +2,5 @@ projectKey=Travence-Frontend
 serverUrl=http://quality.tringbytes.com
 serverVersion=9.9.8.100196
 dashboardUrl=http://quality.tringbytes.com/dashboard?id=Travence-Frontend
-ceTaskId=AZYPXB0QCe_vaTPJO5qO
-ceTaskUrl=http://quality.tringbytes.com/api/ce/task?id=AZYPXB0QCe_vaTPJO5qO
+ceTaskId=AZYUrVJl9CRkRn2nk80C
+ceTaskUrl=http://quality.tringbytes.com/api/ce/task?id=AZYUrVJl9CRkRn2nk80C

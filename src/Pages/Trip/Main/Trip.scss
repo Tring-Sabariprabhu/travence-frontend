@@ -12,14 +12,17 @@ ol,p {
     display: flex;
     flex-direction: row;
     overflow-x: auto;
-    width: 1000px;
-    gap: 10px;
+    // width: 1000px;
+    // width: 100%  ;
+    gap: 20px;
     button {
         width: fit-content;
         padding: 8px 10px;
         border-radius: 5px;
     }
     main{
+        flex-shrink: 0;
+        width: 300px;
         padding: 20px;
         border-radius: 8px;
         border: 2px solid var(--color-gray);

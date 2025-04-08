@@ -1,0 +1,46 @@
+.expense-remainder-container{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    h4{
+        font-family: var(--font-light);
+    }
+    .input-container{
+        display: flex;
+        align-items: center;
+        gap: 30px;
+    }
+    label,
+    input{
+        height: fit-content;
+        padding: 6px;
+        width: 100px;
+        font-family: var(--font-light);
+    }
+    .select{
+        width: 100px;
+        height: 25px;
+    }
+    .note{
+        .icon{
+            font-size: 16px;
+            color: var(--color-blue);
+        } p{
+            // width: 80%;
+            font-size: 12px;
+        }
+        display: flex;
+        align-items: center;
+    }
+    .Buttons{
+        display: flex;
+        justify-content: space-between;
+    }
+    button{
+        height: fit-content;
+        border-radius: 5px;
+        padding: 6px 10px;
+    }
+   
+}
