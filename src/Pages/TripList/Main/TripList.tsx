@@ -14,6 +14,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../Redux/store';
 import { DeleteTrip } from '../../../ApolloClient/Mutation/Trips';
 import { Confirmation } from '../../../Components/Confirmation/Confirmation';
+import { Menu, MenuItem } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
 
 interface Trip_Props {
     trip_id: string
@@ -68,12 +70,13 @@ export const TripList = () => {
     const location = useLocation();
     const group_id = location?.state?.group_id;
     const member_id = location?.state?.member_id;
+    const [menuOpenState, setMenuOpenState] = useState<boolean>(false);
     const [filtertype, setFilterType] = useState<TripList_Filter>(TripList_Filter.ALL);
     const [selectedTrip, setSelectedTrip] = useState({ trip_id: "", trip_name: "" });
     const [deleteTripConfirm, setDeleteTripConfirm] = useState<boolean>(false);
     const [deleteTrip] = useMutation(DeleteTrip);
 
-   
+
     useEffect(() => {
         refetchJoinedTrips();
     }, [filtertype]);
@@ -125,35 +128,21 @@ export const TripList = () => {
     const handleFilterSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setFilterType(event.target.value as TripList_Filter);
     }
-    const handleSelectTrip = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        if (selectedTrip?.trip_id?.length > 0)
-            switch (event?.target?.value) {
-                case "open":
-                    navigate('/group/trip',
-                        {
-                            state: {
-                                group_id: group_id,
-                                member_id: member_id,
-                                trip_id: selectedTrip?.trip_id
-                            }
-                        }
-                    )
-                    break;
-                case "edit":
-                    navigate('/group/plan-trip',
-                        {
-                            state: {
-                                group_id: group_id,
-                                member_id: member_id,
-                                trip_id: selectedTrip?.trip_id
-                            }
-                        });
-                    break;
-                case "delete":
-                    setDeleteTripConfirm(true);
-                    break;
+
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>();
+    const handleMenu = (event: React.MouseEvent<HTMLElement>, trip: Trip_Props) => {
+        setSelectedTrip(
+            {
+                trip_id: trip?.trip_id, 
+                trip_name: trip?.trip_name
             }
-        event.target.value = "";
+        )
+        event.stopPropagation();
+        setAnchorEl(event?.currentTarget);
+        setMenuOpenState(true);
+    }
+    const closeMenu=()=>{
+        setMenuOpenState(false);
     }
     if (loading) {
         return <Loader />;
@@ -192,16 +181,25 @@ export const TripList = () => {
             <main>
                 {tripdata?.joinedTrips?.length > 0 ?
                     tripdata?.joinedTrips?.map((trip: Trip_Props) => (
-                        <div className="group" key={trip?.trip_id}>
+                        <div className="group" key={trip?.trip_id}
+                            onClick={() => [
+                                navigate('/group/trip',
+                                    {
+                                        state: {
+                                            group_id: group_id,
+                                            member_id: member_id,
+                                            trip_id: trip?.trip_id
+                                        }
+                                    }
+                                )
+                            ]}
+                        >
                             <div className='card-top'>
                                 <h4 className='name'
                                     style={{ color: `var(${getTripStatusColor(trip?.trip_status)}` }}>{trip?.trip_status}</h4>
-                                <select onChange={handleSelectTrip} onClick={() => setSelectedTrip({ trip_id: trip?.trip_id, trip_name: trip?.trip_name })}>
-                                    <option value=""></option>
-                                    <option value="open">Open</option>
-                                    <option value="edit">Edit</option>
-                                    <option value="delete">Delete</option>
-                                </select>
+                                <span onClick={(event) =>  handleMenu(event, trip) }>
+                                    <MoreVert />
+                                </span>
                             </div>
 
                             <div className='group-data'>
@@ -225,6 +223,27 @@ export const TripList = () => {
                 confirmButtonText={'Confirm'}
                 closeButtonText={'Cancel'}
                 onSuccess={deleteTripProcess} />
+
+            <Menu
+                open={menuOpenState}
+                onClose={() => setMenuOpenState(false)}
+                anchorEl={anchorEl}>
+                <MenuItem onClick={() => {
+                    closeMenu();
+                    navigate('/group/plan-trip',
+                        {
+                            state: {
+                                group_id: group_id,
+                                member_id: member_id,
+                                trip_id: selectedTrip?.trip_id
+                            }
+                        });
+                }}>Edit</MenuItem>
+                <MenuItem onClick={() => {
+                    closeMenu();
+                    setDeleteTripConfirm(true);
+                }}>Delete</MenuItem>
+            </Menu>
         </div>
     );
 }

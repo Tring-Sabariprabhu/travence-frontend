@@ -97,9 +97,8 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
     }
 
     return (
-        <div className="invited-list group-members-container">
+        <div className="invited-list-container">
             <div className='actions'>
-
                 {invitedList?.length > 0 &&
                     <>
                         <p>Actions : </p>

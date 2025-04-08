@@ -1,9 +1,26 @@
 import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
+import { makeToast } from "../../Components/Toast/makeToast";
+
 
 const httpLink = new HttpLink({
   uri: process.env.REACT_APP_SERVER_URL,
 });
+const errorLink = onError(({ graphQLErrors }) => {
+  if (graphQLErrors) {
+    for(const err of graphQLErrors){
+      if(err?.message.includes("jwt expired") || err?.message?.includes("TokenExpiredError")){
+        makeToast({message: "Session expired", toastType: "info"});
+        setTimeout(()=>{
+          localStorage.removeItem("token");
+          window.location.href="/signin";
+        }, 2000);
+      }
+    }
+  }
+});
+
 
 
 const authLink = setContext((_, { headers }) => {
@@ -17,7 +34,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const client = new ApolloClient({
-  link: from([authLink, httpLink]),
+  link: from([errorLink, authLink, httpLink]),
   cache: new InMemoryCache(),
 });
 

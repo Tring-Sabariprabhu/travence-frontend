@@ -4,6 +4,7 @@ import InputField from "../../../Components/FormFields/InputField/InputField"
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { PlanTripFormValues } from "../Main/PlanTrip";
 import { ErrorText } from "../../../Components/ErrorText/ErrorText";
+import { Delete } from "@mui/icons-material";
 
 export const Activities = () => {
 
@@ -23,17 +24,16 @@ export const Activities = () => {
                         const budgetError =  errors.trip_activities?.[index]?.budget?.message;
                         return(
                             <div key={index} className="activity">
-                            <TextAreaField label={""}
+                            <TextAreaField 
                                 name={`trip_activities[${index}].activity`}
                                 placeholder={"Activity"} />
                             {activityError && <p className="error">{activityError}</p>}
                             <InputField type={"text"}
-                                label={""}
                                 name={`trip_activities[${index}].budget`}
                                 placeholder={"Budget"} />
                             {budgetError && <p className="error">{budgetError}</p>}
                             <ButtonField type={"button"}
-                                text={"Remove"}
+                                icon={<Delete/>}
                                 onClick={() => remove(index)}
                                 className={"red_button"} />
                         </div>

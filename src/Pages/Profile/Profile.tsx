@@ -131,7 +131,6 @@ const Profile = () => {
     }
     return (
         <div className="profile-page">
-            <Header />
             <div className='body-container'>
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>

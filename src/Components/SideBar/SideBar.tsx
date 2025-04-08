@@ -14,15 +14,13 @@ export const SideBar = () => {
     const dispatch = useDispatch();
     const user = useSelector((state: RootState)=> state.user);
     const [logoutPopupState, setLogoutPopupState] = useState<boolean>(false);
-    const logout = () => {
+    const handlelogout = () => {
         makeToast({message: "Log out Successfully", toastType: "success"})
-        localStorage.removeItem("token");
         dispatch(setUser({name: "", email: ""}))
         setLogoutPopupState(false);
-        navigate('/signin')
+        localStorage.removeItem("token");
+        navigate('signin');
     }
-
-    
     return (
         <nav>
             <div className='userProfile'>
@@ -50,7 +48,7 @@ export const SideBar = () => {
             <Confirmation 
                 title={'Do you want to Log out this profile ?'} 
                 open={logoutPopupState} 
-                onSuccess={logout} 
+                onSuccess={handlelogout} 
                 onClose={()=>setLogoutPopupState(false)}
                 closeButtonText={'No'} 
                 confirmButtonText={'Yes'}/>

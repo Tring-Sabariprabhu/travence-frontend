@@ -12,7 +12,6 @@ export const Activities = () => {
         variables: {
             input: {
                 trip_id: trip_id,
-                member_id: member_id
             }
         }
     })

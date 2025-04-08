@@ -1,3 +1,4 @@
+import { Delete } from "@mui/icons-material";
 import ButtonField from "../../../Components/ButtonField/ButtonField";
 import { ErrorText } from "../../../Components/ErrorText/ErrorText";
 import TextAreaField from "../../../Components/FormFields/TextareaField/TextareaField";
@@ -22,7 +23,7 @@ export const CheckLists = () => {
                                 name={`trip_checklists[${index}]`}
                                 placeholder="About Item" />
                             <ButtonField type={"button"}
-                                text={"Delete item"}
+                                icon={<Delete/>}
                                 className={"red_button"}
                                 onClick={() => remove(index)} />
                         </div>

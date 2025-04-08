@@ -86,3 +86,32 @@ export const TripMemberDetails = gql`
             }
         }
     }`
+
+export const ExpenseDetails = gql`
+    query($input: TripInput!){
+        trip(input: $input){
+            expense_remainders{
+                amount
+                toPay{
+                    trip_member_id
+                    group_member{
+                        member_id
+                        user{
+                            user_id
+                            name
+                        }
+                    }
+                }
+                paidBy{
+                    trip_member_id
+                    group_member{
+                        member_id
+                        user{
+                            user_id
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }`

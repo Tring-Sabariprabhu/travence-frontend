@@ -8,7 +8,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 interface InputFieldProps {
     type: string,
     required?: boolean,
-    label: string,
+    label?: string,
     name: string,
     placeholder?: string,
     disableState?: boolean
@@ -19,10 +19,15 @@ const InputField: React.FC<InputFieldProps> = ({ type, label, name, placeholder,
     const { register } = useFormContext();
     return (
         <div >
-            <label htmlFor={name}>
-                {label}
-                {required && <span className="input-required">*</span>}
-            </label>
+            {
+                label 
+                &&
+                <label htmlFor={name}>
+                    {label}
+                    {required && <span className="input-required">*</span>}
+                </label>
+            }
+            
             <input
                 type={showPassword ? "text" : type}
                 placeholder={placeholder}

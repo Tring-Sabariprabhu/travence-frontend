@@ -7,8 +7,7 @@ interface NavItem {
 }
 
 interface HeaderProps {
-    items?: NavItem[];
-    
+    items: NavItem[];
 }
 
 export const Header: React.FC<HeaderProps> = ({ items }) => {
@@ -18,13 +17,13 @@ export const Header: React.FC<HeaderProps> = ({ items }) => {
                 <ArrowBackIcon/>
                 <ol>            
                     {items && items.map((item, index) => (
-                        <li key={index} onClick={item.onClick}>
+                        <li  key={index} onClick={item.onClick} className=''>
                             <label>{item.label}</label>
                         </li>
                     ))}
                 </ol>
             </div>
-            <img src={logo} alt="" />
+            <img src={logo} alt="Logo" />
         </div>
     )
 }

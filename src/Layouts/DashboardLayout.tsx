@@ -13,13 +13,9 @@ import { ErrorPage } from "../Components/ErrorPage/ErrorPage";
 const DashboardLayout = () => {
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const { loading, error } = useQuery(GetCurrentUser,
         {
-            variables: {
-                token: token
-            },
             fetchPolicy: "network-only",
             onCompleted: (data) => {
                 if (data?.getCurrentUser)
@@ -31,11 +27,6 @@ const DashboardLayout = () => {
                             password: data?.getCurrentUser?.password,
                         }));
             },
-            onError: (err) => {
-                makeToast({ message: err.message, toastType: "error" });
-                localStorage.removeItem("token");
-                // navigate('/signin');
-            }
         });
     if (loading) {
         return <Loader />;

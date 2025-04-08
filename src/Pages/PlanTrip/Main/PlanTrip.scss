@@ -14,6 +14,11 @@
         flex-direction: column;
         align-items: start;
         gap: 50px;
+        button{
+            width: fit-content;
+            height: fit-content;
+            border-radius: 5px;
+        }
         .Buttons{
             padding: 0 40px;
             width: 100%;
@@ -22,12 +27,16 @@
             gap: 30px;
             button{
                 font-size: 16px;
-                width: fit-content;
-                padding: 8px 15px;
-                border-radius: 5px;
+                padding: 8px 15px;            
             }
         }
-
+        .blue_button{
+            padding: 8px 10px;
+        }
+        .red_button{
+            padding: 3px ;
+            text-align: center;
+        }
         .trip-details,
         .invite-members,
         .trip-activities, .trip-checklists {
@@ -102,32 +111,19 @@
                             height: 100px;
                         }
                     }
-                    button {
-                        height: fit-content;
-                    }
-                }
-                button {
-                    width: fit-content;
-                    border-radius: 5px;
-                    font-size: 14px;
-                    padding: 8px 10px;
-                }
+                }              
             }
         }
-        .trip-checklists{
-            
+        .trip-checklists{            
             .container{
                 .item{
+                    display: flex;
+                    align-items: center;
+                    gap: 20px;
                     input[type=text], textarea{
                         width: 250px;
                     }
                 }
-            }
-            button{
-                width: fit-content;
-                height: fit-content;
-                padding: 6px 10px;
-                border-radius: 5px;
             }
         }
     }

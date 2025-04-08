@@ -16,7 +16,6 @@ export const TripMembers = () => {
         {
             variables: {
                 input: {
-                    member_id: member_id,
                     trip_id: trip_id
                 }
             }

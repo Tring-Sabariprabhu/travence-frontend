@@ -6,7 +6,7 @@ import { Header } from "../../Components/Header/header";
 import { RootState } from "../../Redux/store";
 import AddGroup from "./AddGroup/AddGroup";
 import './GroupList.scss';
-import { GroupOutlined } from "@mui/icons-material";
+import {  GroupOutlined, MoreVert } from "@mui/icons-material";
 import { GroupsList } from "../../ApolloClient/Queries/Groups";
 import { Loader } from "../../Components/Loader/Loader";
 import { DataNotFound } from "../../Components/DataNotFound/DataNotFound";
@@ -14,6 +14,7 @@ import { ErrorPage } from "../../Components/ErrorPage/ErrorPage";
 import { makeToast } from "../../Components/Toast/makeToast";
 import { DeleteGroup } from "../../ApolloClient/Mutation/Groups";
 import { Confirmation } from "../../Components/Confirmation/Confirmation";
+import { Menu, MenuItem } from "@mui/material";
 
 
 interface GroupDataProps {
@@ -55,28 +56,6 @@ export const GroupList = () => {
         { label: `Create Group`, onClick: () => setOpenAddgroup(true) },
     ];
 
-    const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        if (selectedGroup?.group_id?.length > 0)
-            switch (event?.target?.value) {
-                case "open":
-                    navigate(`/group/group-details`,
-                        {
-                            state: {
-                                group_id: selectedGroup.group_id,
-                            }
-                        }
-                    )
-                    break;
-                case "edit":
-                    setEditGroupPopupState(true);
-                    break;
-                case "delete":
-                    setDeleteGroupConfirm(true);
-                    break;
-            }
-        event.target.value = "";
-    }
-
 
     const deleteGroupProcess = async () => {
         setDeleteGroupConfirm(false);
@@ -97,7 +76,22 @@ export const GroupList = () => {
                 }
             });
     }
-
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>();
+    const [menuOpenState, setMenuOpenState] = useState<boolean>(false);
+    const handleMenu = (event: React.MouseEvent<HTMLElement>, group: GroupDataProps) => {
+        setSelectedGroup(
+            {
+                group_id: group?.group_id, 
+                group_name: group?.group_name
+            }
+        );
+        event?.stopPropagation();
+        setAnchorEl(event?.currentTarget);
+        setMenuOpenState(true);
+    }
+    const closeMenu=()=>{
+        setMenuOpenState(false);
+    }
     if (loading) {
         return <Loader />;
     }
@@ -111,20 +105,19 @@ export const GroupList = () => {
                 {data?.groupList?.length > 0 ? data?.groupList?.map((group: GroupDataProps) => (
                     <div className='group'
                         key={group.group_id}
-                        title='Click to view'>
+                        onClick={() => {
+                            navigate(`/group/group-details`,
+                                {
+                                    state: {
+                                        group_id: group?.group_id,
+                                    }
+                                }
+                            )
+                        }}>
                         <div className="dropdown-item">
-                            <select onChange={handleSelect}
-                                onClick={() =>
-                                    setSelectedGroup(
-                                        {
-                                            group_id: group?.group_id,
-                                            group_name: group?.group_name
-                                        })}>
-                                <option value="select"></option>
-                                <option value="open">Open</option>
-                                <option value="edit">Edit</option>
-                                <option value="delete">Delete</option>
-                            </select>
+                            <span onClick={(event)=>{handleMenu(event, group)}}>
+                                <MoreVert />
+                            </span>
                         </div>
                         <div >
                             <GroupOutlined className="icon" />
@@ -156,6 +149,18 @@ export const GroupList = () => {
                 closeButtonText={"Cancel"}
                 confirmButtonText={"Confirm"}
                 onSuccess={deleteGroupProcess} />
+            <Menu open={menuOpenState}
+                onClose={() => setMenuOpenState(false)}
+                anchorEl={anchorEl}>
+                <MenuItem onClick={() => {
+                    setEditGroupPopupState(true);
+                    closeMenu();
+                }}>Edit</MenuItem>
+                <MenuItem onClick={() => {
+                    setDeleteGroupConfirm(true);
+                    closeMenu();
+                }}>Delete</MenuItem>
+            </Menu>
         </div>
     )
 }
