@@ -7,6 +7,9 @@ import { useState } from "react";
 import ButtonField from "../../Components/ButtonField/ButtonField";
 import { useMutation } from "@apollo/client";
 import { Signin_user } from "../../ApolloClient/Mutation/Auth";
+import { ErrorText } from "../../Components/ErrorText/ErrorText";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from 'yup';
 
 
 export default function SigninForm() {
@@ -60,7 +63,7 @@ export default function SigninForm() {
               name={"email"}
               placeholder={"Enter your email"} 
               required={true}/>
-            {errors?.email?.message && <p className="error">{errors?.email?.message}</p>}
+            {errors?.email?.message && <ErrorText message={errors?.email?.message}/>}
           </div>
           <div className="input-container">
             <InputField
@@ -69,7 +72,7 @@ export default function SigninForm() {
               name="password"
               placeholder="Enter your password" 
               required={true}/>
-            {errors?.password?.message && <p className="error">{errors?.password?.message}</p>}
+            {errors?.password?.message && <ErrorText message={errors?.password?.message}/>}
           </div>
           <ButtonField
             type={"submit"}

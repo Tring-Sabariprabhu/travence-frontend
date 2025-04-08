@@ -26,7 +26,7 @@ const InputField: React.FC<InputFieldProps> = ({ type, label, name, placeholder,
             <input
                 type={showPassword ? "text" : type}
                 placeholder={placeholder}
-                {...register(name)}
+                {...register(name, type === "date" ? { valueAsDate: true } : {})}
                 disabled={disableState}
                 style={disableState ? { cursor: "not-allowed" } : {}}
             />

@@ -7,10 +7,10 @@ import SignupForm from "../Authentication/Signup/SignupForm"
 import { GroupList } from "../Pages/GroupList/GroupList"
 import { GroupInvites } from "../Pages/Notifications/GroupInvites/GroupInvites"
 import Profile from "../Pages/Profile/Profile"
-import { TripList } from "../Pages/Group/TripList/Main/TripList"
+import { TripList } from "../Pages/TripList/Main/TripList"
 import { GroupDetails } from "../Pages/Group/GroupDetails/Main/GroupDetails"
 import { PlanTrip } from "../Pages/PlanTrip/Main/PlanTrip"
-import { Trip } from "../Pages/Group/Trip/Main/Trip"
+import { Trip } from "../Pages/Trip/Main/Trip"
 
 export const publicRoutes = [
     {

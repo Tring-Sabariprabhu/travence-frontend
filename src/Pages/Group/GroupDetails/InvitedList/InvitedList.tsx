@@ -97,7 +97,7 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
     }
 
     return (
-        (invitedList ? <div className="invited-list group-members-container">
+        <div className="invited-list group-members-container">
             <div className='actions'>
 
                 {invitedList?.length > 0 &&
@@ -134,7 +134,7 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
                         <tr key={invite?.invite_id}>
                             <td><input type="checkbox" name="" id="" value={invite.invite_id} onChange={handleCheckBoxChange} /></td>
                             <td>{invite?.email}</td>
-                            <td>{dateformat({ date: invite?.invited_at })}</td>
+                            <td>{dateformat({ timestamp: invite?.invited_at })}</td>
                             <td>{invite?.registered_user ? "Registered" : "Not Registered"}</td>
                             <td className='invite_status'
                                 style={
@@ -142,7 +142,7 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
                                 {invite?.invite_status}
                             </td>
                         </tr>
-                    )) : <tr><td colSpan={5}><DataNotFound message={"Invited List"} /></td></tr>}
+                    )) : <tr><td colSpan={5}><DataNotFound  /></td></tr>}
                 </tbody>
             </table>
             <Confirmation
@@ -159,6 +159,6 @@ export const InvitedList = ({ invitedList, admin_id, onUpdated }: InvitedListPro
                 confirmButtonText={'Yes'}
                 closeButtonText={'No'}
                 onSuccess={deleteInvite} />
-        </div > : <DataNotFound message={"Invited List Not found"} />)
+        </div>
     )
 }

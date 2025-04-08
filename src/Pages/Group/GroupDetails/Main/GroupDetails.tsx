@@ -1,13 +1,12 @@
-import { useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { GetInvitedList } from "../../../../ApolloClient/Queries/GroupInvites";
-import { GroupData } from "../../../../ApolloClient/Queries/Groups";
+import { FullGroupDetails } from "../../../../ApolloClient/Queries/Groups";
 import ButtonField from "../../../../Components/ButtonField/ButtonField";
 import { Loader } from "../../../../Components/Loader/Loader";
 import { RootState } from "../../../../Redux/store";
-import AddGroup from "../AddGroup/AddGroup";
 import { GroupMembers } from "../GroupMembers/GroupMembers";
 import { InviteOthers } from "../InviteOthers/InviteOthers";
 import './GroupDetails.scss';
@@ -15,8 +14,6 @@ import { DataNotFound } from "../../../../Components/DataNotFound/DataNotFound";
 import { Group_Member_Props } from "../../Main/Group";
 import { InvitedList } from "../InvitedList/InvitedList";
 import { ErrorPage } from "../../../../Components/ErrorPage/ErrorPage";
-import { Confirmation } from "../../../../Components/Confirmation/Confirmation";
-import { DeleteGroup } from "../../../../ApolloClient/Mutation/Groups";
 import { makeToast } from "../../../../Components/Toast/makeToast";
 
 export interface GroupInviteProps {
@@ -46,13 +43,9 @@ export const GroupDetails = () => {
     const group_id = location?.state?.group_id;
     const [groupDetailsChild, setGroupDetailsChild] = useState('group-members');
 
-    const [editGroupPopupState, setEditGroupPopupState] = useState<boolean>(false);
     const [invitePopupState, setInvitePopupState] = useState<boolean>(false);
-
-    const [deleteGroupConfirm, setDeleteGroupConfirm] = useState<boolean>(false);
-    const [deleteGroupDisable, setDeleteGroupDisable] = useState<boolean>(false);
-    const [deleteGroup] = useMutation(DeleteGroup);
-    const { data: group_data, loading, error, refetch: refetchGroupData } = useQuery(GroupData,
+   
+    const { data: group_data, loading, error, refetch: refetchGroupData } = useQuery(FullGroupDetails,
         {
             variables: { input: { group_id: group_id } },
             skip: !group_id,
@@ -72,7 +65,9 @@ export const GroupDetails = () => {
             skip: !userInGroup?.member_id,
             fetchPolicy: "network-only"
         });
-
+        
+    const invitedEmails = invitedList?.getGroupInvitedList?.map((invite: GroupInviteProps) => invite?.email);
+    
     if (loading) {
         return <Loader />;
     }
@@ -80,27 +75,6 @@ export const GroupDetails = () => {
         return <ErrorPage />;
     }
     
-    const invitedEmails = invitedList?.getGroupInvitedList?.map((invite: GroupInviteProps) => invite?.email);
-
-    const deleteGroupProcess = async ()=>{
-        setDeleteGroupConfirm(false);
-        setDeleteGroupDisable(true);
-        await deleteGroup(
-            {
-                variables: {
-                    input: {
-                        admin_id: userInGroup?.member_id
-                    }
-                },
-                onCompleted: (data)=>{
-                    const {deleteGroup: message} = data;
-                    makeToast({message: message, toastType: "success"});
-                },
-                onError: (err)=>{
-                    makeToast({message: err?.message, toastType: "error"});
-                }});
-        setDeleteGroupDisable(false);
-    }
 
     return (
         (group_data?.group ?
@@ -119,22 +93,6 @@ export const GroupDetails = () => {
                             <h4>Members :</h4>
                             <p>{group_data?.group?.group_members?.length}</p>
                         </div>
-                    </div>
-                    <div className="Buttons">
-                        {userIsLeader &&
-                            <ButtonField type={"button"}
-                                text={"Edit Group details"}
-                                className={"blue_button"}
-                                onClick={() => setEditGroupPopupState(true)} />
-                        }
-                        {
-                            group_data?.group?.created_by?.user_id === user?.user_id &&
-                            <ButtonField type={"button"}
-                                text={"Delete Group"}
-                                className="red_button" 
-                                onClick={()=>setDeleteGroupConfirm(true)}
-                                disabledState={deleteGroupDisable}/>
-                        }
                     </div>
                 </div>
                 <div className="tabs-container">
@@ -176,14 +134,6 @@ export const GroupDetails = () => {
                             invitedList={invitedList?.getGroupInvitedList}
                             onUpdated={refetchInvitedList} />}
                 </div>
-                <AddGroup
-                    open={editGroupPopupState}
-                    onClose={() => setEditGroupPopupState(false)}
-                    admin_id={userInGroup?.member_id}
-                    group_id={group_id}
-                    group_name={group_data?.group?.group_name}
-                    group_description={group_data?.group?.group_description}
-                    onUpdated={refetchGroupData} />
                 <InviteOthers
                     group_members={group_data?.group?.group_members}
                     admin_id={userInGroup?.member_id}
@@ -191,14 +141,7 @@ export const GroupDetails = () => {
                     open={invitePopupState}
                     onClose={() => setInvitePopupState(false)}
                     onUpdated={refetchInvitedList} />
-                <Confirmation 
-                    open={deleteGroupConfirm} 
-                    onClose={()=> setDeleteGroupConfirm(false)} 
-                    title={"Do you want to delete this Group ?"} 
-                    closeButtonText={"Cancel"}
-                    confirmButtonText={"Confirm"}
-                    onSuccess={deleteGroupProcess}/>
-            </div> : <DataNotFound message={"Group"} />)
+            </div> : <DataNotFound />)
 
     )
 }

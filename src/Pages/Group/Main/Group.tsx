@@ -8,6 +8,7 @@ import { Loader } from '../../../Components/Loader/Loader';
 import './Group.scss';
 import { ErrorPage } from '../../../Components/ErrorPage/ErrorPage';
 import { makeToast } from '../../../Components/Toast/makeToast';
+import { GroupMemberDetails } from '../../../ApolloClient/Queries/Groups';
 
 export interface Group_Member_Props {
     member_id: string
@@ -28,71 +29,65 @@ const Group = () => {
     const navigate = useNavigate();
     const group_id = location?.state?.group_id;
 
-    const GroupData = gql`
-        query get($input: GroupInput!){
-            group(input: $input){
-                group_id,
-                group_name,
-                group_description,
-                group_members{
-                    member_id
-                    user{
-                        user_id
-                    }
-                }
-            }
-        }
-    `
     const user = useSelector((state: RootState) => state.user);
-    const { data: group_data, loading, error } = useQuery(GroupData,
+    const { data: userInGroup, loading, error } = useQuery(GroupMemberDetails,
         {
-            variables: { input: { group_id: group_id }},
-            skip: !group_id,
-            fetchPolicy: "network-only",
+            variables: {
+                input: {
+                    user_id: user?.user_id,
+                    group_id: group_id
+                }
+            },
             onError: (err) => {
-                console.log(err.message);
-                makeToast({message: err?.message, toastType: "error"});
+                makeToast({ message: err?.message, toastType: "error" });
             }
-        });
+        },
+    );
 
-    const userInGroup = group_data?.group?.group_members?.find((member: Group_Member_Props) => member?.user?.user_id === user?.user_id);
-    const NavItems = [
-        { label: "Group", onClick: () => navigate('group-details', 
-            { 
-                state: { 
-                    group_id: group_id, 
-                    member_id: userInGroup?.member_id
-                }
-            }
-        ) },
-        { label: "Trips", onClick: () => navigate('trips', 
-            { 
-                state: { 
-                    group_id: group_id, 
-                    member_id: userInGroup?.member_id
-                }
-            }
-            ) },
-    ]
+    
     if (loading) {
         return <Loader />;
     }
     if (error) {
-        return <ErrorPage/>;
+        return <ErrorPage />;
     }
+    const NavItems = [
+        {
+            label: "Group", onClick: () => navigate('group-details',
+                {
+                    state: {
+                        group_id: group_id,
+                        member_id: userInGroup?.groupMember?.member_id
+                    }
+                }
+            )
+        },
+        {
+            label: "Trips", onClick: () => navigate('trips',
+                {
+                    state: {
+                        group_id: group_id,
+                        member_id: userInGroup?.groupMember?.member_id
+                    }
+                }
+            )
+        },
+    ]
+    
     return (
         <div className='group-container'>
             <Header items={NavItems} />
-
-            {group_data?.group?.group_members?.length > 0 && !userInGroup &&
-                <Confirmation
+            
+        {!userInGroup 
+            &&
+            <Confirmation
                     open={true}
                     onClose={() => navigate('/groups')}
                     title={'You are Removed From this Group'}
                     confirmButtonText={'Ok'} />}
 
             <div className='group-body-container'>
-                <Outlet/>
+                <Outlet />
             </div>
         </div>
 

@@ -1,4 +1,5 @@
 import ButtonField from "../../../Components/ButtonField/ButtonField";
+import { ErrorText } from "../../../Components/ErrorText/ErrorText";
 import TextAreaField from "../../../Components/FormFields/TextareaField/TextareaField";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
@@ -31,7 +32,9 @@ export const CheckLists = () => {
                     text={"Add Checklist item"}
                     className={"blue_button"}
                     onClick={()=>append("Item")} />
-                {errors?.trip_checklists?.message && <p className="error">{errors?.trip_checklists?.message?.toString()}</p>}
+                {errors?.trip_checklists?.message 
+                    && 
+                <ErrorText message={errors?.trip_checklists?.message.toString()}/>}
             </div>
         </div>
     )

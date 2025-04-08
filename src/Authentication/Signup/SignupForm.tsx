@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { makeToast } from '../../Components/Toast/makeToast';
 import ButtonField from '../../Components/ButtonField/ButtonField';
 import { Signup_user } from '../../ApolloClient/Mutation/Auth';
+import { ErrorText } from '../../Components/ErrorText/ErrorText';
 
 
 function SignupForm() {
@@ -59,7 +60,9 @@ function SignupForm() {
                             name={"person_name"}
                             placeholder={'Enter your name'}
                             required={true} />
-                        {errors?.person_name?.message && <p className='error'>{errors?.person_name?.message}</p>}
+                        {errors?.person_name?.message 
+                            && 
+                        <ErrorText message={errors?.person_name?.message}/>}
                     </div>
                     <div className='input-container'>
                         <InputField
@@ -68,7 +71,9 @@ function SignupForm() {
                             name={"email"}
                             placeholder={'Enter your email'} 
                             required={true}/>
-                        {errors?.email?.message && <p className='error'>{errors?.email?.message}</p>}
+                        {errors?.email?.message 
+                            && 
+                        <ErrorText message={errors?.email?.message}/>}
                     </div>
                     <div className='input-container'>
                         <InputField
@@ -77,7 +82,9 @@ function SignupForm() {
                             name={"password"}
                             placeholder={'Set your password'} 
                             required={true}/>
-                        {errors?.password?.message && <p className='error'>{errors?.password?.message}</p>}
+                        {errors?.password?.message 
+                            && 
+                        <ErrorText message={errors?.password?.message}/>}
                     </div>
                     <div className='input-container'>
                         <InputField
@@ -86,7 +93,9 @@ function SignupForm() {
                             name={"confirmpassword"}
                             placeholder={'Confirm your password'} 
                             required={true}/>
-                        {errors?.confirmpassword?.message && <p className='error'>{errors?.confirmpassword?.message}</p>}
+                        {errors?.confirmpassword?.message 
+                            && 
+                        <ErrorText message={errors?.confirmpassword?.message}/>}
                     </div>
 
                     <ButtonField

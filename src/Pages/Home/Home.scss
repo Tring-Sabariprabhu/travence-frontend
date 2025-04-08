@@ -11,6 +11,7 @@
         font-family: var(--font-medium);
         color: var(--color-blue);
         span{
+            text-transform: capitalize;
             font-family: var(--font-light);
             font-size: 35px;
             padding: 0 6px;

@@ -1,0 +1,53 @@
+h4,
+ol,p {
+    font-family: var(--font-light);
+}
+
+.name {
+    text-transform: capitalize;
+}
+
+.trip-page-container {
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    width: 1000px;
+    gap: 50px;
+    button {
+        width: fit-content;
+        padding: 8px 10px;
+        border-radius: 5px;
+    }
+    main{
+        padding: 20px;
+        // background-color: beige; 
+        border-radius: 8px;
+        border: 2px solid var(--color-gray);
+    }
+     .trip-details-container{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        div{
+            display: flex;
+            gap: 20px;
+        }
+     }
+        ol{
+            li{
+                display: flex;
+                gap: 10px;
+            }            
+        }
+
+    
+
+    .group-members-container {
+        .group-members-list {
+            .member {
+                
+            }
+        }
+    }
+}
