@@ -1,11 +1,12 @@
 .group-members-container {
-    overflow: auto;
-    height: 250px;
     .group-members-list{
+        overflow: auto;
+        height: 250px;
         border-radius: 10px; 
         padding: 10px;
         display: flex;
         flex-direction: column;
+        align-items: start;
         gap: 20px;        
         .user-role, .user-name{
             text-transform: capitalize;
@@ -17,7 +18,7 @@
             div{
                 width: 250px;    
             }
-            width: 100%;
+            width: fit-content;
             display: flex;
             align-items: center;
             gap: 30px;

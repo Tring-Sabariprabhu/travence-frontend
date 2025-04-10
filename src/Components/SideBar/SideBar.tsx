@@ -1,7 +1,5 @@
 import { AccountCircle, Group, Logout, NotificationsRounded } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom'
-import './SideBar.scss'
-import { makeToast } from '../Toast/makeToast';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../Redux/store';
 import { setUser } from '../../Redux/userSlice';
@@ -15,7 +13,6 @@ export const SideBar = () => {
     const user = useSelector((state: RootState)=> state.user);
     const [logoutPopupState, setLogoutPopupState] = useState<boolean>(false);
     const handlelogout = () => {
-        makeToast({message: "Log out Successfully", toastType: "success"})
         dispatch(setUser({name: "", email: ""}))
         setLogoutPopupState(false);
         localStorage.removeItem("token");

@@ -10,4 +10,5 @@ export const Signin_user = gql`
 export const Signup_user = gql`
     mutation Post($input: SignupInput!){
         signup(input: $input)
-    }`
+    }
+`

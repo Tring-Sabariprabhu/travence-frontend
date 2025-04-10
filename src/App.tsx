@@ -2,8 +2,8 @@
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
 import PublicRoute from './Routes/PublicRoute';
 import PrivateRoute from './Routes/PrivateRoute';
-import AuthLayout from './Layouts/AuthLayout';
-import DashboardLayout from './Layouts/DashboardLayout';
+import AuthLayout from './Layouts/AuthLayout/AuthLayout';
+import DashboardLayout from './Layouts/DashBoardLayout/DashboardLayout';
 import { privateRoutes, publicRoutes } from './Routes/Navigation';
 import { PageNotFound } from './Components/PageNotFound/PageNotFound';
 

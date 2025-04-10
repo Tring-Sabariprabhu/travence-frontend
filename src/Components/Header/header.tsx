@@ -1,4 +1,4 @@
-import './header.scss';
+
 import logo from '../../Assets/images/travence-logo.png';
 import { ArrowBackIcon } from '../ArrowBack/ArrowBack';
 interface NavItem {
@@ -7,7 +7,7 @@ interface NavItem {
 }
 
 interface HeaderProps {
-    items: NavItem[];
+    items?: NavItem[];
 }
 
 export const Header: React.FC<HeaderProps> = ({ items }) => {

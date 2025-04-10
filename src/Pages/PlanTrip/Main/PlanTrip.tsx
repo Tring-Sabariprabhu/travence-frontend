@@ -15,6 +15,8 @@ import { Loader } from "../../../Components/Loader/Loader";
 import { ErrorPage } from "../../../Components/ErrorPage/ErrorPage";
 import { FullTripDetails } from "../../../ApolloClient/Queries/Trips";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Redux/store";
 
 
 interface Activity {
@@ -33,10 +35,8 @@ export interface PlanTripFormValues {
 export const PlanTrip = () => {
 
     const location = useLocation();
-    const group_id = location?.state?.group_id;
-    const member_id = location?.state?.member_id;
     const trip_id = location?.state?.trip_id;
-
+    const user = useSelector((state: RootState)=> state?.user);
     const navigate = useNavigate();
     const schema = yup
         .object()
@@ -110,8 +110,8 @@ export const PlanTrip = () => {
         for (const activity of formdata?.trip_activities) {
             trip_budget = trip_budget + activity?.budget;
         }
-        if(!trip_id && !formdata?.trip_members?.includes(member_id)){
-            formdata?.trip_members.push(member_id);
+        if(!trip_id && !formdata?.trip_members?.includes(user?.current_group_member_id)){
+            formdata?.trip_members.push(user?.current_group_member_id);
         }
         
         if (trip_id) {
@@ -120,7 +120,7 @@ export const PlanTrip = () => {
                     variables: {
                         input: {
                             trip_id: trip_id,
-                            group_member_id: member_id,
+                            group_member_id: user?.current_group_member_id,
                             trip_name: formdata?.trip_name,
                             trip_description: formdata?.trip_description,
                             trip_start_date: new Date(formdata?.trip_start_date),
@@ -144,7 +144,7 @@ export const PlanTrip = () => {
                 {
                     variables: {
                         input: {
-                            group_member_id: member_id,
+                            group_member_id: user?.current_group_member_id,
                             trip_name: formdata?.trip_name,
                             trip_description: formdata?.trip_description,
                             trip_start_date: formdata?.trip_start_date,

@@ -16,6 +16,8 @@ import { TripMemberDetails, TripMembersDetails } from "../../../ApolloClient/Que
 import { TripMemberProps } from "../Main/Trip"
 import { Loader } from "../../../Components/Loader/Loader"
 import { Info } from "@mui/icons-material"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../Redux/store"
 
 interface ExpenseRemainderProps {
     open: boolean
@@ -27,17 +29,15 @@ interface FormValues {
     paidBy: string
 }
 export const ExpenseRemainder = ({ open, onClose }: ExpenseRemainderProps) => {
-    const location = useLocation();
-    const group_id = location?.state?.group_id;
-    const trip_id = location?.state?.trip_id;
-    const member_id = location?.state?.member_id;
+    const user = useSelector((state: RootState)=> state?.user);
     const { data: tripMembersData, loading } = useQuery(TripMembersDetails,
         {
             variables: {
                 input: {
-                    trip_id: trip_id
+                    trip_id: user?.trip_id
                 },
             },
+            skip: !user?.trip_id,
             onError: (err) => {
                 makeToast({ message: err?.message, toastType: "error" });
             }
@@ -47,10 +47,11 @@ export const ExpenseRemainder = ({ open, onClose }: ExpenseRemainderProps) => {
         {
             variables: {
                 input: {
-                    group_member_id: member_id,
-                    trip_id: trip_id
+                    group_member_id: user?.current_group_member_id,
+                    trip_id: user?.trip_id,
                 }
             },
+            skip: !user?.trip_id,
         },
     )
     const schema = yup
@@ -92,7 +93,7 @@ export const ExpenseRemainder = ({ open, onClose }: ExpenseRemainderProps) => {
         await createExpsenses({
             variables: {
                 input: {
-                    trip_id: trip_id,
+                    trip_id: user?.trip_id,
                     created_by: tripmemberdata?.tripMember?.trip_member_id,
                     expenses: expenses
                 }

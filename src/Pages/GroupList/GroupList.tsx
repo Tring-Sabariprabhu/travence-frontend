@@ -43,11 +43,6 @@ export const GroupList = () => {
 
     const { data, loading, error, refetch: refetchGroupListData } = useQuery(GroupsList,
         {
-            variables: {
-                input: {
-                    user_id: user?.user_id
-                }
-            },
             skip: !user?.user_id,
             fetchPolicy: "network-only"
         });
@@ -63,13 +58,12 @@ export const GroupList = () => {
             {
                 variables: {
                     input: {
-                        user_id: user?.user_id,
                         group_id: selectedGroup?.group_id
                     }
                 },
                 onCompleted: (data) => {
-                    const { deleteGroup: message } = data;
-                    makeToast({ message: message, toastType: "success" });
+                    makeToast({ message: data?.deleteGroup, toastType: "success" });
+                    refetchGroupListData();
                 },
                 onError: (err) => {
                     makeToast({ message: err?.message, toastType: "error" });
@@ -83,7 +77,7 @@ export const GroupList = () => {
             {
                 group_id: group?.group_id, 
                 group_name: group?.group_name
-            }
+            },
         );
         event?.stopPropagation();
         setAnchorEl(event?.currentTarget);

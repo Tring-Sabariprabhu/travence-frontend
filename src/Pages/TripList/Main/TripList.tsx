@@ -67,9 +67,6 @@ export const TripList = () => {
     const user = useSelector((state: RootState) => state.user);
     const navigate = useNavigate();
 
-    const location = useLocation();
-    const group_id = location?.state?.group_id;
-    const member_id = location?.state?.member_id;
     const [menuOpenState, setMenuOpenState] = useState<boolean>(false);
     const [filtertype, setFilterType] = useState<TripList_Filter>(TripList_Filter.ALL);
     const [selectedTrip, setSelectedTrip] = useState({ trip_id: "", trip_name: "" });
@@ -86,10 +83,10 @@ export const TripList = () => {
         {
             variables: {
                 input: {
-                    user_id: user?.user_id,
-                    group_id: group_id
+                    group_id: user?.group_id
                 }
             },
+            skip: !user?.group_id,
             onError: (err) => {
                 makeToast({ message: err?.message, toastType: "error" });
             }
@@ -101,7 +98,7 @@ export const TripList = () => {
         {
             variables: {
                 input: {
-                    member_id: member_id,
+                    member_id: user?.current_group_member_id,
                     filter_type: filtertype
                 }
             }
@@ -113,7 +110,7 @@ export const TripList = () => {
             variables: {
                 input: {
                     trip_id: selectedTrip?.trip_id,
-                    group_member_id: member_id
+                    group_member_id: user?.current_group_member_id
                 }
             },
             onCompleted: (data) => {
@@ -170,8 +167,8 @@ export const TripList = () => {
                         onClick={() => navigate('/group/plan-trip',
                             {
                                 state: {
-                                    group_id: group_id,
-                                    member_id: member_id
+                                    group_id: user?.group_id,
+                                    member_id: user?.current_group_member_id
                                 }
                             }
                         )} />
@@ -186,8 +183,8 @@ export const TripList = () => {
                                 navigate('/group/trip',
                                     {
                                         state: {
-                                            group_id: group_id,
-                                            member_id: member_id,
+                                            group_id: user?.group_id,
+                                            member_id: user?.current_group_member_id,
                                             trip_id: trip?.trip_id
                                         }
                                     }
@@ -233,8 +230,8 @@ export const TripList = () => {
                     navigate('/group/plan-trip',
                         {
                             state: {
-                                group_id: group_id,
-                                member_id: member_id,
+                                group_id: user?.group_id,
+                                member_id: user?.current_group_member_id,
                                 trip_id: selectedTrip?.trip_id
                             }
                         });
