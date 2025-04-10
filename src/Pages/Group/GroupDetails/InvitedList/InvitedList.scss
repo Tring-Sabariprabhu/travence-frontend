@@ -1,11 +1,27 @@
 .invited-list-container{
-    .actions{
+    header{
+        border: 2px solid var(--color-gray);
         display: flex;
         align-items: center;
         padding: 10px 20px;
-        gap: 10px;
-        p{
+        justify-content: space-between;
+        gap: 20px;
+        input{
             font-family: var(--font-light);
+            padding: 5px;
+        }
+        div{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            .icon{
+                cursor: pointer;
+            }
+        }
+        
+        p,label{
+            font-family: var(--font-light);
+            font-size: 13px;
         }
         button{
             font-family: var(--font-medium);
@@ -60,4 +76,4 @@
         }
     }
     
-}
+}   

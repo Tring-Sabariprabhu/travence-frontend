@@ -6,25 +6,30 @@ import { useLocation } from "react-router-dom";
 import { Group_Member_Props } from "../../Group/Main/Group";
 import { useFormContext } from "react-hook-form";
 import { ErrorText } from "../../../Components/ErrorText/ErrorText";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Redux/store";
+import { GroupMembersForTrip } from "../../../ApolloClient/Queries/Trips";
 
+interface GroupMembersForTrip{
+    name: string
+    member_id: string
+}
 export const AddMembers = () => {
+    const user = useSelector((state: RootState)=> state?.user);
     const location = useLocation();
-    const group_id = location?.state?.group_id;
-    const member_id = location?.state?.member_id;
     const trip_id = location?.state?.trip_id;
+    const input = (trip_id ? {trip_id: trip_id} : {group_id: user?.group_id});
     
-    const {data: groupdata} = useQuery(GroupMembersDetails,
+    const {data: groupdata} = useQuery(GroupMembersForTrip,
         {
             variables: {
-                input: {
-                    group_id: group_id
-                }
+                input: input
             },
-            skip: !group_id,
+            skip: !user?.group_id,
             fetchPolicy: "network-only"
         }
     )
-    const group_members = groupdata?.group?.group_members?.filter((member:Group_Member_Props)=> member.member_id !== member_id);
+    const group_members = groupdata?.groupMembersForTrip?.filter((member: GroupMembersForTrip)=> member.member_id !== user?.current_group_member_id);
     const {setValue} = useFormContext();
     const [addMembers, setAddMembers] = useState<string[]>([]);
     const addMember = (event: SelectChangeEvent<typeof addMembers>) => {
@@ -45,9 +50,9 @@ export const AddMembers = () => {
                     {
                         group_members?.length > 0 
                         &&
-                        group_members?.map((member: Group_Member_Props, index: number)=> (
+                        group_members?.map((member: GroupMembersForTrip, index: number)=> (
                             <MenuItem value={member?.member_id} key={index}>
-                                {member?.user?.name}
+                                {member?.name}
                             </MenuItem>
                         ))
                     }

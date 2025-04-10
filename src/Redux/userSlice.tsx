@@ -5,14 +5,22 @@ interface UserState{
     name: string;
     email: string;
     image: string,
-    password: string
+    password: string,
+    group_id: string,
+    current_group_member_id: string
+    trip_id: string
+    current_trip_member_id: string
 }
 const initialState : UserState ={
   user_id: "",
   name: "",
   email: "",
   image: "",
-  password: ""
+  password: "",
+  group_id: "",
+  current_group_member_id: "",
+  trip_id: "",
+  current_trip_member_id: "",
 };
 
 const userSlice = createSlice({
@@ -25,6 +33,10 @@ const userSlice = createSlice({
       state.email = action.payload.email;
       state.image = action.payload.image;
       state.password = action.payload.password;
+      state.group_id = action.payload.group_id;
+      state.current_group_member_id = action.payload.current_group_member_id;
+      state.trip_id = action.payload.trip_id;
+      state.current_trip_member_id = action.payload.current_trip_member_id
     }
   },
 });

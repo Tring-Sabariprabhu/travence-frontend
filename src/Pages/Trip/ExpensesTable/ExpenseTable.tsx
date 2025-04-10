@@ -2,6 +2,8 @@ import { useQuery } from '@apollo/client';
 import '../../Group/GroupDetails/InvitedList/InvitedList.scss'
 import { ExpenseDetails } from '../../../ApolloClient/Queries/Trips';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../Redux/store';
 interface Expense{
     amount: number
     paidBy: {
@@ -20,20 +22,20 @@ interface Expense{
     }
 }
 export const ExpenseTable=()=>{
-    const location = useLocation();
-    const group_id = location?.state?.group_id;
-    const member_id = location?.state?.member_id;
-    const trip_id = location?.state?.trip_id;
+    const user = useSelector((state: RootState)=> state?.user);
      const {data: tripdata} = useQuery(ExpenseDetails, {
             variables: {
                 input: {
-                    trip_id: trip_id
+                    trip_id: user?.trip_id
                 }
             },
-            skip: !trip_id
+            skip: !user?.trip_id
         })
     return (
-        <div className="expense-table-container invited-list-container">            
+        <div className="expense-table-container invited-list-container">    
+        {
+            tripdata?.trip?.expense_remainders?.length > 0
+            &&
             <table>
                 <tr>
                     <th>Amount</th>
@@ -50,6 +52,8 @@ export const ExpenseTable=()=>{
                     ))
                 }
             </table>
+        }        
+            
         </div>
     )
 }

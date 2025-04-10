@@ -7,9 +7,7 @@ export const Notifications = ()=>{
     const navigate = useNavigate();
     return(
         <div className='notification-container'>
-            <Header items={[
-                {label: "Group Invites", onClick: ()=>{navigate('group-invites')}},
-            ]}/>
+            <Header />
             <Outlet/>
         </div>
     )

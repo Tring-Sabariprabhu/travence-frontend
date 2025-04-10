@@ -5,7 +5,7 @@ interface DateProps {
 }
 
 export const dateformat = ({ timestamp }: DateProps) => {
-    if (timestamp.length > 0) {
+    if (timestamp?.length > 0) {
         const formattedDate = new Date(timestamp).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",

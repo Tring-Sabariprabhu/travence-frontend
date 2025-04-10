@@ -1,5 +1,5 @@
-import { gql, useQuery } from '@apollo/client';
-import { useSelector } from 'react-redux';
+import {  useQuery } from '@apollo/client';
+import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Header } from '../../../Components/Header/header';
 import { RootState } from '../../../Redux/store';
@@ -9,6 +9,7 @@ import './Group.scss';
 import { ErrorPage } from '../../../Components/ErrorPage/ErrorPage';
 import { makeToast } from '../../../Components/Toast/makeToast';
 import { GroupMemberDetails } from '../../../ApolloClient/Queries/Groups';
+import { setUser } from '../../../Redux/userSlice';
 
 export interface Group_Member_Props {
     member_id: string
@@ -34,7 +35,6 @@ const Group = () => {
         {
             variables: {
                 input: {
-                    user_id: user?.user_id,
                     group_id: group_id
                 }
             },
@@ -45,12 +45,6 @@ const Group = () => {
     );
 
     
-    if (loading) {
-        return <Loader />;
-    }
-    if (error) {
-        return <ErrorPage />;
-    }
     const NavItems = [
         {
             label: "Group", onClick: () => navigate('group-details',
@@ -73,6 +67,25 @@ const Group = () => {
             )
         },
     ]
+    const dispatch = useDispatch();
+    useQuery(GroupMemberDetails, {
+       variables: {
+           input: {
+               group_id: group_id,
+           }
+       },
+       onCompleted(data) {
+           dispatch(setUser({...user, current_group_member_id: data?.groupMember?.member_id, 
+            group_id: group_id
+           }))
+       },
+   })
+    if (loading) {
+        return <Loader />;
+    }
+    if (error) {
+        return <ErrorPage />;
+    }
     
     return (
         <div className='group-container'>

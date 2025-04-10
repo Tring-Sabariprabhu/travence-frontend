@@ -61,7 +61,7 @@ export default function SigninForm() {
               label="Email"
               type="text"
               name={"email"}
-              placeholder={"Enter your email"} 
+              placeholder={"Enter email"} 
               required={true}/>
             {errors?.email?.message && <ErrorText message={errors?.email?.message}/>}
           </div>
@@ -70,7 +70,7 @@ export default function SigninForm() {
               label="Password"
               type="password"
               name="password"
-              placeholder="Enter your password" 
+              placeholder="Enter password" 
               required={true}/>
             {errors?.password?.message && <ErrorText message={errors?.password?.message}/>}
           </div>

@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GroupsList = gql`
-    query($input: GroupListInput!){
-        groupList(input: $input){
+    query get{
+        groupList{
             group_id,
             group_name,
             group_description,
@@ -15,17 +15,8 @@ export const GroupsList = gql`
             }
         }
     }`
-export const GroupDetails = gql`
-    query ($input: GroupInput!){
-        group(input: $input){
-            group_id,
-            group_name,
-            group_description,
-        }     
-    }
-`
-export const FullGroupDetails = gql`
-    query ($input: GroupInput!){
+export const Group_Details = gql`
+    query get($input: GroupInput!){
         group(input: $input){
             group_id,
             group_name,
@@ -37,24 +28,14 @@ export const FullGroupDetails = gql`
                 name,
                 user_id
             }
-            group_members{
-                member_id,
-                user_role,
-                joined_at,
-                deleted_at,
-                updated_at,
-                user{
-                    name,
-                    email,
-                    user_id
-                }
-            }
-        }
-    }`
+        }     
+    }
+`
+
 export const GroupMembersDetails = gql`
-    query ($input: GroupInput!){
-        group(input: $input){
-            group_members{
+    query get($input: GroupInput!){
+        groupMembers(input: $input){
+            
                 member_id,
                 user_role,
                 joined_at,
@@ -65,14 +46,18 @@ export const GroupMembersDetails = gql`
                     email,
                     user_id
                 }
-            }
+            
         }
     }
     `
 export const GroupMemberDetails = gql`
-    query($input: GroupMemberInput!){
+    query get($input: GroupMemberInput!){
         groupMember(input: $input){
             member_id
             user_role
+            joined_at
+            user{
+                name
+            }
         }
     }`

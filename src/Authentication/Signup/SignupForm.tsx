@@ -58,7 +58,7 @@ function SignupForm() {
                             label="Name"
                             type="text"
                             name={"person_name"}
-                            placeholder={'Enter your name'}
+                            placeholder={'Enter name'}
                             required={true} />
                         {errors?.person_name?.message 
                             && 
@@ -69,7 +69,7 @@ function SignupForm() {
                             label="Email"
                             type="text"
                             name={"email"}
-                            placeholder={'Enter your email'} 
+                            placeholder={'Enter email'} 
                             required={true}/>
                         {errors?.email?.message 
                             && 
@@ -80,7 +80,7 @@ function SignupForm() {
                             label="Password"
                             type={"password"}
                             name={"password"}
-                            placeholder={'Set your password'} 
+                            placeholder={'Set password'} 
                             required={true}/>
                         {errors?.password?.message 
                             && 
@@ -91,7 +91,7 @@ function SignupForm() {
                             label="Confirm password"
                             type={"password"}
                             name={"confirmpassword"}
-                            placeholder={'Confirm your password'} 
+                            placeholder={'Confirm password'} 
                             required={true}/>
                         {errors?.confirmpassword?.message 
                             && 

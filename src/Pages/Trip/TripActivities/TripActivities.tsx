@@ -1,19 +1,17 @@
 import { useQuery } from "@apollo/client"
 import { TripActivities } from "../../../ApolloClient/Queries/Trips"
-import { useLocation } from "react-router-dom"
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Redux/store";
 
 export const Activities = () => {
-    const location = useLocation();
-    const group_id = location?.state?.group_id;
-    const member_id = location?.state?.member_id;
-    const trip_id = location?.state?.trip_id;
-
+    const user = useSelector((state: RootState)=> state?.user);
     const { data: tripdata } = useQuery(TripActivities, {
         variables: {
             input: {
-                trip_id: trip_id,
+                trip_id: user?.trip_id,
             }
-        }
+        },
+        skip: !user?.trip_id
     })
     return (
         <main className="trip-activities">

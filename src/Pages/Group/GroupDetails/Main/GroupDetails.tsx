@@ -1,9 +1,8 @@
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { GetInvitedList } from "../../../../ApolloClient/Queries/GroupInvites";
-import { FullGroupDetails } from "../../../../ApolloClient/Queries/Groups";
+import {  Group_Details, GroupMemberDetails } from "../../../../ApolloClient/Queries/Groups";
 import ButtonField from "../../../../Components/ButtonField/ButtonField";
 import { Loader } from "../../../../Components/Loader/Loader";
 import { RootState } from "../../../../Redux/store";
@@ -15,6 +14,7 @@ import { Group_Member_Props } from "../../Main/Group";
 import { InvitedList } from "../InvitedList/InvitedList";
 import { ErrorPage } from "../../../../Components/ErrorPage/ErrorPage";
 import { makeToast } from "../../../../Components/Toast/makeToast";
+import { setUser } from "../../../../Redux/userSlice";
 
 export interface GroupInviteProps {
     invite_id: string,
@@ -39,16 +39,18 @@ export interface GroupInviteProps {
 export const GroupDetails = () => {
 
     const user = useSelector((state: RootState) => state.user);
-    const location = useLocation();
-    const group_id = location?.state?.group_id;
     const [groupDetailsChild, setGroupDetailsChild] = useState('group-members');
 
     const [invitePopupState, setInvitePopupState] = useState<boolean>(false);
    
-    const { data: group_data, loading, error, refetch: refetchGroupData } = useQuery(FullGroupDetails,
+    const { data: group_data, loading, error } = useQuery(Group_Details,
         {
-            variables: { input: { group_id: group_id } },
-            skip: !group_id,
+            variables: { 
+                input: { 
+                    group_id: user?.group_id 
+                } 
+            },
+            skip: !user?.group_id,
             fetchPolicy: "network-only",
             onError: (err) => {
                 console.log(err.message);
@@ -56,17 +58,20 @@ export const GroupDetails = () => {
             }
         });
 
-    const userInGroup = group_data?.group?.group_members?.find((member: Group_Member_Props) => member?.user?.user_id === user?.user_id);
-    const userIsLeader = userInGroup?.user_role === "admin";
-
-    const { data: invitedList, refetch: refetchInvitedList } = useQuery(GetInvitedList,
-        {
-            variables: { input: { admin_id: userInGroup?.member_id } },
-            skip: !userInGroup?.member_id,
-            fetchPolicy: "network-only"
-        });
-        
-    const invitedEmails = invitedList?.getGroupInvitedList?.map((invite: GroupInviteProps) => invite?.email);
+    const [userInGroup, setUserInGroup] = useState<Group_Member_Props>();
+    
+     useQuery(GroupMemberDetails, {
+        variables: {
+            input: {
+                group_id: user?.group_id,
+            }
+        },
+        skip: !user?.group_id,
+        onCompleted(data) {
+            setUserInGroup(data?.groupMember);
+        },
+    })
+    
     
     if (loading) {
         return <Loader />;
@@ -74,8 +79,6 @@ export const GroupDetails = () => {
     if (error) {
         return <ErrorPage />;
     }
-    
-
     return (
         (group_data?.group ?
             <div className="group-details-container">
@@ -89,10 +92,6 @@ export const GroupDetails = () => {
                             <h4>Group description :</h4>
                             <p>{group_data?.group?.group_description}</p>
                         </div>
-                        <div>
-                            <h4>Members :</h4>
-                            <p>{group_data?.group?.group_members?.length}</p>
-                        </div>
                     </div>
                 </div>
                 <div className="tabs-container">
@@ -102,7 +101,7 @@ export const GroupDetails = () => {
                             text={"Group Members"}
                             className={groupDetailsChild === 'group-members' ? 'active-tab tab' : 'tab '}
                             onClick={() => setGroupDetailsChild('group-members')} />
-                        {userIsLeader &&
+                        {userInGroup?.user_role === "admin" &&
                             <ButtonField
                                 type={"button"}
                                 text={"Invited List"}
@@ -111,7 +110,7 @@ export const GroupDetails = () => {
 
                     </div>
                     <div className="Buttons">
-                        {userIsLeader &&
+                    {userInGroup?.user_role === "admin" &&
                             <ButtonField
                                 type={"button"}
                                 text={"Invite"}
@@ -124,23 +123,14 @@ export const GroupDetails = () => {
                 <div className='group-body'>
                     {groupDetailsChild === 'group-members' &&
                         <GroupMembers
-                            created_by={group_data?.group?.created_by}
-                            group_members={group_data?.group?.group_members}
-                            userInGroup={userInGroup}
-                            onUpdated={refetchGroupData} />}
+                            created_by={group_data?.group?.created_by}/>}
                     {groupDetailsChild === 'invited-list' &&
-                        <InvitedList
-                            admin_id={userInGroup?.member_id}
-                            invitedList={invitedList?.getGroupInvitedList}
-                            onUpdated={refetchInvitedList} />}
+                        <InvitedList/>}
                 </div>
                 <InviteOthers
-                    group_members={group_data?.group?.group_members}
-                    admin_id={userInGroup?.member_id}
-                    invitedEmails={invitedEmails}
                     open={invitePopupState}
                     onClose={() => setInvitePopupState(false)}
-                    onUpdated={refetchInvitedList} />
+                    />
             </div> : <DataNotFound />)
 
     )

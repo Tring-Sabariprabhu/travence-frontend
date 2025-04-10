@@ -10,8 +10,8 @@ import CustomDialog from "../../../Components/CustomDialog/CustomDialog";
 import "./AddGroup.scss";
 import TextAreaField from "../../../Components/TextAreaField/TextAreaField";
 import { CreateGroup, UpdateGroup } from "../../../ApolloClient/Mutation/Groups";
-import { GroupDetails } from "../../../ApolloClient/Queries/Groups";
 import { ErrorText } from "../../../Components/ErrorText/ErrorText";
+import { Group_Details } from "../../../ApolloClient/Queries/Groups";
 
 type AddGroupProps = {
     group_id?: string
@@ -39,7 +39,7 @@ const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_nam
 
     const { handleSubmit, setValue, formState: { errors }, clearErrors } = methods;
 
-    const {refetch: refetchGroupData} = useQuery(GroupDetails,
+    const {refetch: refetchGroupData} = useQuery(Group_Details,
         {
             variables: {
                 input: {
@@ -63,7 +63,6 @@ const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_nam
             await updateGroup({
                 variables: {
                     input: {
-                        user_id: user?.user_id,
                         group_id: group_id,
                         group_name: formdata?.group_name,
                         group_description: formdata?.group_description
@@ -96,6 +95,8 @@ const AddGroup: React.FC<AddGroupProps> = ({ open, onClose, onUpdated, group_nam
     const handleClose = () => {
         refetchGroupData();
         onClose();
+        setValue("group_description","");
+        setValue("group_name","");
         clearErrors();
     }
     return (

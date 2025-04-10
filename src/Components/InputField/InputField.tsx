@@ -33,7 +33,7 @@ const InputField: React.FC<InputFieldProps> = ({ type, label, name, placeholder,
             />
             {(name === "password" || name === "confirmpassword") &&
                 <div onClick={() => setShowPassword(!showPassword)} className="toggle-password">
-                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                    {showPassword ? <VisibilityIcon className="icon" /> : <VisibilityOffIcon className="icon" />}
                 </div>}
         </div>
     )

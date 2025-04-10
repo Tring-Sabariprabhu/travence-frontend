@@ -5,20 +5,19 @@ import { ErrorPage } from "../../../Components/ErrorPage/ErrorPage";
 import { Loader } from "../../../Components/Loader/Loader";
 import { TripMemberProps } from "../Main/Trip";
 import { DataNotFound } from "../../../Components/DataNotFound/DataNotFound";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Redux/store";
 
 export const TripMembers = () => {
-    const location = useLocation();
-    const group_id = location?.state?.group_id;
-    const trip_id = location?.state?.trip_id;
-    const member_id = location?.state?.member_id;
-
+    const user = useSelector((state: RootState)=> state?.user);
     const { data: tripdata, loading, error } = useQuery(TripMembersDetails,
         {
             variables: {
                 input: {
-                    trip_id: trip_id
+                    trip_id: user?.trip_id
                 }
-            }
+            },
+            skip: !user?.trip_id
         });
     if (loading) {
         return <Loader />;

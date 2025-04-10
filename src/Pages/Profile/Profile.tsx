@@ -77,8 +77,6 @@ const Profile = () => {
     });
     const { formState: { errors }, watch, setValue, handleSubmit } = methods;
 
-
-
     const update = async () => {
         setUpdateConfirmState(false);
         setUpdateDisableState(true);
@@ -88,7 +86,6 @@ const Profile = () => {
             variables:
             {
                 input: {
-                    user_id: user?.user_id,
                     name: name,
                     password: encryptedPassword,
                 }
