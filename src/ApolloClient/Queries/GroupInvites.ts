@@ -3,7 +3,8 @@ import { gql } from "@apollo/client";
 export const GetInvitedList_Count = gql`
   query get($admin_id: String!){
     getGroupInvitedListCount(admin_id: $admin_id)
-  }`
+  }
+`
 export const GetInvitedList = gql`
     query get($input: GetInvitedListInput!){
         getGroupInvitedList(input: $input){
@@ -24,7 +25,8 @@ export const GetGroupInvite = gql`
             invite_status,
             invited_at,
     }
-  }`
+  }
+`
 export const GetGroupInvites = gql`
     query get($input: GetGroupInvitesInput!){
         getGroupInvites(input: $input){
@@ -45,4 +47,6 @@ export const GetGroupInvites = gql`
               }
             }
         }
-    }`
+    }
+  `
+  

@@ -14,7 +14,8 @@ export const GroupsList = gql`
                 name
             }
         }
-    }`
+    }
+`
 export const Group_Details = gql`
     query get($input: GroupInput!){
         group(input: $input){
@@ -49,7 +50,7 @@ export const GroupMembersDetails = gql`
             
         }
     }
-    `
+`
 export const GroupMemberDetails = gql`
     query get($input: GroupMemberInput!){
         groupMember(input: $input){
@@ -60,4 +61,5 @@ export const GroupMemberDetails = gql`
                 name
             }
         }
-    }`
+    }
+`
